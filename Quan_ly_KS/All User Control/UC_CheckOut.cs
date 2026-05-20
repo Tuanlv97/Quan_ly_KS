@@ -14,9 +14,21 @@ namespace Quan_ly_KS.All_User_Control
     {
         function fn = new function();
         String query;
+        private Label lblServicesSummary;
+
         public UC_CheckOut()
         {
             InitializeComponent();
+            lblServicesSummary = new Label {
+                Text = "",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.SlateBlue,
+                Location = new Point(60, 593),
+                Size = new Size(1732, 22),
+                TextAlign = ContentAlignment.MiddleRight,
+                BackColor = Color.White
+            };
+            this.Controls.Add(lblServicesSummary);
         }
 
         private void UC_CheckOut_Load(object sender, EventArgs e)
@@ -68,6 +80,14 @@ namespace Quan_ly_KS.All_User_Control
                 cId = int.Parse(guna2DataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
                 txtCName.Text = guna2DataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
                 txtRoom.Text = guna2DataGridView1.Rows[e.RowIndex].Cells[9].Value.ToString();
+                // Calculate and show total
+                try {
+                    long roomPrice = Convert.ToInt64(guna2DataGridView1.Rows[e.RowIndex].Cells[12].Value);
+                    var dsSvc = fn.GetData("SELECT ISNULL(SUM(cs.quantity * s.price), 0) AS svc_total FROM customer_services cs INNER JOIN services s ON cs.sid=s.sid WHERE cs.cid=" + cId);
+                    long svcTotal = Convert.ToInt64(dsSvc.Tables[0].Rows[0]["svc_total"]);
+                    long grandTotal = roomPrice + svcTotal;
+                    lblServicesSummary.Text = string.Format("Tiền phòng: {0:N0} đ   |   Dịch vụ: {1:N0} đ   |   Tổng thanh toán: {2:N0} đ", roomPrice, svcTotal, grandTotal);
+                } catch { lblServicesSummary.Text = ""; }
                 //guna2DataGridView1.CurrentRow.Selected = true;
                 //txtCId.Text = guna2DataGridView1.Rows[e.RowIndex].Cells["cid"].Value.ToString();
                 //query = "select customer.cid, customer.cname, customer.mobile, customer.nationality, customer.dob,customer.gender, customer.idproof, customer.address, customer.checkin, rooms.roomNo, rooms.roomType, rooms.bed, rooms.price from customer inner join rooms on customer.roomid = rooms.roomid where chekout = 'NO' ";
@@ -101,7 +121,7 @@ namespace Quan_ly_KS.All_User_Control
             txtCName.Clear();
             txtName.Clear();
             txtCheckOutDate.ResetText();
-
+            if (lblServicesSummary != null) lblServicesSummary.Text = "";
         }
 
         private void btnCheckOut_Leave(object sender, EventArgs e)

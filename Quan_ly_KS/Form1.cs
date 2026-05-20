@@ -24,7 +24,7 @@ namespace Quan_ly_KS
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            if (txtUsername.Text == "Athucnd" && txtPassword.Text == "123")
+            if (txtUsername.Text == "admin" && txtPassword.Text == "123")
             {
                 LabelError.Visible = false;
                 Dashboard ds = new Dashboard();

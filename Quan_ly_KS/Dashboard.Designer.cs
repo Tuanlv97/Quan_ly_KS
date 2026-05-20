@@ -54,6 +54,8 @@
             this.guna2Elipse5 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
             this.uC_Emloyee1 = new Quan_ly_KS.All_User_Control.UC_Emloyee();
             this.uC_DichVu1 = new Quan_ly_KS.All_User_Control.UC_DichVu();
+            this.btnDichVuKhach = new Guna.UI2.WinForms.Guna2Button();
+            this.uC_DichVuKhach1 = new Quan_ly_KS.All_User_Control.UC_DichVuKhach();
             this.guna2Panel1.SuspendLayout();
             this.guna2Panel2.SuspendLayout();
             this.SuspendLayout();
@@ -93,6 +95,7 @@
             // 
             // guna2Panel1
             // 
+            this.guna2Panel1.Controls.Add(this.btnDichVuKhach);
             this.guna2Panel1.Controls.Add(this.btnDichVu);
             this.guna2Panel1.Controls.Add(this.btnEmployee);
             this.guna2Panel1.Controls.Add(this.btnCustomerDetail);
@@ -116,9 +119,9 @@
             this.btnEmployee.FillColor = System.Drawing.Color.SlateBlue;
             this.btnEmployee.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEmployee.ForeColor = System.Drawing.Color.White;
-            this.btnEmployee.Location = new System.Drawing.Point(1166, 14);
+            this.btnEmployee.Location = new System.Drawing.Point(1021, 14);
             this.btnEmployee.Name = "btnEmployee";
-            this.btnEmployee.Size = new System.Drawing.Size(261, 116);
+            this.btnEmployee.Size = new System.Drawing.Size(240, 116);
             this.btnEmployee.TabIndex = 1;
             this.btnEmployee.Text = "Nhân Viên";
             this.btnEmployee.Click += new System.EventHandler(this.btnEmployee_Click);
@@ -134,15 +137,33 @@
             this.btnDichVu.FillColor = System.Drawing.Color.SlateBlue;
             this.btnDichVu.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDichVu.ForeColor = System.Drawing.Color.White;
-            this.btnDichVu.Location = new System.Drawing.Point(1457, 14);
+            this.btnDichVu.Location = new System.Drawing.Point(1271, 14);
             this.btnDichVu.Name = "btnDichVu";
-            this.btnDichVu.Size = new System.Drawing.Size(261, 116);
+            this.btnDichVu.Size = new System.Drawing.Size(240, 116);
             this.btnDichVu.TabIndex = 1;
             this.btnDichVu.Text = "Dịch Vụ";
             this.btnDichVu.Click += new System.EventHandler(this.btnDichVu_Click);
             //
+            // btnDichVuKhach
+            //
+            this.btnDichVuKhach.BorderRadius = 18;
+            this.btnDichVuKhach.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            this.btnDichVuKhach.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnDichVuKhach.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnDichVuKhach.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnDichVuKhach.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnDichVuKhach.FillColor = System.Drawing.Color.SlateBlue;
+            this.btnDichVuKhach.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDichVuKhach.ForeColor = System.Drawing.Color.White;
+            this.btnDichVuKhach.Location = new System.Drawing.Point(1521, 14);
+            this.btnDichVuKhach.Name = "btnDichVuKhach";
+            this.btnDichVuKhach.Size = new System.Drawing.Size(240, 116);
+            this.btnDichVuKhach.TabIndex = 1;
+            this.btnDichVuKhach.Text = "DV Khách";
+            this.btnDichVuKhach.Click += new System.EventHandler(this.btnDichVuKhach_Click);
+            //
             // btnCustomerDetail
-            // 
+            //
             this.btnCustomerDetail.BorderRadius = 18;
             this.btnCustomerDetail.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
             this.btnCustomerDetail.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -152,9 +173,9 @@
             this.btnCustomerDetail.FillColor = System.Drawing.Color.SlateBlue;
             this.btnCustomerDetail.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCustomerDetail.ForeColor = System.Drawing.Color.White;
-            this.btnCustomerDetail.Location = new System.Drawing.Point(875, 14);
+            this.btnCustomerDetail.Location = new System.Drawing.Point(771, 14);
             this.btnCustomerDetail.Name = "btnCustomerDetail";
-            this.btnCustomerDetail.Size = new System.Drawing.Size(261, 116);
+            this.btnCustomerDetail.Size = new System.Drawing.Size(240, 116);
             this.btnCustomerDetail.TabIndex = 1;
             this.btnCustomerDetail.Text = "Chi Tiết Khách ";
             this.btnCustomerDetail.Click += new System.EventHandler(this.btnCustomerDetail_Click);
@@ -170,9 +191,9 @@
             this.btnCheckOut.FillColor = System.Drawing.Color.SlateBlue;
             this.btnCheckOut.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCheckOut.ForeColor = System.Drawing.Color.White;
-            this.btnCheckOut.Location = new System.Drawing.Point(584, 14);
+            this.btnCheckOut.Location = new System.Drawing.Point(521, 14);
             this.btnCheckOut.Name = "btnCheckOut";
-            this.btnCheckOut.Size = new System.Drawing.Size(261, 116);
+            this.btnCheckOut.Size = new System.Drawing.Size(240, 116);
             this.btnCheckOut.TabIndex = 1;
             this.btnCheckOut.Text = "Thanh Toán";
             this.btnCheckOut.Click += new System.EventHandler(this.btnCheckOut_Click);
@@ -188,9 +209,9 @@
             this.btnCustomerRes.FillColor = System.Drawing.Color.SlateBlue;
             this.btnCustomerRes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCustomerRes.ForeColor = System.Drawing.Color.White;
-            this.btnCustomerRes.Location = new System.Drawing.Point(303, 14);
+            this.btnCustomerRes.Location = new System.Drawing.Point(271, 14);
             this.btnCustomerRes.Name = "btnCustomerRes";
-            this.btnCustomerRes.Size = new System.Drawing.Size(261, 116);
+            this.btnCustomerRes.Size = new System.Drawing.Size(240, 116);
             this.btnCustomerRes.TabIndex = 1;
             this.btnCustomerRes.Text = "Đăng ký Khách";
             this.btnCustomerRes.Click += new System.EventHandler(this.btnCustomerRes_Click);
@@ -208,13 +229,14 @@
             this.btnAddRoom.ForeColor = System.Drawing.Color.White;
             this.btnAddRoom.Location = new System.Drawing.Point(21, 14);
             this.btnAddRoom.Name = "btnAddRoom";
-            this.btnAddRoom.Size = new System.Drawing.Size(261, 116);
+            this.btnAddRoom.Size = new System.Drawing.Size(240, 116);
             this.btnAddRoom.TabIndex = 0;
             this.btnAddRoom.Text = "Thêm Phòng";
             this.btnAddRoom.Click += new System.EventHandler(this.btnAddRoom_Click);
             // 
             // guna2Panel2
             // 
+            this.guna2Panel2.Controls.Add(this.uC_DichVuKhach1);
             this.guna2Panel2.Controls.Add(this.uC_DichVu1);
             this.guna2Panel2.Controls.Add(this.uC_Emloyee1);
             this.guna2Panel2.Controls.Add(this.uC_CustomerDetails1);
@@ -312,8 +334,16 @@
             this.uC_DichVu1.Size = new System.Drawing.Size(1882, 852);
             this.uC_DichVu1.TabIndex = 6;
             //
+            // uC_DichVuKhach1
+            //
+            this.uC_DichVuKhach1.BackColor = System.Drawing.Color.White;
+            this.uC_DichVuKhach1.Location = new System.Drawing.Point(0, 0);
+            this.uC_DichVuKhach1.Name = "uC_DichVuKhach1";
+            this.uC_DichVuKhach1.Size = new System.Drawing.Size(1882, 852);
+            this.uC_DichVuKhach1.TabIndex = 7;
+            //
             // Dashboard
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(132)))), ((int)(((byte)(112)))), ((int)(((byte)(255)))));
@@ -361,5 +391,7 @@
         private All_User_Control.UC_Emloyee uC_Emloyee1;
         private Guna.UI2.WinForms.Guna2Button btnDichVu;
         private All_User_Control.UC_DichVu uC_DichVu1;
+        private Guna.UI2.WinForms.Guna2Button btnDichVuKhach;
+        private All_User_Control.UC_DichVuKhach uC_DichVuKhach1;
     }
 }

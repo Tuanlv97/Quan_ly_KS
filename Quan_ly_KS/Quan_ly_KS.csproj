@@ -85,6 +85,12 @@
     <Compile Include="All User Control\UC_DichVu.Designer.cs">
       <DependentUpon>UC_DichVu.cs</DependentUpon>
     </Compile>
+    <Compile Include="All User Control\UC_DichVuKhach.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="All User Control\UC_DichVuKhach.Designer.cs">
+      <DependentUpon>UC_DichVuKhach.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

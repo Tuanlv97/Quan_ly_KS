@@ -30,14 +30,16 @@ namespace Quan_ly_KS
 
         private void Dashboard_Load(object sender, EventArgs e)
         {
+            new function().MigrateToNvarchar();
+
             uC_AddRoom1.Visible = false;
             uC_CustomerRes1.Visible = false;
             uC_CheckOut1.Visible = false;
             uC_CustomerDetails1.Visible = false;
             uC_Emloyee1.Visible = false;
             uC_DichVu1.Visible = false;
+            uC_DichVuKhach1.Visible = false;
             btnAddRoom.PerformClick();
-
         }
 
         private void btnAddRoom_Click(object sender, EventArgs e)
@@ -51,11 +53,10 @@ namespace Quan_ly_KS
 
         private void btnCustomerRes_Click(object sender, EventArgs e)
         {
-            
             PanelMoving.Left = btnCustomerRes.Left + 60;
             uC_CustomerRes1.Visible = true;
             uC_CustomerRes1.BringToFront();
-
+            uC_CustomerRes1.Reload();
         }
 
         private void btnCheckOut_Click(object sender, EventArgs e)
@@ -70,9 +71,10 @@ namespace Quan_ly_KS
 
         private void btnCustomerDetail_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left += btnCustomerDetail.Left + 10;
+            PanelMoving.Left = btnCustomerDetail.Left + 50;
             uC_CustomerDetails1.Visible = true;
             uC_CustomerDetails1.BringToFront();
+            uC_CustomerDetails1.Reload(); // luôn reload data mới nhất
         }
 
         private void btnEmployee_Click(object sender, EventArgs e)
@@ -87,6 +89,14 @@ namespace Quan_ly_KS
             PanelMoving.Left = btnDichVu.Left + 60;
             uC_DichVu1.Visible = true;
             uC_DichVu1.BringToFront();
+        }
+
+        private void btnDichVuKhach_Click(object sender, EventArgs e)
+        {
+            PanelMoving.Left = btnDichVuKhach.Left + 60;
+            uC_DichVuKhach1.Visible = true;
+            uC_DichVuKhach1.BringToFront();
+            uC_DichVuKhach1.Reload();
         }
     }
 }
