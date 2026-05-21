@@ -182,7 +182,7 @@ namespace Quan_ly_KS.All_User_Control
 
             fGuestSearch.TextChanged          += GuestSearch_TextChanged;
             fGuestSearch.SelectedIndexChanged += GuestSearch_Selected;
-            fGuestSearch.Click                += (s, e) => LoadGuestList(fGuestSearch.Text.Trim());
+            fGuestSearch.Click                += (s, e) => LoadGuestList(_selectedGuestId > 0 ? "" : fGuestSearch.Text.Trim());
 
             // ── Left column ───────────────────────────────────────────
             AddLbl(pnlForm, lx, startY + 0 * fGap, "Họ Tên");
@@ -285,6 +285,10 @@ namespace Quan_ly_KS.All_User_Control
 
         private void GuestSearch_TextChanged(object sender, EventArgs e)
         {
+            // Skip if text changed because user selected an item (not because they typed)
+            if (fGuestSearch.SelectedItem != null && fGuestSearch.SelectedItem.ToString() == fGuestSearch.Text)
+                return;
+            _selectedGuestId = -1;
             LoadGuestList(fGuestSearch.Text.Trim(), openDropDown: false);
         }
 

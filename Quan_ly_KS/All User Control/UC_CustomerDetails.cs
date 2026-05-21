@@ -91,7 +91,6 @@ namespace Quan_ly_KS.All_User_Control
             // Header row: title (left) + search (right)
             var pnlTop = new Panel { Dock = DockStyle.Top, Height = 110, BackColor = Color.White };
             card.Controls.Add(pnlTop);
-            card.Controls.SetChildIndex(pnlTop, 0);
 
             pnlTop.Controls.Add(new Label
             {
@@ -177,53 +176,91 @@ namespace Quan_ly_KS.All_User_Control
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                GridColor = Color.FromArgb(231, 229, 255),
+                GridColor = Color.FromArgb(210, 208, 240),
                 EnableHeadersVisualStyles = false,
-                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal
+                CellBorderStyle = DataGridViewCellBorderStyle.Single,
+                ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing
             };
-            StyleHeader(dgvList, 45, 55);
-            dgvList.DefaultCellStyle.Font = new Font("Arial", 10);
+            // Header styling — set directly to avoid override from shared StyleHeader
+            dgvList.ColumnHeadersHeight = 46;
+            dgvList.ColumnHeadersDefaultCellStyle.BackColor          = Color.FromArgb(100, 88, 255);
+            dgvList.ColumnHeadersDefaultCellStyle.ForeColor          = Color.White;
+            dgvList.ColumnHeadersDefaultCellStyle.Font               = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvList.ColumnHeadersDefaultCellStyle.Alignment          = DataGridViewContentAlignment.MiddleCenter;
+            dgvList.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(100, 88, 255);
+            dgvList.RowTemplate.Height         = 48;
+            dgvList.DefaultCellStyle.Font      = new Font("Segoe UI", 10);
             dgvList.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvList.DefaultCellStyle.Padding   = new Padding(4, 0, 4, 0);
 
-            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCid", Visible = false });
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCid",     Visible = false });
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colChekout", Visible = false });
+
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStt", HeaderText = "STT", Width = 55 });
 
             var colName = new DataGridViewTextBoxColumn
             {
                 Name = "colName",
                 HeaderText = "Tên Khách Hàng",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                MinimumWidth = 160
             };
             colName.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            colName.DefaultCellStyle.Padding = new Padding(10, 0, 0, 0);
-            colName.DefaultCellStyle.Font = new Font("Arial", 10);
+            colName.DefaultCellStyle.Padding   = new Padding(12, 0, 0, 0);
+            colName.DefaultCellStyle.Font      = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvList.Columns.Add(colName);
 
-            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRoom",    HeaderText = "Số Phòng",       Width = 160 });
-            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCheckin",  HeaderText = "Ngày Check-in",  Width = 200 });
-            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCheckout", HeaderText = "Ngày Check-out", Width = 200 });
-            dgvList.Columns.Add(new DataGridViewButtonColumn  { Name = "colDetail",   HeaderText = "Chi Tiết", Text = "Xem",
-                UseColumnTextForButtonValue = true, Width = 120 });
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRoom",    HeaderText = "Số Phòng",      Width = 100 });
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCheckin",  HeaderText = "Ngày Check-in", Width = 145 });
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colCheckout", HeaderText = "Ngày Check-out",Width = 145 });
+            dgvList.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStatus",   HeaderText = "Trạng Thái",   Width = 130 });
+            dgvList.Columns.Add(new DataGridViewButtonColumn  { Name = "colDetail",   HeaderText = "",
+                Text = "👁  Xem", UseColumnTextForButtonValue = true, Width = 130 });
 
             dgvList.CellFormatting += (s, e) =>
             {
                 if (e.RowIndex < 0) return;
-                if (e.ColumnIndex == dgvList.Columns["colDetail"].Index)
+                int detailIdx  = dgvList.Columns["colDetail"].Index;
+                int statusIdx  = dgvList.Columns["colStatus"].Index;
+                int chekoutIdx = dgvList.Columns["colChekout"].Index;
+
+                if (e.ColumnIndex == detailIdx)
                 {
-                    e.CellStyle.BackColor = Color.FromArgb(100, 88, 255);
-                    e.CellStyle.ForeColor = Color.White;
-                    e.CellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                    e.CellStyle.BackColor          = Color.FromArgb(100, 88, 255);
+                    e.CellStyle.ForeColor          = Color.White;
+                    e.CellStyle.Font               = new Font("Segoe UI", 10, FontStyle.Bold);
+                    e.CellStyle.SelectionBackColor = Color.FromArgb(75, 63, 200);
+                    e.CellStyle.Alignment          = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else if (e.ColumnIndex == statusIdx)
+                {
+                    string chekout = dgvList.Rows[e.RowIndex].Cells["colChekout"].Value?.ToString() ?? "";
+                    if (chekout == "YES")
+                    {
+                        e.CellStyle.ForeColor  = Color.FromArgb(220, 53, 69);
+                        e.CellStyle.Font       = new Font("Segoe UI", 9, FontStyle.Bold);
+                    }
+                    else
+                    {
+                        e.CellStyle.ForeColor  = Color.FromArgb(40, 167, 69);
+                        e.CellStyle.Font       = new Font("Segoe UI", 9, FontStyle.Bold);
+                    }
                 }
                 else if (e.RowIndex % 2 == 1)
-                    e.CellStyle.BackColor = Color.FromArgb(250, 249, 255);
+                    e.CellStyle.BackColor = Color.FromArgb(248, 247, 255);
             };
             dgvList.CellContentClick += DgvList_CellContentClick;
 
             card.Controls.Add(dgvList);
+            // dgvList must be at index 0 so dock layout processes pnlTop (index 1) first,
+            // which lets pnlTop claim the top 110px before dgvList fills the remainder.
+            card.Controls.SetChildIndex(dgvList, 0);
         }
 
         private void LoadListData(string filter = "")
         {
-            string sql = "SELECT b.bid AS cid, g.cname, r.roomNo, b.checkin, b.checkout" +
+            string sql = "SELECT b.bid AS cid, g.cname, r.roomNo, b.checkin, b.checkout, b.chekout" +
                          " FROM bookings b INNER JOIN guests g ON b.gid=g.gid INNER JOIN rooms r ON b.roomid=r.roomid";
             if (!string.IsNullOrEmpty(filter))
                 sql += " WHERE g.cname LIKE N'%" + filter.Replace("'", "''") + "%'";
@@ -233,11 +270,14 @@ namespace Quan_ly_KS.All_User_Control
             {
                 DataSet ds = fn.GetData(sql);
                 dgvList.Rows.Clear();
+                int stt = 1;
                 foreach (DataRow r in ds.Tables[0].Rows)
                 {
-                    string ci = r["checkin"]  != DBNull.Value ? Convert.ToDateTime(r["checkin"]).ToString("dd/MM/yyyy")  : "—";
-                    string co = r["checkout"] != DBNull.Value ? Convert.ToDateTime(r["checkout"]).ToString("dd/MM/yyyy") : "—";
-                    dgvList.Rows.Add(r["cid"], r["cname"], r["roomNo"], ci, co, "Xem");
+                    string ci     = r["checkin"]  != DBNull.Value ? Convert.ToDateTime(r["checkin"]).ToString("dd/MM/yyyy")  : "—";
+                    string co     = r["checkout"] != DBNull.Value ? Convert.ToDateTime(r["checkout"]).ToString("dd/MM/yyyy") : "—";
+                    bool checkedOut = r["chekout"].ToString() == "YES";
+                    string status = checkedOut ? "Đã trả phòng" : "Đang ở";
+                    dgvList.Rows.Add(r["cid"], r["chekout"], stt++, r["cname"], r["roomNo"], ci, co, status, "👁 Xem");
                 }
             }
             catch { }
@@ -248,8 +288,11 @@ namespace Quan_ly_KS.All_User_Control
             if (e.RowIndex < 0) return;
             if (e.ColumnIndex == dgvList.Columns["colDetail"].Index)
             {
-                selectedCid = Convert.ToInt32(dgvList.Rows[e.RowIndex].Cells["colCid"].Value);
-                ShowDetailPanel(selectedCid);
+                if (int.TryParse(dgvList.Rows[e.RowIndex].Cells["colCid"].Value?.ToString(), out int bid))
+                {
+                    selectedCid = bid;
+                    ShowDetailPanel(selectedCid);
+                }
             }
         }
 
@@ -415,7 +458,9 @@ namespace Quan_ly_KS.All_User_Control
                 Location = new Point(10, 250)
             };
             cardSvc.Controls.Add(lblServiceTotal);
-            cardSvc.Resize += (s, e) => { if (lblServiceTotal.Width > 0) lblServiceTotal.Left = cardSvc.Width - lblServiceTotal.Width - 20; };
+            Action repoSvcTotal = () => { if (cardSvc.Width > 0 && lblServiceTotal.Width > 0) lblServiceTotal.Left = cardSvc.Width - lblServiceTotal.Width - 20; };
+            cardSvc.Resize            += (s, e) => repoSvcTotal();
+            lblServiceTotal.SizeChanged += (s, e) => repoSvcTotal();
 
             var spacerLeft = new Panel { Dock = DockStyle.Top, Height = 8, BackColor = Color.Transparent };
 
@@ -541,23 +586,23 @@ namespace Quan_ly_KS.All_User_Control
             foreach (var item in new[] { (0, leftKeys[0]), (1, leftKeys[1]), (2, leftKeys[2]), (3, leftKeys[3]) })
                 AddKey(panel, 15, ys[item.Item1], item.Item2);
 
-            // Left-column value labels (fixed at x=130)
-            lblCNameVal        = KeyVal(panel, 130, ys[0]);
-            lblGenderVal       = KeyVal(panel, 130, ys[1]);
-            lblDobVal          = KeyVal(panel, 130, ys[2]);
-            lblMobileVal       = KeyVal(panel, 130, ys[3]);
+            // Left-column value labels (x=170 to clear longest key at high DPI)
+            lblCNameVal        = KeyVal(panel, 170, ys[0]);
+            lblGenderVal       = KeyVal(panel, 170, ys[1]);
+            lblDobVal          = KeyVal(panel, 170, ys[2]);
+            lblMobileVal       = KeyVal(panel, 170, ys[3]);
 
-            // Right-column key labels (x repositioned by SizeChanged)
-            var rk0 = AddKey(panel, 0, ys[0], rightKeys[0]);
-            var rk1 = AddKey(panel, 0, ys[1], rightKeys[1]);
-            var rk2 = AddKey(panel, 0, ys[2], rightKeys[2]);
-            var rk3 = AddKey(panel, 0, ys[3], rightKeys[3]);
+            // Right-column key labels — start hidden to prevent flash at x=0 before layout
+            var rk0 = AddKey(panel, 0, ys[0], rightKeys[0]); rk0.Visible = false;
+            var rk1 = AddKey(panel, 0, ys[1], rightKeys[1]); rk1.Visible = false;
+            var rk2 = AddKey(panel, 0, ys[2], rightKeys[2]); rk2.Visible = false;
+            var rk3 = AddKey(panel, 0, ys[3], rightKeys[3]); rk3.Visible = false;
 
-            // Right-column value labels (x repositioned by SizeChanged)
-            lblNationalityVal = KeyVal(panel, 0, ys[0]);
-            lblIdTypeVal      = KeyVal(panel, 0, ys[1]);
-            lblIdNoVal        = KeyVal(panel, 0, ys[2]);
-            lblAddressVal     = KeyVal(panel, 0, ys[3]);
+            // Right-column value labels — also hidden until layout runs
+            lblNationalityVal = KeyVal(panel, 0, ys[0]); lblNationalityVal.Visible = false;
+            lblIdTypeVal      = KeyVal(panel, 0, ys[1]); lblIdTypeVal.Visible      = false;
+            lblIdNoVal        = KeyVal(panel, 0, ys[2]); lblIdNoVal.Visible        = false;
+            lblAddressVal     = KeyVal(panel, 0, ys[3]); lblAddressVal.Visible     = false;
 
             var rv0 = lblNationalityVal; var rv1 = lblIdTypeVal;
             var rv2 = lblIdNoVal;        var rv3 = lblAddressVal;
@@ -570,8 +615,10 @@ namespace Quan_ly_KS.All_User_Control
                 rk1.Left = hx; rv1.Left = hx + 130;
                 rk2.Left = hx; rv2.Left = hx + 130;
                 rk3.Left = hx; rv3.Left = hx + 130;
+                rk0.Visible = rk1.Visible = rk2.Visible = rk3.Visible = true;
+                rv0.Visible = rv1.Visible = rv2.Visible = rv3.Visible = true;
             };
-            panel.Resize       += (s, e) => layout();
+            panel.Resize        += (s, e) => layout();
             panel.HandleCreated += (s, e) => layout();
         }
 
@@ -584,19 +631,19 @@ namespace Quan_ly_KS.All_User_Control
             foreach (var item in new[] { (0, leftKeys[0]), (1, leftKeys[1]), (2, leftKeys[2]), (3, leftKeys[3]) })
                 AddKey(panel, 15, ys[item.Item1], item.Item2);
 
-            lblRoomNoVal   = KeyVal(panel, 135, ys[0]);
-            lblRoomTypeVal = KeyVal(panel, 135, ys[1]);
-            lblPriceVal    = KeyVal(panel, 135, ys[2]);
-            lblCheckinVal  = KeyVal(panel, 135, ys[3]);
+            lblRoomNoVal   = KeyVal(panel, 170, ys[0]);
+            lblRoomTypeVal = KeyVal(panel, 170, ys[1]);
+            lblPriceVal    = KeyVal(panel, 170, ys[2]);
+            lblCheckinVal  = KeyVal(panel, 170, ys[3]);
 
-            var rk0 = AddKey(panel, 0, ys[0], rightKeys[0]);
-            var rk1 = AddKey(panel, 0, ys[1], rightKeys[1]);
-            var rk2 = AddKey(panel, 0, ys[2], rightKeys[2]);
-            var rk3 = AddKey(panel, 0, ys[3], rightKeys[3]);
+            var rk0 = AddKey(panel, 0, ys[0], rightKeys[0]); rk0.Visible = false;
+            var rk1 = AddKey(panel, 0, ys[1], rightKeys[1]); rk1.Visible = false;
+            var rk2 = AddKey(panel, 0, ys[2], rightKeys[2]); rk2.Visible = false;
+            var rk3 = AddKey(panel, 0, ys[3], rightKeys[3]); rk3.Visible = false;
 
-            lblCheckoutVal = KeyVal(panel, 0, ys[0]);
-            lblNightsVal   = KeyVal(panel, 0, ys[1]);
-            lblStaffVal    = KeyVal(panel, 0, ys[2]);
+            lblCheckoutVal = KeyVal(panel, 0, ys[0]); lblCheckoutVal.Visible = false;
+            lblNightsVal   = KeyVal(panel, 0, ys[1]); lblNightsVal.Visible   = false;
+            lblStaffVal    = KeyVal(panel, 0, ys[2]); lblStaffVal.Visible    = false;
 
             lblStatusVal = new Label
             {
@@ -606,7 +653,8 @@ namespace Quan_ly_KS.All_User_Control
                 BackColor = Color.MediumSeaGreen,
                 AutoSize = true,
                 Location = new Point(0, ys[3]),
-                Padding = new Padding(4, 2, 4, 2)
+                Padding = new Padding(4, 2, 4, 2),
+                Visible = false
             };
             panel.Controls.Add(lblStatusVal);
 
@@ -621,8 +669,10 @@ namespace Quan_ly_KS.All_User_Control
                 rk1.Left = hx; rv1.Left = hx + 145;
                 rk2.Left = hx; rv2.Left = hx + 145;
                 rk3.Left = hx; rv3.Left = hx + 145;
+                rk0.Visible = rk1.Visible = rk2.Visible = rk3.Visible = true;
+                rv0.Visible = rv1.Visible = rv2.Visible = rv3.Visible = true;
             };
-            panel.Resize       += (s, e) => layout();
+            panel.Resize        += (s, e) => layout();
             panel.HandleCreated += (s, e) => layout();
         }
 

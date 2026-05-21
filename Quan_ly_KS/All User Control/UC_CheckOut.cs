@@ -590,14 +590,16 @@ namespace Quan_ly_KS.All_User_Control
             // Lưu hoá đơn
             try
             {
+                string eidValue = Session.EmployeeId > 0 ? Session.EmployeeId.ToString() : "NULL";
                 string insertInv =
-                    "INSERT INTO invoices (invoiceNo, bid, createdDate, totalAmount, status) " +
+                    "INSERT INTO invoices (invoiceNo, bid, createdDate, totalAmount, status, eid) " +
                     "VALUES (" +
                     "  N'HD' + RIGHT('000000' + CAST((SELECT ISNULL(MAX(invoiceId),0)+1 FROM invoices) AS NVARCHAR(10)), 6)," +
                     "  " + cId + "," +
                     "  GETDATE()," +
                     "  " + _grandTotal + "," +
-                    "  N'Đã thanh toán'" +
+                    "  N'Đã thanh toán'," +
+                    "  " + eidValue +
                     ")";
                 fn.ExecNonQuery(insertInv);
             }

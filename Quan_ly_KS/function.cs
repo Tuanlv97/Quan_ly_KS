@@ -13,8 +13,8 @@ namespace Quan_ly_KS
     {
         protected SqlConnection GetConnection()
         {
-                        SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\DoAnLinh\\Quan_ly_KS\\Data\\dbMyHotel.mdf;Initial Catalog=dbMyHotel;Integrated Security=True;Connect Timeout=30";
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=dbMyHotel;Integrated Security=True;Connect Timeout=30";
             return conn;
         }
 
@@ -101,6 +101,14 @@ BEGIN
     UPDATE [customer] SET [mobile] = '0' + [mobile] WHERE LEN([mobile]) = 9;
 END");
 
+            RunStep(@"
+IF (SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME='employee' AND COLUMN_NAME='mobile') <> 'nvarchar'
+BEGIN
+    ALTER TABLE [employee] ALTER COLUMN [mobile] NVARCHAR(20) NULL;
+    UPDATE [employee] SET [mobile] = '0' + CAST([mobile] AS NVARCHAR(20)) WHERE LEN(CAST([mobile] AS NVARCHAR(20))) = 9;
+END");
+
             // Step 1: create guests table and migrate person data from customer
             RunStep(@"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='guests')
@@ -177,6 +185,42 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='invoice
         [status]      NVARCHAR(50)  NOT NULL DEFAULT N'Đã thanh toán',
         FOREIGN KEY ([bid]) REFERENCES [bookings]([bid])
     )");
+
+            // Step 5: roles table + seed default roles
+            RunStep(@"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='roles')
+BEGIN
+    CREATE TABLE [roles] (
+        [rid]         INT           IDENTITY(1,1) PRIMARY KEY,
+        [roleName]    NVARCHAR(100) NOT NULL,
+        [description] NVARCHAR(250) NULL
+    )
+    INSERT INTO [roles] ([roleName],[description]) VALUES (N'Admin',   N'Quản trị hệ thống')
+    INSERT INTO [roles] ([roleName],[description]) VALUES (N'Lễ Tân',  N'Nhân viên lễ tân')
+    INSERT INTO [roles] ([roleName],[description]) VALUES (N'Kế Toán', N'Nhân viên kế toán')
+END");
+
+            // Step 6: add rid (role FK) to employee
+            RunStep(@"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='employee' AND COLUMN_NAME='rid')
+    ALTER TABLE [employee] ADD [rid] INT NULL");
+
+            // Step 7: seed default admin account if username 'admin' does not exist
+            RunStep(@"
+IF NOT EXISTS (SELECT * FROM [employee] WHERE [username] = 'admin')
+    INSERT INTO [employee] ([ename],[mobile],[gender],[emailid],[username],[pass])
+    VALUES (N'Administrator', N'', N'Nam', N'admin@hotel.com', N'admin', N'123')");
+
+            // Step 8: add eid (creator) to invoices
+            RunStep(@"
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='invoices')
+    IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='invoices' AND COLUMN_NAME='eid')
+        ALTER TABLE [invoices] ADD [eid] INT NULL");
+
+            // Step 9: add status column to rooms (Trống / Có khách / Bẩn / Bảo trì)
+            RunStep(@"
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='rooms' AND COLUMN_NAME='status')
+    ALTER TABLE [rooms] ADD [status] NVARCHAR(50) NOT NULL CONSTRAINT DF_rooms_status DEFAULT N'Trống'");
         }
 
         private void RunStep(string sql)

@@ -31,13 +31,23 @@ CREATE TABLE [dbo].[services] (
     [status]      NVARCHAR (50)  DEFAULT (N'Đang cung cấp') NOT NULL
 );
 
+CREATE TABLE [dbo].[roles] (
+    [rid]         INT            IDENTITY (1, 1) PRIMARY KEY,
+    [roleName]    NVARCHAR (100) NOT NULL,
+    [description] NVARCHAR (250) NULL
+);
+-- Default seed: Admin, Lễ Tân, Kế Toán
+
 CREATE TABLE [dbo].[employee] (
     [eid]      INT           IDENTITY (1, 1) NOT NULL,
     [ename]    VARCHAR (250) NOT NULL,
-    [mobile]   BIGINT        NOT NULL,
+    [mobile]   NVARCHAR (20) NULL,
     [gender]   VARCHAR (50)  NOT NULL,
     [emailid]  VARCHAR (120) NOT NULL,
     [username] VARCHAR (150) NOT NULL,
     [pass]     VARCHAR (150) NOT NULL,
-    PRIMARY KEY CLUSTERED ([eid] ASC)
+    [rid]      INT           NULL,
+    PRIMARY KEY CLUSTERED ([eid] ASC),
+    FOREIGN KEY ([rid]) REFERENCES [dbo].[roles] ([rid])
 );
+-- employee đóng vai trò bảng tài khoản (có username/pass + rid quyền)

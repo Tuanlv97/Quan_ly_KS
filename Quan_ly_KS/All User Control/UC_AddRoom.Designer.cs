@@ -1,303 +1,314 @@
-﻿namespace Quan_ly_KS.All_User_Control
+namespace Quan_ly_KS.All_User_Control
 {
     partial class UC_AddRoom
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
             base.Dispose(disposing);
         }
 
-        #region Component Designer generated code
-
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtRoomNo = new Guna.UI2.WinForms.Guna2TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtRoomType = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.txtBed = new Guna.UI2.WinForms.Guna2ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtPrice = new Guna.UI2.WinForms.Guna2TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.btnAddRoom = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Elipse1 = new Guna.UI2.WinForms.Guna2Elipse(this.components);
-            this.DataGridView1 = new Guna.UI2.WinForms.Guna2DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.DataGridView1)).BeginInit();
+            this.lblTitle         = new System.Windows.Forms.Label();
+            this.lblBreadcrumb    = new System.Windows.Forms.Label();
+            this.lblCount         = new System.Windows.Forms.Label();
+            this.btnAdd           = new Guna.UI2.WinForms.Guna2Button();
+            this.txtSearch        = new Guna.UI2.WinForms.Guna2TextBox();
+            this.cmbFilterStatus  = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.dgvRooms         = new Guna.UI2.WinForms.Guna2DataGridView();
+            this.pnlForm          = new System.Windows.Forms.Panel();
+            this.lblFormTitle     = new System.Windows.Forms.Label();
+            this.lblRoomNo        = new System.Windows.Forms.Label();
+            this.txtFormRoomNo    = new Guna.UI2.WinForms.Guna2TextBox();
+            this.lblRoomType      = new System.Windows.Forms.Label();
+            this.cmbFormRoomType  = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.lblBed           = new System.Windows.Forms.Label();
+            this.cmbFormBed       = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.lblPrice         = new System.Windows.Forms.Label();
+            this.txtFormPrice     = new Guna.UI2.WinForms.Guna2TextBox();
+            this.lblFormStatus    = new System.Windows.Forms.Label();
+            this.cmbFormStatus    = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.btnSave          = new Guna.UI2.WinForms.Guna2Button();
+            this.btnCancel        = new Guna.UI2.WinForms.Guna2Button();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRooms)).BeginInit();
+            this.pnlForm.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Century", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(131, 92);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(200, 35);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Thêm Phòng";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Black;
-            this.label2.Location = new System.Drawing.Point(1158, 156);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 21);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Số Phòng";
-            // 
-            // txtRoomNo
-            // 
-            this.txtRoomNo.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtRoomNo.DefaultText = "";
-            this.txtRoomNo.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtRoomNo.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtRoomNo.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtRoomNo.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtRoomNo.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtRoomNo.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRoomNo.ForeColor = System.Drawing.Color.Black;
-            this.txtRoomNo.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtRoomNo.Location = new System.Drawing.Point(1163, 201);
-            this.txtRoomNo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.txtRoomNo.Name = "txtRoomNo";
-            this.txtRoomNo.PasswordChar = '\0';
-            this.txtRoomNo.PlaceholderText = "";
-            this.txtRoomNo.SelectedText = "";
-            this.txtRoomNo.Size = new System.Drawing.Size(521, 45);
-            this.txtRoomNo.TabIndex = 3;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(1158, 280);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(103, 21);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Loại Phòng";
-            // 
-            // txtRoomType
-            // 
-            this.txtRoomType.BackColor = System.Drawing.Color.Transparent;
-            this.txtRoomType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.txtRoomType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.txtRoomType.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtRoomType.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtRoomType.Font = new System.Drawing.Font("Segoe UI", 10.8F);
-            this.txtRoomType.ForeColor = System.Drawing.Color.Black;
-            this.txtRoomType.ItemHeight = 30;
-            this.txtRoomType.Items.AddRange(new object[] {
-            "Ac",
-            "Non-Ac"});
-            this.txtRoomType.Location = new System.Drawing.Point(1162, 325);
-            this.txtRoomType.Name = "txtRoomType";
-            this.txtRoomType.Size = new System.Drawing.Size(521, 36);
-            this.txtRoomType.TabIndex = 5;
-            // 
-            // txtBed
-            // 
-            this.txtBed.BackColor = System.Drawing.Color.Transparent;
-            this.txtBed.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.txtBed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.txtBed.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtBed.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtBed.Font = new System.Drawing.Font("Segoe UI", 10.8F);
-            this.txtBed.ForeColor = System.Drawing.Color.Black;
-            this.txtBed.ItemHeight = 30;
-            this.txtBed.Items.AddRange(new object[] {
-            "Single",
-            "Double",
-            "Triple"});
-            this.txtBed.Location = new System.Drawing.Point(1162, 466);
-            this.txtBed.Name = "txtBed";
-            this.txtBed.Size = new System.Drawing.Size(521, 36);
-            this.txtBed.TabIndex = 7;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(1158, 421);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(103, 21);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Loại Giường";
-            // 
-            // txtPrice
-            // 
-            this.txtPrice.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtPrice.DefaultText = "";
-            this.txtPrice.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtPrice.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtPrice.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtPrice.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtPrice.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPrice.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPrice.ForeColor = System.Drawing.Color.Black;
-            this.txtPrice.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtPrice.Location = new System.Drawing.Point(1162, 591);
-            this.txtPrice.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.txtPrice.Name = "txtPrice";
-            this.txtPrice.PasswordChar = '\0';
-            this.txtPrice.PlaceholderText = "";
-            this.txtPrice.SelectedText = "";
-            this.txtPrice.Size = new System.Drawing.Size(521, 45);
-            this.txtPrice.TabIndex = 9;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Century Gothic", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(1158, 546);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(103, 21);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Giá Phòng";
-            // 
-            // btnAddRoom
-            // 
-            this.btnAddRoom.BorderRadius = 18;
-            this.btnAddRoom.BorderStyle = System.Drawing.Drawing2D.DashStyle.DashDot;
-            this.btnAddRoom.BorderThickness = 1;
-            this.btnAddRoom.CheckedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(118)))), ((int)(((byte)(221)))));
-            this.btnAddRoom.CheckedState.ForeColor = System.Drawing.Color.White;
-            this.btnAddRoom.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.btnAddRoom.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.btnAddRoom.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.btnAddRoom.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.btnAddRoom.FillColor = System.Drawing.Color.White;
-            this.btnAddRoom.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddRoom.ForeColor = System.Drawing.Color.Black;
-            this.btnAddRoom.Location = new System.Drawing.Point(1503, 674);
-            this.btnAddRoom.Name = "btnAddRoom";
-            this.btnAddRoom.Size = new System.Drawing.Size(180, 45);
-            this.btnAddRoom.TabIndex = 10;
-            this.btnAddRoom.Text = "Thêm Phòng";
-            this.btnAddRoom.Click += new System.EventHandler(this.btnAddRoom_Click);
-            // 
-            // guna2Elipse1
-            // 
-            this.guna2Elipse1.BorderRadius = 30;
-            this.guna2Elipse1.TargetControl = this;
-            // 
-            // DataGridView1
-            // 
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
-            this.DataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            this.DataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.DataGridView1.ColumnHeadersHeight = 4;
-            this.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
-            this.DataGridView1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.DataGridView1.Location = new System.Drawing.Point(137, 143);
-            this.DataGridView1.Name = "DataGridView1";
-            this.DataGridView1.RowHeadersVisible = false;
-            this.DataGridView1.RowHeadersWidth = 51;
-            this.DataGridView1.RowTemplate.Height = 24;
-            this.DataGridView1.Size = new System.Drawing.Size(846, 563);
-            this.DataGridView1.TabIndex = 11;
-            this.DataGridView1.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
-            this.DataGridView1.ThemeStyle.AlternatingRowsStyle.Font = null;
-            this.DataGridView1.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.Color.Empty;
-            this.DataGridView1.ThemeStyle.AlternatingRowsStyle.SelectionBackColor = System.Drawing.Color.Empty;
-            this.DataGridView1.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = System.Drawing.Color.Empty;
-            this.DataGridView1.ThemeStyle.BackColor = System.Drawing.Color.White;
-            this.DataGridView1.ThemeStyle.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.DataGridView1.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(88)))), ((int)(((byte)(255)))));
-            this.DataGridView1.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            this.DataGridView1.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DataGridView1.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
-            this.DataGridView1.ThemeStyle.HeaderStyle.HeaightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
-            this.DataGridView1.ThemeStyle.HeaderStyle.Height = 4;
-            this.DataGridView1.ThemeStyle.ReadOnly = false;
-            this.DataGridView1.ThemeStyle.RowsStyle.BackColor = System.Drawing.Color.White;
-            this.DataGridView1.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.DataGridView1.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DataGridView1.ThemeStyle.RowsStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            this.DataGridView1.ThemeStyle.RowsStyle.Height = 24;
-            this.DataGridView1.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(229)))), ((int)(((byte)(255)))));
-            this.DataGridView1.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(69)))), ((int)(((byte)(94)))));
-            // 
+
+            // lblTitle
+            this.lblTitle.AutoSize  = true;
+            this.lblTitle.Font      = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(50, 50, 50);
+            this.lblTitle.Location  = new System.Drawing.Point(20, 18);
+            this.lblTitle.Name      = "lblTitle";
+            this.lblTitle.Text      = "Danh Sách Phòng";
+
+            // lblBreadcrumb
+            this.lblBreadcrumb.AutoSize  = true;
+            this.lblBreadcrumb.Font      = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblBreadcrumb.ForeColor = System.Drawing.Color.Gray;
+            this.lblBreadcrumb.Location  = new System.Drawing.Point(22, 62);
+            this.lblBreadcrumb.Name      = "lblBreadcrumb";
+            this.lblBreadcrumb.Text      = "Quản lý phòng  /  Danh sách phòng";
+
+            // lblCount
+            this.lblCount.AutoSize  = true;
+            this.lblCount.Font      = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblCount.ForeColor = System.Drawing.Color.Gray;
+            this.lblCount.Location  = new System.Drawing.Point(22, 795);
+            this.lblCount.Name      = "lblCount";
+            this.lblCount.Text      = "";
+
+            // btnAdd
+            this.btnAdd.BorderRadius                    = 8;
+            this.btnAdd.DisabledState.BorderColor       = System.Drawing.Color.DarkGray;
+            this.btnAdd.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnAdd.DisabledState.FillColor         = System.Drawing.Color.FromArgb(169, 169, 169);
+            this.btnAdd.DisabledState.ForeColor         = System.Drawing.Color.FromArgb(141, 141, 141);
+            this.btnAdd.FillColor                       = System.Drawing.Color.SlateBlue;
+            this.btnAdd.Font                            = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAdd.ForeColor                       = System.Drawing.Color.White;
+            this.btnAdd.Location                        = new System.Drawing.Point(1640, 22);
+            this.btnAdd.Name                            = "btnAdd";
+            this.btnAdd.Size                            = new System.Drawing.Size(200, 45);
+            this.btnAdd.Text                            = "+ Thêm Phòng";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+
+            // txtSearch
+            this.txtSearch.BorderRadius                    = 8;
+            this.txtSearch.DisabledState.BorderColor       = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.txtSearch.DisabledState.FillColor         = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.txtSearch.DisabledState.ForeColor         = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.txtSearch.FillColor                       = System.Drawing.Color.WhiteSmoke;
+            this.txtSearch.Font                            = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtSearch.Location                        = new System.Drawing.Point(1150, 26);
+            this.txtSearch.Name                            = "txtSearch";
+            this.txtSearch.PlaceholderText                 = "Tìm kiếm số phòng...";
+            this.txtSearch.Size                            = new System.Drawing.Size(250, 40);
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+
+            // cmbFilterStatus
+            this.cmbFilterStatus.BorderRadius                    = 8;
+            this.cmbFilterStatus.DisabledState.BorderColor       = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.cmbFilterStatus.DisabledState.FillColor         = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.cmbFilterStatus.DisabledState.ForeColor         = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.cmbFilterStatus.FillColor                       = System.Drawing.Color.WhiteSmoke;
+            this.cmbFilterStatus.Font                            = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbFilterStatus.Location                        = new System.Drawing.Point(1415, 26);
+            this.cmbFilterStatus.Name                            = "cmbFilterStatus";
+            this.cmbFilterStatus.Size                            = new System.Drawing.Size(210, 40);
+            this.cmbFilterStatus.SelectedIndexChanged += new System.EventHandler(this.cmbFilterStatus_SelectedIndexChanged);
+
+            // dgvRooms
+            this.dgvRooms.AllowUserToAddRows                  = false;
+            this.dgvRooms.AllowUserToDeleteRows               = false;
+            this.dgvRooms.BackgroundColor                     = System.Drawing.Color.White;
+            this.dgvRooms.BorderStyle                         = System.Windows.Forms.BorderStyle.None;
+            this.dgvRooms.ColumnHeadersHeightSizeMode         = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRooms.Font                                = new System.Drawing.Font("Segoe UI", 10F);
+            this.dgvRooms.Location                            = new System.Drawing.Point(20, 90);
+            this.dgvRooms.Name                                = "dgvRooms";
+            this.dgvRooms.RowHeadersVisible                   = false;
+            this.dgvRooms.SelectionMode                       = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvRooms.Size                                = new System.Drawing.Size(1840, 695);
+            this.dgvRooms.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRooms_CellContentClick);
+
+            // pnlForm (overlay, centered: x=(1882-600)/2=641, y=(852-555)/2=148)
+            this.pnlForm.BackColor    = System.Drawing.Color.White;
+            this.pnlForm.BorderStyle  = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlForm.Controls.Add(this.lblFormTitle);
+            this.pnlForm.Controls.Add(this.lblRoomNo);
+            this.pnlForm.Controls.Add(this.txtFormRoomNo);
+            this.pnlForm.Controls.Add(this.lblRoomType);
+            this.pnlForm.Controls.Add(this.cmbFormRoomType);
+            this.pnlForm.Controls.Add(this.lblBed);
+            this.pnlForm.Controls.Add(this.cmbFormBed);
+            this.pnlForm.Controls.Add(this.lblPrice);
+            this.pnlForm.Controls.Add(this.txtFormPrice);
+            this.pnlForm.Controls.Add(this.lblFormStatus);
+            this.pnlForm.Controls.Add(this.cmbFormStatus);
+            this.pnlForm.Controls.Add(this.btnSave);
+            this.pnlForm.Controls.Add(this.btnCancel);
+            this.pnlForm.Location = new System.Drawing.Point(641, 148);
+            this.pnlForm.Name     = "pnlForm";
+            this.pnlForm.Size     = new System.Drawing.Size(600, 555);
+            this.pnlForm.Visible  = false;
+
+            // lblFormTitle
+            this.lblFormTitle.AutoSize  = true;
+            this.lblFormTitle.Font      = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblFormTitle.ForeColor = System.Drawing.Color.SlateBlue;
+            this.lblFormTitle.Location  = new System.Drawing.Point(20, 20);
+            this.lblFormTitle.Name      = "lblFormTitle";
+            this.lblFormTitle.Text      = "Thêm Phòng";
+
+            // --- Field 1: Số Phòng (label y=78, input y=103) ---
+            this.lblRoomNo.AutoSize  = true;
+            this.lblRoomNo.Font      = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblRoomNo.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            this.lblRoomNo.Location  = new System.Drawing.Point(20, 78);
+            this.lblRoomNo.Name      = "lblRoomNo";
+            this.lblRoomNo.Text      = "Số Phòng";
+
+            this.txtFormRoomNo.BorderRadius              = 8;
+            this.txtFormRoomNo.DisabledState.BorderColor = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.txtFormRoomNo.DisabledState.FillColor   = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.txtFormRoomNo.DisabledState.ForeColor   = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.txtFormRoomNo.FillColor                 = System.Drawing.Color.WhiteSmoke;
+            this.txtFormRoomNo.Font                      = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtFormRoomNo.Location                  = new System.Drawing.Point(20, 103);
+            this.txtFormRoomNo.Name                      = "txtFormRoomNo";
+            this.txtFormRoomNo.PlaceholderText           = "Nhập số phòng (VD: 101)";
+            this.txtFormRoomNo.Size                      = new System.Drawing.Size(555, 40);
+
+            // --- Field 2: Loại Phòng (label y=160, combo y=185) ---
+            this.lblRoomType.AutoSize  = true;
+            this.lblRoomType.Font      = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblRoomType.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            this.lblRoomType.Location  = new System.Drawing.Point(20, 160);
+            this.lblRoomType.Name      = "lblRoomType";
+            this.lblRoomType.Text      = "Loại Phòng";
+
+            this.cmbFormRoomType.BorderRadius              = 8;
+            this.cmbFormRoomType.DisabledState.BorderColor = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.cmbFormRoomType.DisabledState.FillColor   = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.cmbFormRoomType.DisabledState.ForeColor   = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.cmbFormRoomType.FillColor                 = System.Drawing.Color.WhiteSmoke;
+            this.cmbFormRoomType.Font                      = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbFormRoomType.Location                  = new System.Drawing.Point(20, 185);
+            this.cmbFormRoomType.Name                      = "cmbFormRoomType";
+            this.cmbFormRoomType.Size                      = new System.Drawing.Size(555, 40);
+
+            // --- Field 3: Loại Giường (label y=242, combo y=267) ---
+            this.lblBed.AutoSize  = true;
+            this.lblBed.Font      = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblBed.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            this.lblBed.Location  = new System.Drawing.Point(20, 242);
+            this.lblBed.Name      = "lblBed";
+            this.lblBed.Text      = "Loại Giường";
+
+            this.cmbFormBed.BorderRadius              = 8;
+            this.cmbFormBed.DisabledState.BorderColor = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.cmbFormBed.DisabledState.FillColor   = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.cmbFormBed.DisabledState.ForeColor   = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.cmbFormBed.FillColor                 = System.Drawing.Color.WhiteSmoke;
+            this.cmbFormBed.Font                      = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbFormBed.Location                  = new System.Drawing.Point(20, 267);
+            this.cmbFormBed.Name                      = "cmbFormBed";
+            this.cmbFormBed.Size                      = new System.Drawing.Size(555, 40);
+
+            // --- Field 4: Giá Phòng (label y=324, input y=349) ---
+            this.lblPrice.AutoSize  = true;
+            this.lblPrice.Font      = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblPrice.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            this.lblPrice.Location  = new System.Drawing.Point(20, 324);
+            this.lblPrice.Name      = "lblPrice";
+            this.lblPrice.Text      = "Giá Phòng (VNĐ)";
+
+            this.txtFormPrice.BorderRadius              = 8;
+            this.txtFormPrice.DisabledState.BorderColor = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.txtFormPrice.DisabledState.FillColor   = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.txtFormPrice.DisabledState.ForeColor   = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.txtFormPrice.FillColor                 = System.Drawing.Color.WhiteSmoke;
+            this.txtFormPrice.Font                      = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtFormPrice.Location                  = new System.Drawing.Point(20, 349);
+            this.txtFormPrice.Name                      = "txtFormPrice";
+            this.txtFormPrice.PlaceholderText           = "Nhập giá (VD: 500000)";
+            this.txtFormPrice.Size                      = new System.Drawing.Size(555, 40);
+
+            // --- Field 5: Trạng Thái (label y=406, combo y=431) ---
+            this.lblFormStatus.AutoSize  = true;
+            this.lblFormStatus.Font      = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblFormStatus.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
+            this.lblFormStatus.Location  = new System.Drawing.Point(20, 406);
+            this.lblFormStatus.Name      = "lblFormStatus";
+            this.lblFormStatus.Text      = "Trạng Thái";
+
+            this.cmbFormStatus.BorderRadius              = 8;
+            this.cmbFormStatus.DisabledState.BorderColor = System.Drawing.Color.FromArgb(208, 208, 208);
+            this.cmbFormStatus.DisabledState.FillColor   = System.Drawing.Color.FromArgb(226, 226, 226);
+            this.cmbFormStatus.DisabledState.ForeColor   = System.Drawing.Color.FromArgb(138, 138, 138);
+            this.cmbFormStatus.FillColor                 = System.Drawing.Color.WhiteSmoke;
+            this.cmbFormStatus.Font                      = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbFormStatus.Location                  = new System.Drawing.Point(20, 431);
+            this.cmbFormStatus.Name                      = "cmbFormStatus";
+            this.cmbFormStatus.Size                      = new System.Drawing.Size(555, 40);
+
+            // btnSave
+            this.btnSave.BorderRadius                    = 8;
+            this.btnSave.DisabledState.BorderColor       = System.Drawing.Color.DarkGray;
+            this.btnSave.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnSave.DisabledState.FillColor         = System.Drawing.Color.FromArgb(169, 169, 169);
+            this.btnSave.DisabledState.ForeColor         = System.Drawing.Color.FromArgb(141, 141, 141);
+            this.btnSave.FillColor                       = System.Drawing.Color.SlateBlue;
+            this.btnSave.Font                            = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnSave.ForeColor                       = System.Drawing.Color.White;
+            this.btnSave.Location                        = new System.Drawing.Point(20, 490);
+            this.btnSave.Name                            = "btnSave";
+            this.btnSave.Size                            = new System.Drawing.Size(160, 45);
+            this.btnSave.Text                            = "Lưu";
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+
+            // btnCancel
+            this.btnCancel.BorderRadius                    = 8;
+            this.btnCancel.DisabledState.BorderColor       = System.Drawing.Color.DarkGray;
+            this.btnCancel.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnCancel.DisabledState.FillColor         = System.Drawing.Color.FromArgb(169, 169, 169);
+            this.btnCancel.DisabledState.ForeColor         = System.Drawing.Color.FromArgb(141, 141, 141);
+            this.btnCancel.FillColor                       = System.Drawing.Color.FromArgb(220, 220, 220);
+            this.btnCancel.Font                            = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnCancel.ForeColor                       = System.Drawing.Color.FromArgb(80, 80, 80);
+            this.btnCancel.Location                        = new System.Drawing.Point(200, 490);
+            this.btnCancel.Name                            = "btnCancel";
+            this.btnCancel.Size                            = new System.Drawing.Size(160, 45);
+            this.btnCancel.Text                            = "Hủy";
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+
             // UC_AddRoom
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.DataGridView1);
-            this.Controls.Add(this.btnAddRoom);
-            this.Controls.Add(this.txtPrice);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.txtBed);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.txtRoomType);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.txtRoomNo);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor           = System.Drawing.Color.White;
+            this.Controls.Add(this.lblCount);
+            this.Controls.Add(this.pnlForm);
+            this.Controls.Add(this.dgvRooms);
+            this.Controls.Add(this.cmbFilterStatus);
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.btnAdd);
+            this.Controls.Add(this.lblBreadcrumb);
+            this.Controls.Add(this.lblTitle);
             this.Name = "UC_AddRoom";
             this.Size = new System.Drawing.Size(1882, 852);
             this.Load += new System.EventHandler(this.UC_AddRoom_Load);
-            this.Enter += new System.EventHandler(this.UC_AddRoom_Enter);
-            this.Leave += new System.EventHandler(this.UC_AddRoom_Leave);
-            ((System.ComponentModel.ISupportInitialize)(this.DataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRooms)).EndInit();
+            this.pnlForm.ResumeLayout(false);
+            this.pnlForm.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
-        #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private Guna.UI2.WinForms.Guna2TextBox txtRoomNo;
-        private System.Windows.Forms.Label label3;
-        private Guna.UI2.WinForms.Guna2ComboBox txtRoomType;
-        private Guna.UI2.WinForms.Guna2ComboBox txtBed;
-        private System.Windows.Forms.Label label4;
-        private Guna.UI2.WinForms.Guna2TextBox txtPrice;
-        private System.Windows.Forms.Label label5;
-        private Guna.UI2.WinForms.Guna2Button btnAddRoom;
-        private Guna.UI2.WinForms.Guna2Elipse guna2Elipse1;
-        private Guna.UI2.WinForms.Guna2DataGridView DataGridView1;
+        private System.Windows.Forms.Label               lblTitle;
+        private System.Windows.Forms.Label               lblBreadcrumb;
+        private System.Windows.Forms.Label               lblCount;
+        private Guna.UI2.WinForms.Guna2Button            btnAdd;
+        private Guna.UI2.WinForms.Guna2TextBox           txtSearch;
+        private Guna.UI2.WinForms.Guna2ComboBox          cmbFilterStatus;
+        private Guna.UI2.WinForms.Guna2DataGridView      dgvRooms;
+        private System.Windows.Forms.Panel               pnlForm;
+        private System.Windows.Forms.Label               lblFormTitle;
+        private System.Windows.Forms.Label               lblRoomNo;
+        private Guna.UI2.WinForms.Guna2TextBox           txtFormRoomNo;
+        private System.Windows.Forms.Label               lblRoomType;
+        private Guna.UI2.WinForms.Guna2ComboBox          cmbFormRoomType;
+        private System.Windows.Forms.Label               lblBed;
+        private Guna.UI2.WinForms.Guna2ComboBox          cmbFormBed;
+        private System.Windows.Forms.Label               lblPrice;
+        private Guna.UI2.WinForms.Guna2TextBox           txtFormPrice;
+        private System.Windows.Forms.Label               lblFormStatus;
+        private Guna.UI2.WinForms.Guna2ComboBox          cmbFormStatus;
+        private Guna.UI2.WinForms.Guna2Button            btnSave;
+        private Guna.UI2.WinForms.Guna2Button            btnCancel;
     }
 }

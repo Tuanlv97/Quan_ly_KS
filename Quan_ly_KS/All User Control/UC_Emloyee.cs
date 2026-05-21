@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -21,6 +22,8 @@ namespace Quan_ly_KS.All_User_Control
         private Label lblFormTitle;
         private Guna2TextBox fEname, fMobile, fEmail, fUser, fPass;
         private Guna2ComboBox fGender;
+        private Guna2ComboBox fRole;
+        private Dictionary<string, int> _roleMap = new Dictionary<string, int>();
 
         public UC_Emloyee()
         {
@@ -165,10 +168,10 @@ namespace Quan_ly_KS.All_User_Control
             const int fGap   = 82;  // between consecutive label tops
             const int btnGap = 33;  // gap between last input bottom and button top
 
-            // 6 fields → last input bottom, then button row
-            int lastInputBot = startY + l2i + 5 * fGap + inputH;  // 78+25+410+40 = 553
-            int btnY         = lastInputBot + btnGap;               // 553+33 = 586
-            int formH        = btnY + 45 + 25;                      // 586+45+25 = 656
+            // 7 fields → last input bottom, then button row
+            int lastInputBot = startY + l2i + 6 * fGap + inputH;  // 78+25+492+40 = 635
+            int btnY         = lastInputBot + btnGap;               // 635+33 = 668
+            int formH        = btnY + 45 + 25;                      // 668+45+25 = 738
 
             pnlForm = new Panel {
                 Width = formW, Height = formH,
@@ -189,7 +192,7 @@ namespace Quan_ly_KS.All_User_Control
             pnlForm.Controls.Add(lblFormTitle);
 
             // Field labels (above inputs, same font/color as UC_DichVu)
-            string[] lblTexts = { "Họ và Tên", "Giới Tính", "Số Điện Thoại", "Email", "Tài Khoản", "Mật Khẩu" };
+            string[] lblTexts = { "Họ và Tên", "Giới Tính", "Số Điện Thoại", "Email", "Tài Khoản", "Mật Khẩu", "Quyền" };
             for (int i = 0; i < lblTexts.Length; i++)
             {
                 pnlForm.Controls.Add(new Label {
@@ -221,7 +224,16 @@ namespace Quan_ly_KS.All_User_Control
             fGender.Items.AddRange(new[] { "Nam", "Nữ", "Khác" });
             fGender.SelectedIndex = 0;
 
-            pnlForm.Controls.AddRange(new Control[] { fEname, fGender, fMobile, fEmail, fUser, fPass });
+            fRole = new Guna2ComboBox {
+                BorderRadius = 8,
+                FillColor = Color.WhiteSmoke,
+                Font = new Font("Segoe UI", 10F),
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Left = lx, Top = startY + l2i + 6*fGap,
+                Width = fw, Height = inputH
+            };
+
+            pnlForm.Controls.AddRange(new Control[] { fEname, fGender, fMobile, fEmail, fUser, fPass, fRole });
 
             // Guna2Button Lưu — matching UC_DichVu btnSave (SlateBlue, BorderRadius=8, 160×45)
             var btnSave = new Guna2Button {
@@ -272,6 +284,24 @@ namespace Quan_ly_KS.All_User_Control
             if (display == "Nữ")   return "Nu";
             if (display == "Khác") return "Khac";
             return display; // "Nam" stays "Nam"
+        }
+
+        private void LoadRolesCombo()
+        {
+            _roleMap.Clear();
+            fRole.Items.Clear();
+            try
+            {
+                DataSet ds = fn.GetData("SELECT rid, roleName FROM roles ORDER BY rid");
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+                    string name = r["roleName"].ToString();
+                    _roleMap[name] = Convert.ToInt32(r["rid"]);
+                    fRole.Items.Add(name);
+                }
+                if (fRole.Items.Count > 0) fRole.SelectedIndex = 0;
+            }
+            catch { }
         }
 
         private void CenterFormPanel()
@@ -353,6 +383,7 @@ namespace Quan_ly_KS.All_User_Control
             fGender.SelectedIndex = 0;
             fPass.PasswordChar = '*';
             lblFormTitle.Text = isEdit ? "Cập Nhật Nhân Viên" : "Thêm Nhân Viên";
+            LoadRolesCombo();
 
             if (isEdit)
             {
@@ -367,9 +398,17 @@ namespace Quan_ly_KS.All_User_Control
                         fEmail.Text  = r["emailid"].ToString();
                         fUser.Text   = r["username"].ToString();
                         fPass.Text   = r["pass"].ToString();
-                        fPass.PasswordChar = '\0'; // show password when editing
+                        fPass.PasswordChar = '\0';
                         string g = GenderToDisplay(r["gender"].ToString());
                         fGender.SelectedItem = fGender.Items.Contains(g) ? g : "Nam";
+
+                        int currentRid = r["rid"] != DBNull.Value ? Convert.ToInt32(r["rid"]) : 0;
+                        for (int i = 0; i < fRole.Items.Count; i++)
+                        {
+                            string itemName = fRole.Items[i].ToString();
+                            if (_roleMap.ContainsKey(itemName) && _roleMap[itemName] == currentRid)
+                            { fRole.SelectedIndex = i; break; }
+                        }
                     }
                 }
                 catch { }
@@ -408,13 +447,17 @@ namespace Quan_ly_KS.All_User_Control
             string pS  = p.Replace("'",  "''");
             bool isEdit = _editingId > 0;
 
+            string roleName = fRole.SelectedItem?.ToString() ?? "";
+            string ridSql = (_roleMap.ContainsKey(roleName) && _roleMap[roleName] > 0)
+                ? _roleMap[roleName].ToString() : "NULL";
+
             string sql = isEdit
                 ? string.Format(
-                    "UPDATE employee SET ename=N'{0}',mobile={1},gender=N'{2}',emailid='{3}',username='{4}',pass='{5}' WHERE eid={6}",
-                    nS, m, g, emS, uS, pS, _editingId)
+                    "UPDATE employee SET ename=N'{0}',mobile={1},gender=N'{2}',emailid='{3}',username='{4}',pass='{5}',rid={6} WHERE eid={7}",
+                    nS, m, g, emS, uS, pS, ridSql, _editingId)
                 : string.Format(
-                    "INSERT INTO employee (ename,mobile,gender,emailid,username,pass) VALUES (N'{0}',{1},N'{2}','{3}','{4}','{5}')",
-                    nS, m, g, emS, uS, pS);
+                    "INSERT INTO employee (ename,mobile,gender,emailid,username,pass,rid) VALUES (N'{0}',{1},N'{2}','{3}','{4}','{5}',{6})",
+                    nS, m, g, emS, uS, pS, ridSql);
 
             try
             {

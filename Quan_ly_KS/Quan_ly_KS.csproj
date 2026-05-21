@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="function.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Session.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="All User Control\UC_AddRoom.resx">
       <DependentUpon>UC_AddRoom.cs</DependentUpon>
