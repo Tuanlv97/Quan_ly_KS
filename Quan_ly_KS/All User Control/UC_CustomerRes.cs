@@ -286,7 +286,7 @@ namespace Quan_ly_KS.All_User_Control
                          "FROM customer c INNER JOIN rooms r ON c.roomid = r.roomid";
             if (!string.IsNullOrEmpty(kw))
                 sql += " WHERE c.cname LIKE N'%" + kw + "%'" +
-                       " OR CAST(c.mobile AS VARCHAR) LIKE '%" + kw + "%'" +
+                       " OR c.mobile LIKE N'%" + kw + "%'" +
                        " OR r.roomNo LIKE '%" + kw + "%'";
             sql += " ORDER BY c.cid DESC";
 
@@ -456,9 +456,10 @@ namespace Quan_ly_KS.All_User_Control
                 return;
             }
 
-            if (!long.TryParse(fMobile.Text.Trim(), out long mobile))
+            string mobile = fMobile.Text.Trim();
+            if (string.IsNullOrEmpty(mobile) || !System.Text.RegularExpressions.Regex.IsMatch(mobile, @"^\d{9,11}$"))
             {
-                MessageBox.Show("SĐT phải là số.", "Thông báo",
+                MessageBox.Show("SĐT không hợp lệ (9-11 chữ số).", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -475,7 +476,7 @@ namespace Quan_ly_KS.All_User_Control
             if (_editingId == -1)
             {
                 sql = "INSERT INTO customer (cname,mobile,nationality,gender,dob,idproof,address,checkin,roomid) " +
-                      "VALUES (N'" + name + "'," + mobile + ",N'" + nation + "','" + gender + "','" +
+                      "VALUES (N'" + name + "','" + mobile + "',N'" + nation + "','" + gender + "','" +
                       dob + "','" + idp + "',N'" + addr + "','" + cin + "'," + _selectedRoomId + "); " +
                       "UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId;
                 fn.SetData(sql, "Thêm khách hàng thành công!");
@@ -483,7 +484,7 @@ namespace Quan_ly_KS.All_User_Control
             else
             {
                 bool roomChanged = (_selectedRoomId != _editingRoomId);
-                sql = "UPDATE customer SET cname=N'" + name + "',mobile=" + mobile +
+                sql = "UPDATE customer SET cname=N'" + name + "',mobile='" + mobile + "'" +
                       ",nationality=N'" + nation + "',gender='" + gender + "',dob='" + dob + "'" +
                       ",idproof='" + idp + "',address=N'" + addr + "',checkin='" + cin + "'" +
                       ",roomid=" + _selectedRoomId + " WHERE cid=" + _editingId;

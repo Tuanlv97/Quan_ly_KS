@@ -83,6 +83,12 @@ BEGIN
     ALTER TABLE [employee] ALTER COLUMN [username] NVARCHAR(150) NOT NULL;
     ALTER TABLE [employee] ALTER COLUMN [pass]     NVARCHAR(150) NOT NULL;
 END
+IF (SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME='customer' AND COLUMN_NAME='mobile') <> 'nvarchar'
+BEGIN
+    ALTER TABLE [customer] ALTER COLUMN [mobile] NVARCHAR(20) NULL;
+    UPDATE [customer] SET [mobile] = '0' + [mobile] WHERE LEN([mobile]) = 9;
+END
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='customer_services')
 BEGIN
     CREATE TABLE [customer_services] (

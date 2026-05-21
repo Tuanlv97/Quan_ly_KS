@@ -91,26 +91,8 @@ namespace Quan_ly_KS.All_User_Control
                 ForeColor = C_DARK
             };
 
-            // Search group (top-right)
-            var lblSearchHdr = new Label
-            {
-                Text = "Tìm Kiếm",
-                Location = new Point(1356, 14),
-                AutoSize = true,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Italic),
-                ForeColor = Color.FromArgb(120, 110, 160)
-            };
-            txtSearch = new TextBox
-            {
-                Location = new Point(1356, 36),
-                Size = new Size(506, 32),
-                Font = new Font("Segoe UI", 10.5F),
-                BorderStyle = BorderStyle.FixedSingle,
-                ForeColor = Color.Gray,
-                Text = "Enter FullName"
-            };
-            txtSearch.GotFocus  += (s, e) => { if (txtSearch.Text == "Enter FullName") { txtSearch.Text = ""; txtSearch.ForeColor = Color.Black; } };
-            txtSearch.LostFocus += (s, e) => { if (string.IsNullOrWhiteSpace(txtSearch.Text)) { txtSearch.Text = "Enter FullName"; txtSearch.ForeColor = Color.Gray; } };
+            // Search group (top-right) — rounded pill box
+            var pnlSrch = BuildRoundedSearch(out txtSearch);
             txtSearch.TextChanged += TxtSearch_TextChanged;
 
             // Separator
@@ -163,13 +145,13 @@ namespace Quan_ly_KS.All_User_Control
             var cXem = new DataGridViewButtonColumn
             {
                 Name = "colXem", HeaderText = "",
-                AutoSizeMode = DataGridViewAutoSizeColumnMode.None, Width = 115,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.None, Width = 130,
                 SortMode = DataGridViewColumnSortMode.NotSortable,
-                Text = "Xem", UseColumnTextForButtonValue = true
+                Text = "👁  Xem", UseColumnTextForButtonValue = true
             };
             cXem.DefaultCellStyle.BackColor          = C_PURPLE;
             cXem.DefaultCellStyle.ForeColor          = Color.White;
-            cXem.DefaultCellStyle.Font               = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            cXem.DefaultCellStyle.Font               = new Font("Segoe UI Emoji", 9.5F, FontStyle.Bold);
             cXem.DefaultCellStyle.Alignment          = DataGridViewContentAlignment.MiddleCenter;
             cXem.DefaultCellStyle.SelectionBackColor = Color.FromArgb(78, 66, 210);
             cXem.DefaultCellStyle.SelectionForeColor = Color.White;
@@ -179,7 +161,7 @@ namespace Quan_ly_KS.All_User_Control
 
             dgvCustomers.CellClick += DgvCustomers_CellClick;
 
-            pnlList.Controls.AddRange(new Control[] { lblTitle, lblSearchHdr, txtSearch, sep, dgvCustomers });
+            pnlList.Controls.AddRange(new Control[] { lblTitle, pnlSrch, sep, dgvCustomers });
             Controls.Add(pnlList);
         }
 
@@ -547,7 +529,7 @@ namespace Quan_ly_KS.All_User_Control
         private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
             string s = txtSearch.Text.Trim();
-            if (s == "Enter FullName") s = "";
+            if (s == "Tìm tên khách hàng...") s = "";
             LoadCustomerGrid(s);
         }
 
@@ -624,5 +606,82 @@ namespace Quan_ly_KS.All_User_Control
         private void guna2DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
         private void btnCheckOut_Click(object sender, EventArgs e) { }
         private void btnCheckOut_Leave(object sender, EventArgs e) { }
+
+        // ══ UI HELPERS ════════════════════════════════════════════════════════
+
+        private Panel BuildRoundedSearch(out TextBox txtOut)
+        {
+            const int W = 526, H = 48;
+            var container = new Panel
+            {
+                Location = new Point(1338, 14),
+                Size = new Size(W, H),
+                BackColor = Color.White,
+                Cursor = Cursors.IBeam
+            };
+
+            container.Paint += (s, e) =>
+            {
+                var g = e.Graphics;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                var ctrl = (Control)s;
+                var rect = new Rectangle(1, 1, ctrl.Width - 3, ctrl.Height - 3);
+                int r = (ctrl.Height - 3) / 2;
+                using (var path = MakeRoundPath(rect, r))
+                using (var pen = new Pen(C_PURPLE, 1.8f))
+                {
+                    g.FillPath(Brushes.White, path);
+                    g.DrawPath(pen, path);
+                }
+            };
+
+            // Search icon
+            var lblIcon = new Label
+            {
+                Text = "🔍",
+                Location = new Point(12, (H - 22) / 2),
+                Size = new Size(24, 24),
+                Font = new Font("Segoe UI Emoji", 12F),
+                BackColor = Color.White,
+                ForeColor = C_PURPLE
+            };
+
+            // Borderless text input
+            var txt = new TextBox
+            {
+                Location = new Point(42, (H - 22) / 2),
+                Size = new Size(W - 58, 22),
+                Font = new Font("Segoe UI", 10.5F),
+                BorderStyle = BorderStyle.None,
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(160, 150, 190),
+                Text = "Tìm tên khách hàng..."
+            };
+            txt.GotFocus  += (s, e) =>
+            {
+                if (txt.Text == "Tìm tên khách hàng...") { txt.Text = ""; txt.ForeColor = Color.Black; }
+            };
+            txt.LostFocus += (s, e) =>
+            {
+                if (string.IsNullOrWhiteSpace(txt.Text))
+                { txt.Text = "Tìm tên khách hàng..."; txt.ForeColor = Color.FromArgb(160, 150, 190); }
+            };
+
+            container.Controls.AddRange(new Control[] { lblIcon, txt });
+            txtOut = txt;
+            return container;
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath MakeRoundPath(Rectangle r, int radius)
+        {
+            int d = radius * 2;
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddArc(r.X,           r.Y,            d, d, 180, 90);
+            path.AddArc(r.Right - d,   r.Y,            d, d, 270, 90);
+            path.AddArc(r.Right - d,   r.Bottom - d,   d, d,   0, 90);
+            path.AddArc(r.X,           r.Bottom - d,   d, d,  90, 90);
+            path.CloseFigure();
+            return path;
+        }
     }
 }
