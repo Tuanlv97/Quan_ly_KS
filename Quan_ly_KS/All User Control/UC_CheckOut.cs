@@ -180,23 +180,29 @@ namespace Quan_ly_KS.All_User_Control
             // ── Top bar ──────────────────────────────────────────────────────
             var btnBack = new Button
             {
-                Text = "◄ Quay lại",
-                Location = new Point(PAD, 14),
-                Size = new Size(128, 38),
+                Text = " Quay lại",
+                Location = new Point(PAD, 11),
+                Size = new Size(148, 44),
                 BackColor = Color.FromArgb(234, 232, 255),
                 ForeColor = C_PURPLE,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Image = CreateBackArrowIcon(20, C_PURPLE),
+                ImageAlign = ContentAlignment.MiddleLeft,
+                TextImageRelation = TextImageRelation.ImageBeforeText,
+                Padding = new Padding(8, 0, 10, 0)
             };
             btnBack.FlatAppearance.BorderColor = C_PURPLE;
             btnBack.FlatAppearance.BorderSize  = 1;
+            btnBack.FlatAppearance.MouseOverBackColor  = Color.FromArgb(210, 207, 255);
+            btnBack.FlatAppearance.MouseDownBackColor  = Color.FromArgb(190, 185, 255);
             btnBack.Click += (s, e) => ShowListView();
 
             var lblDetTitle = new Label
             {
                 Text = "Thanh Toán",
-                Location = new Point(162, 14),
+                Location = new Point(180, 14),
                 Size = new Size(300, 38),
                 Font = new Font("Century Gothic", 16F, FontStyle.Bold),
                 ForeColor = C_DARK
@@ -670,6 +676,31 @@ namespace Quan_ly_KS.All_User_Control
             container.Controls.AddRange(new Control[] { lblIcon, txt });
             txtOut = txt;
             return container;
+        }
+
+        private static Bitmap CreateBackArrowIcon(int size, Color color)
+        {
+            var bmp = new Bitmap(size, size);
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.Clear(Color.Transparent);
+                float stroke = Math.Max(2f, size * 0.13f);
+                using (var pen = new Pen(color, stroke))
+                {
+                    pen.StartCap  = System.Drawing.Drawing2D.LineCap.Round;
+                    pen.EndCap    = System.Drawing.Drawing2D.LineCap.Round;
+                    pen.LineJoin  = System.Drawing.Drawing2D.LineJoin.Round;
+                    float tip  = size * 0.18f;
+                    float mid  = size * 0.50f;
+                    float tail = size * 0.82f;
+                    float arm  = size * 0.32f;
+                    g.DrawLine(pen, tail, mid, tip,       mid);        // shaft
+                    g.DrawLine(pen, tip,  mid, tip + arm, mid - arm);  // head top
+                    g.DrawLine(pen, tip,  mid, tip + arm, mid + arm);  // head bottom
+                }
+            }
+            return bmp;
         }
 
         private static System.Drawing.Drawing2D.GraphicsPath MakeRoundPath(Rectangle r, int radius)
