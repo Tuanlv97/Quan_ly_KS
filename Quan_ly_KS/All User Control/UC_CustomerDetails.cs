@@ -63,7 +63,7 @@ namespace Quan_ly_KS.All_User_Control
             try
             {
                 cmbSearch.Items.Clear();
-                DataSet ds = fn.GetData("SELECT DISTINCT cname FROM customer ORDER BY cname");
+                DataSet ds = fn.GetData("SELECT DISTINCT cname FROM guests ORDER BY cname");
                 foreach (DataRow r in ds.Tables[0].Rows)
                     cmbSearch.Items.Add(r["cname"].ToString());
             }
@@ -223,11 +223,11 @@ namespace Quan_ly_KS.All_User_Control
 
         private void LoadListData(string filter = "")
         {
-            string sql = "SELECT c.cid, c.cname, r.roomNo, c.checkin, c.checkout" +
-                         " FROM customer c INNER JOIN rooms r ON c.roomid = r.roomid";
+            string sql = "SELECT b.bid AS cid, g.cname, r.roomNo, b.checkin, b.checkout" +
+                         " FROM bookings b INNER JOIN guests g ON b.gid=g.gid INNER JOIN rooms r ON b.roomid=r.roomid";
             if (!string.IsNullOrEmpty(filter))
-                sql += " WHERE c.cname LIKE N'%" + filter.Replace("'", "''") + "%'";
-            sql += " ORDER BY c.cname";
+                sql += " WHERE g.cname LIKE N'%" + filter.Replace("'", "''") + "%'";
+            sql += " ORDER BY g.cname";
 
             try
             {
@@ -362,12 +362,33 @@ namespace Quan_ly_KS.All_User_Control
             tlp.Controls.Add(pnlRoom, 1, 0);
             pnlScroll.Controls.Add(tlp);
 
-            // ── Services ─────────────────────────────────────────────────────
-            var wrapSvc = WrapPanel(305);
-            pnlScroll.Controls.Add(wrapSvc);
+            // ── Bottom section: Services (left 57%) + Invoices (right 43%) side by side ──
+            var tlpBottom = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                Height = 445,
+                ColumnCount = 2,
+                RowCount = 1,
+                BackColor = Color.Transparent,
+                Padding = new Padding(20, 10, 20, 0),
+                Margin = new Padding(0)
+            };
+            tlpBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 57));
+            tlpBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 43));
+            tlpBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+            pnlScroll.Controls.Add(tlpBottom);
+
+            // ── Left column: services card + notes card stacked ───────────────
+            var pnlLeft = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.Transparent,
+                Margin = new Padding(0, 0, 6, 0)
+            };
+
             var cardSvc = CreateCard("Dịch vụ sử dụng");
-            cardSvc.Dock = DockStyle.Fill;
-            wrapSvc.Controls.Add(cardSvc);
+            cardSvc.Dock = DockStyle.Top;
+            cardSvc.Height = 295;
 
             dgvServices = MakeGrid();
             dgvServices.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -375,12 +396,12 @@ namespace Quan_ly_KS.All_User_Control
             dgvServices.Height = 190;
             AddGridCols(dgvServices, new[]
             {
-                ("stt",      "STT",           60,  false),
+                ("stt",      "STT",           55,  false),
                 ("svcName",  "Tên dịch vụ",   0,   true),
-                ("donGia",   "Đơn giá",        160, false),
-                ("soLuong",  "Số lượng",       110, false),
-                ("thanhTien","Thành tiền",     160, false),
-                ("ngaySd",   "Ngày sử dụng",  175, false)
+                ("donGia",   "Đơn giá",       140, false),
+                ("soLuong",  "Số lượng",       90, false),
+                ("thanhTien","Thành tiền",    140, false),
+                ("ngaySd",   "Ngày sử dụng", 150, false)
             });
             cardSvc.Controls.Add(dgvServices);
             cardSvc.Resize += (s, e) => dgvServices.Width = cardSvc.Width - 20;
@@ -391,17 +412,16 @@ namespace Quan_ly_KS.All_User_Control
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 ForeColor = Color.FromArgb(100, 88, 255),
                 AutoSize = true,
-                Location = new Point(10, 248)
+                Location = new Point(10, 250)
             };
             cardSvc.Controls.Add(lblServiceTotal);
             cardSvc.Resize += (s, e) => { if (lblServiceTotal.Width > 0) lblServiceTotal.Left = cardSvc.Width - lblServiceTotal.Width - 20; };
 
-            // ── Notes ─────────────────────────────────────────────────────────
-            var wrapNotes = WrapPanel(120);
-            pnlScroll.Controls.Add(wrapNotes);
+            var spacerLeft = new Panel { Dock = DockStyle.Top, Height = 8, BackColor = Color.Transparent };
+
             var cardNotes = CreateCard("Ghi chú");
-            cardNotes.Dock = DockStyle.Fill;
-            wrapNotes.Controls.Add(cardNotes);
+            cardNotes.Dock = DockStyle.Top;
+            cardNotes.Height = 128;
 
             txtNotes = new TextBox
             {
@@ -417,27 +437,32 @@ namespace Quan_ly_KS.All_User_Control
             cardNotes.Controls.Add(txtNotes);
             cardNotes.Resize += (s, e) => txtNotes.Width = cardNotes.Width - 20;
 
-            // ── Invoices ──────────────────────────────────────────────────────
-            var wrapInv = WrapPanel(270);
-            pnlScroll.Controls.Add(wrapInv);
+            // Add to pnlLeft — SetChildIndex ensures top-to-bottom order
+            pnlLeft.Controls.Add(cardNotes);
+            pnlLeft.Controls.Add(spacerLeft);
+            pnlLeft.Controls.Add(cardSvc);
+            pnlLeft.Controls.SetChildIndex(cardSvc,   0);
+            pnlLeft.Controls.SetChildIndex(spacerLeft,1);
+            pnlLeft.Controls.SetChildIndex(cardNotes, 2);
+
+            // ── Right column: invoices card (fills full height) ───────────────
             var cardInv = CreateCard("Hóa đơn");
             cardInv.Dock = DockStyle.Fill;
-            wrapInv.Controls.Add(cardInv);
+            cardInv.Margin = new Padding(6, 0, 0, 0);
 
             dgvInvoices = MakeGrid();
-            dgvInvoices.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            dgvInvoices.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
             dgvInvoices.Location = new Point(10, 44);
-            dgvInvoices.Height = 160;
+            dgvInvoices.Height = 330;
             AddGridCols(dgvInvoices, new[]
             {
-                ("hdId",     "Số hóa đơn",  160, false),
-                ("hdDate",   "Ngày lập",    160, false),
-                ("hdTotal",  "Tổng tiền",   0,   true),
-                ("hdStatus", "Trạng thái",  180, false),
-                ("hdAction", "Thao tác",    100, false)
+                ("hdId",     "Số hóa đơn",  0,   true),
+                ("hdDate",   "Ngày lập",    120, false),
+                ("hdTotal",  "Tổng tiền",   130, false),
+                ("hdStatus", "Trạng thái",  130, false),
+                ("hdAction", "Thao tác",     80, false)
             });
             cardInv.Controls.Add(dgvInvoices);
-            cardInv.Resize += (s, e) => dgvInvoices.Width = cardInv.Width - 20;
 
             lblInvoiceTotal = new Label
             {
@@ -445,10 +470,24 @@ namespace Quan_ly_KS.All_User_Control
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 ForeColor = Color.FromArgb(50, 50, 90),
                 AutoSize = true,
-                Location = new Point(10, 220)
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
             };
             cardInv.Controls.Add(lblInvoiceTotal);
-            cardInv.Resize += (s, e) => { if (lblInvoiceTotal.Width > 0) lblInvoiceTotal.Left = cardInv.Width - lblInvoiceTotal.Width - 20; };
+
+            Action resizeInv = () =>
+            {
+                dgvInvoices.Width = cardInv.Width - 20;
+                if (lblInvoiceTotal.Width > 0)
+                {
+                    lblInvoiceTotal.Left = cardInv.Width - lblInvoiceTotal.Width - 20;
+                    lblInvoiceTotal.Top  = cardInv.Height - lblInvoiceTotal.Height - 12;
+                }
+            };
+            cardInv.Resize       += (s, e) => resizeInv();
+            cardInv.HandleCreated += (s, e) => resizeInv();
+
+            tlpBottom.Controls.Add(pnlLeft, 0, 0);
+            tlpBottom.Controls.Add(cardInv, 1, 0);
 
             // ── Action buttons ────────────────────────────────────────────────
             var wrapAct = WrapPanel(75);
@@ -485,11 +524,9 @@ namespace Quan_ly_KS.All_User_Control
             wrapAct.Controls.Add(btnBackList);
 
             // Stack Dock=Top panels from top to bottom
-            pnlScroll.Controls.SetChildIndex(tlp,      0);
-            pnlScroll.Controls.SetChildIndex(wrapSvc,  1);
-            pnlScroll.Controls.SetChildIndex(wrapNotes,2);
-            pnlScroll.Controls.SetChildIndex(wrapInv,  3);
-            pnlScroll.Controls.SetChildIndex(wrapAct,  4);
+            pnlScroll.Controls.SetChildIndex(tlp,       0);
+            pnlScroll.Controls.SetChildIndex(tlpBottom, 1);
+            pnlScroll.Controls.SetChildIndex(wrapAct,   2);
         }
 
         // ── Build info fields ─────────────────────────────────────────────────
@@ -733,11 +770,11 @@ namespace Quan_ly_KS.All_User_Control
         private void LoadDetailData(int cid)
         {
             string sql =
-                "SELECT c.cid, c.cname, c.gender, c.dob, c.mobile, c.nationality," +
-                " c.idproof, c.address, c.checkin, c.checkout, c.chekout," +
+                "SELECT b.bid, g.cname, g.gender, g.dob, g.mobile, g.nationality," +
+                " g.idproof, g.address, b.checkin, b.checkout, b.chekout," +
                 " r.roomNo, r.roomType, r.price" +
-                " FROM customer c INNER JOIN rooms r ON c.roomid = r.roomid" +
-                " WHERE c.cid = " + cid;
+                " FROM bookings b INNER JOIN guests g ON b.gid=g.gid INNER JOIN rooms r ON b.roomid=r.roomid" +
+                " WHERE b.bid = " + cid;
             try
             {
                 DataSet ds = fn.GetData(sql);
@@ -792,15 +829,15 @@ namespace Quan_ly_KS.All_User_Control
             {
                 DataSet ds = fn.GetData(
                     "SELECT s.serviceName, s.price, cs.quantity," +
-                    " (s.price * cs.quantity) AS tt, cs.usedDate" +
-                    " FROM customerServices cs INNER JOIN services s ON cs.sid = s.sid" +
-                    " WHERE cs.cid = " + cid + " ORDER BY cs.usedDate");
+                    " (s.price * cs.quantity) AS tt, cs.used_date" +
+                    " FROM customer_services cs INNER JOIN services s ON cs.sid = s.sid" +
+                    " WHERE cs.bid = " + cid + " ORDER BY cs.used_date");
                 int stt = 1;
                 foreach (DataRow r in ds.Tables[0].Rows)
                 {
                     long tt = Convert.ToInt64(r["tt"]);
                     total += tt;
-                    string ud = r["usedDate"] != DBNull.Value ? Convert.ToDateTime(r["usedDate"]).ToString("dd/MM/yyyy") : "—";
+                    string ud = r["used_date"] != DBNull.Value ? Convert.ToDateTime(r["used_date"]).ToString("dd/MM/yyyy") : "—";
                     dgvServices.Rows.Add(stt++, r["serviceName"],
                         string.Format("{0:N0} VND", r["price"]),
                         r["quantity"],
@@ -819,7 +856,7 @@ namespace Quan_ly_KS.All_User_Control
             {
                 DataSet ds = fn.GetData(
                     "SELECT invoiceNo, createdDate, totalAmount, status" +
-                    " FROM invoices WHERE cid = " + cid + " ORDER BY createdDate");
+                    " FROM invoices WHERE bid = " + cid + " ORDER BY createdDate");
                 foreach (DataRow r in ds.Tables[0].Rows)
                 {
                     long amt = Convert.ToInt64(r["totalAmount"]);
@@ -850,14 +887,16 @@ namespace Quan_ly_KS.All_User_Control
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
             try
             {
-                DataSet ds = fn.GetData("SELECT roomid FROM customer WHERE cid = " + selectedCid);
+                DataSet ds = fn.GetData("SELECT roomid FROM bookings WHERE bid = " + selectedCid);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     int roomId = Convert.ToInt32(ds.Tables[0].Rows[0]["roomid"]);
+                    fn.ExecNonQuery("DELETE FROM customer_services WHERE bid = " + selectedCid);
+                    fn.ExecNonQuery("DELETE FROM invoices WHERE bid = " + selectedCid);
                     fn.SetData(
-                        "DELETE FROM customer WHERE cid = " + selectedCid +
-                        " UPDATE rooms SET booked = 'NO' WHERE roomid = " + roomId,
-                        "Đã xóa khách hàng thành công!");
+                        "DELETE FROM bookings WHERE bid = " + selectedCid +
+                        "; UPDATE rooms SET booked='NO' WHERE roomid = " + roomId,
+                        "Đã xóa lượt đặt phòng thành công!");
                 }
                 ShowListPanel();
             }

@@ -15,6 +15,7 @@ namespace Quan_ly_KS
     {
         public Dashboard()
         {
+            new function().MigrateToNvarchar();
             InitializeComponent();
         }
 
@@ -30,8 +31,6 @@ namespace Quan_ly_KS
 
         private void Dashboard_Load(object sender, EventArgs e)
         {
-            new function().MigrateToNvarchar();
-
             uC_AddRoom1.Visible = false;
             uC_CustomerRes1.Visible = false;
             uC_CheckOut1.Visible = false;

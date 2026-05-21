@@ -32,6 +32,7 @@ namespace Quan_ly_KS.All_User_Control
         private Label lblSvcTotalValue;
         private Label lblVATValue;
         private Label lblGrandAmount;
+        private long _grandTotal = 0;
 
         // Theme colors
         private static readonly Color C_PURPLE = Color.FromArgb(100, 88, 255);
@@ -437,17 +438,19 @@ namespace Quan_ly_KS.All_User_Control
             string q;
             if (string.IsNullOrEmpty(filter))
             {
-                q = "SELECT customer.cid, customer.cname, customer.mobile, customer.checkin, " +
-                    "rooms.roomNo, rooms.roomType, rooms.price " +
-                    "FROM customer INNER JOIN rooms ON customer.roomid = rooms.roomid WHERE chekout = 'NO'";
+                q = "SELECT b.bid AS cid, g.cname, g.mobile, b.checkin, " +
+                    "r.roomNo, r.roomType, r.price " +
+                    "FROM bookings b INNER JOIN guests g ON b.gid=g.gid " +
+                    "INNER JOIN rooms r ON b.roomid=r.roomid WHERE b.chekout='NO'";
             }
             else
             {
                 string safe = filter.Replace("'", "''");
-                q = "SELECT customer.cid, customer.cname, customer.mobile, customer.checkin, " +
-                    "rooms.roomNo, rooms.roomType, rooms.price " +
-                    "FROM customer INNER JOIN rooms ON customer.roomid = rooms.roomid " +
-                    "WHERE chekout = 'NO' AND customer.cname LIKE '" + safe + "%'";
+                q = "SELECT b.bid AS cid, g.cname, g.mobile, b.checkin, " +
+                    "r.roomNo, r.roomType, r.price " +
+                    "FROM bookings b INNER JOIN guests g ON b.gid=g.gid " +
+                    "INNER JOIN rooms r ON b.roomid=r.roomid " +
+                    "WHERE b.chekout='NO' AND g.cname LIKE N'" + safe + "%'";
             }
 
             DataSet ds = fn.GetData(q);
@@ -485,7 +488,7 @@ namespace Quan_ly_KS.All_User_Control
                 DataSet dsSvc = fn.GetData(
                     "SELECT s.serviceName, cs.quantity, s.price, cs.quantity * s.price AS subtotal " +
                     "FROM customer_services cs INNER JOIN services s ON cs.sid = s.sid " +
-                    "WHERE cs.cid = " + cId + " ORDER BY cs.used_date");
+                    "WHERE cs.bid = " + cId + " ORDER BY cs.used_date");
 
                 long svcTotal = 0;
                 dgvBillDetail.Rows.Clear();
@@ -514,6 +517,7 @@ namespace Quan_ly_KS.All_User_Control
 
                 long vatAmount  = (long)Math.Round((roomTotal + svcTotal) * 0.10);
                 long grandTotal = roomTotal + svcTotal + vatAmount;
+                _grandTotal = grandTotal;
 
                 lblDVTotal.Text    = string.Format("Tổng Tiền Dịch Vụ:  {0:N0} đ", svcTotal);
                 lblPhongTotal.Text = string.Format("Tổng Tiền Phòng:  {0:N0} đ",   roomTotal);
@@ -579,9 +583,26 @@ namespace Quan_ly_KS.All_User_Control
                 return;
 
             string cdate = dtpCheckOut.Value.ToString("MM/dd/yyyy");
-            string q = "UPDATE customer SET chekout = 'YES', checkout = '" + cdate + "' WHERE cid = " + cId +
-                       " UPDATE rooms SET booked = 'NO' WHERE roomNo = '" + currentRoomNo.Replace("'", "''") + "'";
+            string q = "UPDATE bookings SET chekout='YES', checkout='" + cdate + "' WHERE bid=" + cId +
+                       "; UPDATE rooms SET booked='NO' WHERE roomNo='" + currentRoomNo.Replace("'", "''") + "'";
             fn.SetData(q, "Check Out Thành Công.");
+
+            // Lưu hoá đơn
+            try
+            {
+                string insertInv =
+                    "INSERT INTO invoices (invoiceNo, bid, createdDate, totalAmount, status) " +
+                    "VALUES (" +
+                    "  N'HD' + RIGHT('000000' + CAST((SELECT ISNULL(MAX(invoiceId),0)+1 FROM invoices) AS NVARCHAR(10)), 6)," +
+                    "  " + cId + "," +
+                    "  GETDATE()," +
+                    "  " + _grandTotal + "," +
+                    "  N'Đã thanh toán'" +
+                    ")";
+                fn.ExecNonQuery(insertInv);
+            }
+            catch { }
+
             cId = 0;
             ShowListView();
             LoadCustomerGrid();

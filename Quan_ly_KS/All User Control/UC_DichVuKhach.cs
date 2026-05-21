@@ -11,11 +11,11 @@ namespace Quan_ly_KS.All_User_Control
     {
         private readonly function fn = new function();
         private int _editingId      = -1;
-        private int _selectedCid    = -1;
+        private int _selectedBid    = -1;
         private int _selectedSid    = -1;
         private long _unitPrice     = 0;
 
-        private readonly List<int>  _cidList   = new List<int>();
+        private readonly List<int>  _bidList   = new List<int>();
         private readonly List<int>  _sidList   = new List<int>();
         private readonly List<long> _priceList = new List<long>();
 
@@ -238,25 +238,26 @@ namespace Quan_ly_KS.All_User_Control
 
         // ── Combos ────────────────────────────────────────────────────
 
-        private void LoadCustomerCombo(int editingCid = -1)
+        private void LoadCustomerCombo(int editingBid = -1)
         {
             fCustomer.Items.Clear();
-            _cidList.Clear();
-            string sql = "SELECT c.cid, c.cname, r.roomNo FROM customer c " +
-                         "INNER JOIN rooms r ON c.roomid=r.roomid " +
-                         (editingCid > 0
-                             ? "WHERE c.chekout='NO' OR c.cid=" + editingCid
-                             : "WHERE c.chekout='NO'") +
-                         " ORDER BY c.cname";
+            _bidList.Clear();
+            string sql = "SELECT b.bid, g.cname, r.roomNo FROM bookings b " +
+                         "INNER JOIN guests g ON b.gid=g.gid " +
+                         "INNER JOIN rooms r ON b.roomid=r.roomid " +
+                         (editingBid > 0
+                             ? "WHERE b.chekout='NO' OR b.bid=" + editingBid
+                             : "WHERE b.chekout='NO'") +
+                         " ORDER BY g.cname";
             try
             {
                 var ds = fn.GetData(sql);
                 foreach (DataRow r in ds.Tables[0].Rows)
                 {
-                    int cid = Convert.ToInt32(r["cid"]);
-                    string maKH = "KH" + cid.ToString().PadLeft(2, '0');
-                    fCustomer.Items.Add(maKH + " - " + r["cname"] + " (Phòng " + r["roomNo"] + ")");
-                    _cidList.Add(cid);
+                    int bid = Convert.ToInt32(r["bid"]);
+                    string maDhon = "DP" + bid.ToString().PadLeft(3, '0');
+                    fCustomer.Items.Add(maDhon + " - " + r["cname"] + " (Phòng " + r["roomNo"] + ")");
+                    _bidList.Add(bid);
                 }
             }
             catch { }
@@ -303,14 +304,15 @@ namespace Quan_ly_KS.All_User_Control
         private void LoadData()
         {
             string kw  = txtSearch?.Text.Trim() ?? "";
-            string sql = "SELECT cs.id, c.cid, c.cname, r.roomNo, s.serviceName, " +
-                         "cs.quantity, s.price, cs.quantity*s.price AS total, cs.used_date, c.chekout " +
+            string sql = "SELECT cs.id, b.bid, g.cname, r.roomNo, s.serviceName, " +
+                         "cs.quantity, s.price, cs.quantity*s.price AS total, cs.used_date, b.chekout " +
                          "FROM customer_services cs " +
-                         "INNER JOIN customer c ON cs.cid=c.cid " +
-                         "INNER JOIN rooms r ON c.roomid=r.roomid " +
+                         "INNER JOIN bookings b ON cs.bid=b.bid " +
+                         "INNER JOIN guests g ON b.gid=g.gid " +
+                         "INNER JOIN rooms r ON b.roomid=r.roomid " +
                          "INNER JOIN services s ON cs.sid=s.sid";
             if (!string.IsNullOrEmpty(kw))
-                sql += " WHERE c.cname LIKE N'%" + kw + "%'" +
+                sql += " WHERE g.cname LIKE N'%" + kw + "%'" +
                        " OR s.serviceName LIKE N'%" + kw + "%'" +
                        " OR r.roomNo LIKE '%" + kw + "%'";
             sql += " ORDER BY cs.id DESC";
@@ -323,9 +325,9 @@ namespace Quan_ly_KS.All_User_Control
                 foreach (DataRow r in ds.Tables[0].Rows)
                 {
                     int rawId = Convert.ToInt32(r["id"]);
-                    int cid   = Convert.ToInt32(r["cid"]);
+                    int bid   = Convert.ToInt32(r["bid"]);
                     string maDV = "DV" + rawId.ToString().PadLeft(3, '0');
-                    string maKH = "KH" + cid.ToString().PadLeft(2, '0');
+                    string maKH = "DP" + bid.ToString().PadLeft(3, '0');
                     long price = Convert.ToInt64(r["price"]);
                     long total = Convert.ToInt64(r["total"]);
                     bool checkedOut = r["chekout"].ToString() == "YES";
@@ -381,7 +383,7 @@ namespace Quan_ly_KS.All_User_Control
         private void ShowForm(int id)
         {
             _editingId   = id;
-            _selectedCid = -1;
+            _selectedBid = -1;
             _selectedSid = -1;
             _unitPrice   = 0;
 
@@ -403,20 +405,20 @@ namespace Quan_ly_KS.All_User_Control
             else
             {
                 lblFormTitle.Text = "Sửa Dịch Vụ Sử Dụng";
-                string sql = "SELECT cs.id, cs.cid, cs.sid, cs.quantity, cs.used_date, s.price " +
+                string sql = "SELECT cs.id, cs.bid, cs.sid, cs.quantity, cs.used_date, s.price " +
                              "FROM customer_services cs " +
                              "INNER JOIN services s ON cs.sid=s.sid WHERE cs.id=" + id;
                 var ds = fn.GetData(sql);
                 if (ds.Tables[0].Rows.Count == 0) return;
                 var r = ds.Tables[0].Rows[0];
 
-                int cid = Convert.ToInt32(r["cid"]);
+                int bid = Convert.ToInt32(r["bid"]);
                 int sid = Convert.ToInt32(r["sid"]);
-                LoadCustomerCombo(cid);
+                LoadCustomerCombo(bid);
 
-                // Select customer
-                int cidIdx = _cidList.IndexOf(cid);
-                if (cidIdx >= 0) fCustomer.SelectedIndex = cidIdx;
+                // Select booking
+                int bidIdx = _bidList.IndexOf(bid);
+                if (bidIdx >= 0) fCustomer.SelectedIndex = bidIdx;
 
                 // Select service
                 int sidIdx = _sidList.IndexOf(sid);
@@ -435,23 +437,23 @@ namespace Quan_ly_KS.All_User_Control
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            if (fCustomer.SelectedIndex < 0 || fCustomer.SelectedIndex >= _cidList.Count)
+            if (fCustomer.SelectedIndex < 0 || fCustomer.SelectedIndex >= _bidList.Count)
             { MessageBox.Show("Vui lòng chọn khách hàng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
             if (fService.SelectedIndex < 0 || fService.SelectedIndex >= _sidList.Count)
             { MessageBox.Show("Vui lòng chọn dịch vụ.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
             if (!int.TryParse(fQty.Text.Trim(), out int qty) || qty < 1)
             { MessageBox.Show("Số lượng phải là số nguyên dương.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
-            int  cid  = _cidList[fCustomer.SelectedIndex];
+            int  bid  = _bidList[fCustomer.SelectedIndex];
             int  sid  = _sidList[fService.SelectedIndex];
             string dt = fUsedDate.Value.ToString("yyyy-MM-dd");
 
             string sql;
             if (_editingId == -1)
-                sql = "INSERT INTO customer_services (cid,sid,quantity,used_date) VALUES (" +
-                      cid + "," + sid + "," + qty + ",'" + dt + "')";
+                sql = "INSERT INTO customer_services (bid,sid,quantity,used_date) VALUES (" +
+                      bid + "," + sid + "," + qty + ",'" + dt + "')";
             else
-                sql = "UPDATE customer_services SET cid=" + cid + ",sid=" + sid +
+                sql = "UPDATE customer_services SET bid=" + bid + ",sid=" + sid +
                       ",quantity=" + qty + ",used_date='" + dt + "' WHERE id=" + _editingId;
 
             fn.SetData(sql, _editingId == -1 ? "Thêm thành công!" : "Cập nhật thành công!");

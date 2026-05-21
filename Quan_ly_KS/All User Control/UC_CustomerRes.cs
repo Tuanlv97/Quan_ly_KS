@@ -9,9 +9,11 @@ namespace Quan_ly_KS.All_User_Control
     public partial class UC_CustomerRes : UserControl
     {
         private readonly function fn = new function();
-        private int _editingId      = -1;
+        private int _editingBid     = -1;   // booking id being edited (-1 = new)
+        private int _editingGuestId = -1;   // guest id linked to the booking being edited
         private int _editingRoomId  = -1;
         private int _selectedRoomId = -1;
+        private int _selectedGuestId = -1;  // guest chosen from the search combo
 
         private DataGridView  dgvCustomers;
         private Guna2TextBox  txtSearch;
@@ -19,6 +21,8 @@ namespace Quan_ly_KS.All_User_Control
         private Panel         pnlForm;
         private Label         lblFormTitle;
 
+        private Guna2ComboBox       fGuestSearch;
+        private Label               lblGuestTag;
         private Guna2TextBox        fName, fMobile, fNationality, fIdProof, fAddress, fPrice;
         private Guna2ComboBox       fGender, fBed, fRoomType, fRoomNo;
         private Guna2DateTimePicker fDob, fCheckin;
@@ -39,7 +43,7 @@ namespace Quan_ly_KS.All_User_Control
                 Padding = new Padding(24, 0, 24, 0)
             };
             var lblTitle = new Label {
-                Text = "Danh Sách Khách Hàng",
+                Text = "Danh Sách Đặt Phòng",
                 Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(50, 50, 50),
                 AutoSize = true, Left = 0, Top = 18
@@ -56,7 +60,7 @@ namespace Quan_ly_KS.All_User_Control
             var btnAdd = new Guna2Button {
                 BorderRadius = 8, FillColor = Color.SlateBlue, ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                Text = "+  Thêm Khách Hàng", Width = 200, Height = 45, Top = 13,
+                Text = "+  Đặt Phòng", Width = 200, Height = 45, Top = 13,
                 Cursor = Cursors.Hand
             };
             pnlHeader.Controls.AddRange(new Control[] { lblTitle, lblCount, txtSearch, btnAdd });
@@ -95,8 +99,8 @@ namespace Quan_ly_KS.All_User_Control
             dgvCustomers.ColumnHeadersHeight = 42;
             dgvCustomers.RowTemplate.Height  = 40;
 
+            dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colBid",     HeaderText = "Mã ĐP",         FillWeight = 55  });
             dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStt",     HeaderText = "STT",           FillWeight = 40  });
-            dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colId",      HeaderText = "Mã KH",         FillWeight = 55  });
             dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colName",    HeaderText = "Họ Tên",        FillWeight = 160 });
             dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPhone",   HeaderText = "SĐT",           FillWeight = 100 });
             dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colNation",  HeaderText = "Quốc Tịch",    FillWeight = 100 });
@@ -128,10 +132,10 @@ namespace Quan_ly_KS.All_User_Control
         private void BuildFormPanel()
         {
             const int formW = 860, lx = 20, col2x = 460, colW = 380, inputH = 40;
-            const int startY = 78, l2i = 25, fGap = 82, btnGap = 33;
-            int lastBot = startY + l2i + 5 * fGap + inputH; // 553
-            int btnY    = lastBot + btnGap;                  // 586
-            int formH   = btnY + 45 + 25;                   // 656
+            const int startY = 130, l2i = 25, fGap = 82, btnGap = 33;
+            int lastBot = startY + l2i + 5 * fGap + inputH; // 605
+            int btnY    = lastBot + btnGap;                  // 638
+            int formH   = btnY + 45 + 25;                   // 708
 
             pnlForm = new Panel {
                 Width = formW, Height = formH, BackColor = Color.White,
@@ -139,11 +143,46 @@ namespace Quan_ly_KS.All_User_Control
             };
 
             lblFormTitle = new Label {
-                Text = "Thêm Khách Hàng",
+                Text = "Đặt Phòng Mới",
                 Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 20
             };
             pnlForm.Controls.Add(lblFormTitle);
+
+            // ── Guest search section (only for new bookings) ─────────
+            AddLbl(pnlForm, lx, 54, "Tìm khách đã có (để điền tự động):");
+            fGuestSearch = new Guna2ComboBox {
+                BorderRadius = 8, FillColor = Color.WhiteSmoke,
+                Font = new Font("Segoe UI", 10F),
+                DropDownStyle = ComboBoxStyle.DropDown,
+                Left = lx, Top = 73, Width = 550, Height = inputH
+            };
+
+            lblGuestTag = new Label {
+                Text = "", AutoSize = true,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.White, BackColor = Color.MediumSeaGreen,
+                Left = 580, Top = 84, Padding = new Padding(6, 3, 6, 3),
+                Visible = false
+            };
+
+            var btnClearGuest = new Guna2Button {
+                Text = "Xóa chọn", Left = 580, Top = 73, Width = 90, Height = inputH,
+                BorderRadius = 8, FillColor = Color.FromArgb(200, 200, 200), ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9F), Cursor = Cursors.Hand
+            };
+            btnClearGuest.Click += (s, e) => ClearGuestSelection();
+
+            var sepGuest = new Panel {
+                Left = lx, Top = 122, Width = formW - 40, Height = 1,
+                BackColor = Color.FromArgb(220, 220, 220)
+            };
+
+            pnlForm.Controls.AddRange(new Control[] { fGuestSearch, lblGuestTag, btnClearGuest, sepGuest });
+
+            fGuestSearch.TextChanged          += GuestSearch_TextChanged;
+            fGuestSearch.SelectedIndexChanged += GuestSearch_Selected;
+            fGuestSearch.Click                += (s, e) => LoadGuestList(fGuestSearch.Text.Trim());
 
             // ── Left column ───────────────────────────────────────────
             AddLbl(pnlForm, lx, startY + 0 * fGap, "Họ Tên");
@@ -220,6 +259,82 @@ namespace Quan_ly_KS.All_User_Control
             });
         }
 
+        // ── Guest search ──────────────────────────────────────────────
+
+        private void LoadGuestList(string kw, bool openDropDown = false)
+        {
+            try
+            {
+                string where = string.IsNullOrEmpty(kw)
+                    ? ""
+                    : " WHERE cname LIKE N'%" + kw.Replace("'", "''") + "%' " +
+                      "OR mobile LIKE '%" + kw.Replace("'", "''") + "%'";
+                var ds = fn.GetData("SELECT gid, cname, mobile FROM guests" + where + " ORDER BY cname");
+                string current = fGuestSearch.Text;
+                fGuestSearch.TextChanged -= GuestSearch_TextChanged;
+                fGuestSearch.Items.Clear();
+                foreach (DataRow r in ds.Tables[0].Rows)
+                    fGuestSearch.Items.Add(r["cname"] + " — " + r["mobile"] + " [" + r["gid"] + "]");
+                fGuestSearch.Text = current;
+                fGuestSearch.TextChanged += GuestSearch_TextChanged;
+                if (openDropDown && fGuestSearch.Items.Count > 0 && !fGuestSearch.DroppedDown)
+                    fGuestSearch.DroppedDown = true;
+            }
+            catch { }
+        }
+
+        private void GuestSearch_TextChanged(object sender, EventArgs e)
+        {
+            LoadGuestList(fGuestSearch.Text.Trim(), openDropDown: false);
+        }
+
+        private void GuestSearch_Selected(object sender, EventArgs e)
+        {
+            string item = fGuestSearch.SelectedItem?.ToString();
+            if (item == null) return;
+            // Extract gid from "[gid]" at end of string
+            int start = item.LastIndexOf('[') + 1;
+            int end   = item.LastIndexOf(']');
+            if (start <= 0 || end <= start) return;
+            if (!int.TryParse(item.Substring(start, end - start), out int gid)) return;
+            FillGuestInfo(gid);
+        }
+
+        private void FillGuestInfo(int gid)
+        {
+            try
+            {
+                var ds = fn.GetData("SELECT * FROM guests WHERE gid=" + gid);
+                if (ds.Tables[0].Rows.Count == 0) return;
+                var r = ds.Tables[0].Rows[0];
+
+                _selectedGuestId = gid;
+                fName.Text        = r["cname"].ToString();
+                fMobile.Text      = r["mobile"]?.ToString() ?? "";
+                fNationality.Text = r["nationality"].ToString();
+                fIdProof.Text     = r["idproof"].ToString();
+                fAddress.Text     = r["address"].ToString();
+                if (DateTime.TryParse(r["dob"].ToString(), out var dob)) fDob.Value = dob;
+                fGender.SelectedItem = GenderToDisplay(r["gender"].ToString());
+
+                lblGuestTag.Text    = "Khách cũ: " + r["cname"];
+                lblGuestTag.Visible = true;
+            }
+            catch { }
+        }
+
+        private void ClearGuestSelection()
+        {
+            _selectedGuestId    = -1;
+            fGuestSearch.Text   = "";
+            fGuestSearch.Items.Clear();
+            lblGuestTag.Visible = false;
+            fName.Text = ""; fMobile.Text = ""; fNationality.Text = "";
+            fIdProof.Text = ""; fAddress.Text = "";
+            fGender.SelectedIndex = -1;
+            fDob.Value = DateTime.Now.AddYears(-20);
+        }
+
         // ── Helpers ───────────────────────────────────────────────────
 
         private static void AddLbl(Panel parent, int x, int y, string text)
@@ -250,8 +365,8 @@ namespace Quan_ly_KS.All_User_Control
             return cb;
         }
 
-        private static int ParseMaKH(string maKH) =>
-            int.Parse(maKH.Replace("KH", "").TrimStart('0').PadLeft(1, '0'));
+        private static int ParseBid(string maDhon) =>
+            int.Parse(maDhon.Replace("DP", "").TrimStart('0').PadLeft(1, '0'));
 
         private static string GenderToDisplay(string s)
         {
@@ -263,7 +378,7 @@ namespace Quan_ly_KS.All_User_Control
 
         private static string GenderToStore(string s)
         {
-            if (s == "Nữ")  return "Nu";
+            if (s == "Nữ")   return "Nu";
             if (s == "Khác") return "Khac";
             return s;
         }
@@ -282,13 +397,14 @@ namespace Quan_ly_KS.All_User_Control
         private void LoadData()
         {
             string kw  = txtSearch?.Text.Trim() ?? "";
-            string sql = "SELECT c.cid, c.cname, c.mobile, c.nationality, r.roomNo, c.checkin, c.chekout " +
-                         "FROM customer c INNER JOIN rooms r ON c.roomid = r.roomid";
+            string sql = "SELECT b.bid, g.cname, g.mobile, g.nationality, r.roomNo, b.checkin, b.chekout " +
+                         "FROM bookings b INNER JOIN guests g ON b.gid=g.gid " +
+                         "INNER JOIN rooms r ON b.roomid=r.roomid";
             if (!string.IsNullOrEmpty(kw))
-                sql += " WHERE c.cname LIKE N'%" + kw + "%'" +
-                       " OR c.mobile LIKE N'%" + kw + "%'" +
-                       " OR r.roomNo LIKE '%" + kw + "%'";
-            sql += " ORDER BY c.cid DESC";
+                sql += " WHERE g.cname LIKE N'%" + kw.Replace("'","''") + "%'" +
+                       " OR g.mobile LIKE N'%" + kw.Replace("'","''") + "%'" +
+                       " OR r.roomNo LIKE '%" + kw.Replace("'","''") + "%'";
+            sql += " ORDER BY b.bid DESC";
 
             dgvCustomers.Rows.Clear();
             try
@@ -298,12 +414,12 @@ namespace Quan_ly_KS.All_User_Control
                 foreach (DataRow r in ds.Tables[0].Rows)
                 {
                     string status = r["chekout"].ToString() == "YES" ? "Đã trả phòng" : "Đang ở";
-                    int rawId = Convert.ToInt32(r["cid"]);
-                    string maKH = "KH" + rawId.ToString().PadLeft(2, '0');
-                    dgvCustomers.Rows.Add(stt++, maKH, r["cname"],
+                    int bid = Convert.ToInt32(r["bid"]);
+                    string maDhon = "DP" + bid.ToString().PadLeft(3, '0');
+                    dgvCustomers.Rows.Add(maDhon, stt++, r["cname"],
                         r["mobile"], r["nationality"], r["roomNo"], r["checkin"], status);
                 }
-                lblCount.Text = "Tổng: " + ds.Tables[0].Rows.Count + " khách";
+                lblCount.Text = "Tổng: " + ds.Tables[0].Rows.Count + " lượt đặt phòng";
             }
             catch { }
         }
@@ -313,23 +429,25 @@ namespace Quan_ly_KS.All_User_Control
             if (e.RowIndex < 0) return;
             if (e.ColumnIndex == dgvCustomers.Columns["colEdit"].Index)
             {
-                int cid = ParseMaKH(dgvCustomers.Rows[e.RowIndex].Cells["colId"].Value.ToString());
-                ShowForm(cid);
+                int bid = ParseBid(dgvCustomers.Rows[e.RowIndex].Cells["colBid"].Value.ToString());
+                ShowForm(bid);
             }
             else if (e.ColumnIndex == dgvCustomers.Columns["colDel"].Index)
             {
-                int cid = ParseMaKH(dgvCustomers.Rows[e.RowIndex].Cells["colId"].Value.ToString());
-                DeleteCustomer(cid, e.RowIndex);
+                int bid = ParseBid(dgvCustomers.Rows[e.RowIndex].Cells["colBid"].Value.ToString());
+                DeleteBooking(bid, e.RowIndex);
             }
         }
 
         // ── Form open ─────────────────────────────────────────────────
 
-        private void ShowForm(int cid)
+        private void ShowForm(int bid)
         {
-            _editingId      = cid;
+            _editingBid     = bid;
+            _editingGuestId = -1;
             _editingRoomId  = -1;
             _selectedRoomId = -1;
+            _selectedGuestId = -1;
 
             // Reset all fields
             fName.Text = ""; fMobile.Text = ""; fNationality.Text = "";
@@ -340,23 +458,36 @@ namespace Quan_ly_KS.All_User_Control
             fRoomNo.Items.Clear();
             fDob.Value     = DateTime.Now.AddYears(-20);
             fCheckin.Value = DateTime.Now;
+            fGuestSearch.Text = ""; fGuestSearch.Items.Clear();
+            lblGuestTag.Visible = false;
 
-            if (cid == -1)
+            // Show/hide guest search section (only for new bookings)
+            bool isNew = (bid == -1);
+            fGuestSearch.Visible  = isNew;
+            lblGuestTag.Visible   = false;
+            foreach (Control c in pnlForm.Controls)
+                if (c.Top == 54 && c is Label l && l.Text.Contains("Tìm khách"))
+                    l.Visible = isNew;
+
+            if (isNew)
             {
-                lblFormTitle.Text = "Thêm Khách Hàng";
+                lblFormTitle.Text = "Đặt Phòng Mới";
             }
             else
             {
-                lblFormTitle.Text = "Sửa Thông Tin Khách Hàng";
-                string sql = "SELECT c.*, r.roomNo, r.bed, r.roomType " +
-                             "FROM customer c INNER JOIN rooms r ON c.roomid = r.roomid " +
-                             "WHERE c.cid = " + cid;
+                lblFormTitle.Text = "Sửa Thông Tin Đặt Phòng";
+                string sql = "SELECT b.bid, b.gid, g.cname, g.mobile, g.nationality, g.gender," +
+                             " g.dob, g.idproof, g.address, b.checkin, b.roomid, r.roomNo, r.bed, r.roomType " +
+                             "FROM bookings b INNER JOIN guests g ON b.gid=g.gid " +
+                             "INNER JOIN rooms r ON b.roomid=r.roomid " +
+                             "WHERE b.bid=" + bid;
                 var ds = fn.GetData(sql);
                 if (ds.Tables[0].Rows.Count == 0) return;
                 var r = ds.Tables[0].Rows[0];
 
+                _editingGuestId = Convert.ToInt32(r["gid"]);
                 fName.Text        = r["cname"].ToString();
-                fMobile.Text      = r["mobile"].ToString();
+                fMobile.Text      = r["mobile"]?.ToString() ?? "";
                 fNationality.Text = r["nationality"].ToString();
                 fIdProof.Text     = r["idproof"].ToString();
                 fAddress.Text     = r["address"].ToString();
@@ -373,7 +504,6 @@ namespace Quan_ly_KS.All_User_Control
                 string roomType = r["roomType"].ToString();
                 string roomNo   = r["roomNo"].ToString();
 
-                // Cascade: fBed → fRoomType → LoadRoomNumbers → fRoomNo → price/_selectedRoomId
                 fBed.SelectedItem      = bed;
                 fRoomType.SelectedItem = roomType;
                 LoadRoomNumbers(bed, roomType, _editingRoomId);
@@ -421,7 +551,7 @@ namespace Quan_ly_KS.All_User_Control
             string bed = fBed.SelectedItem?.ToString();
             string rt  = fRoomType.SelectedItem?.ToString();
             if (bed == null || rt == null) { fRoomNo.Items.Clear(); fPrice.Text = ""; return; }
-            int editId = (_editingId > 0) ? _editingRoomId : -1;
+            int editId = (_editingBid > 0) ? _editingRoomId : -1;
             LoadRoomNumbers(bed, rt, editId);
         }
 
@@ -457,7 +587,7 @@ namespace Quan_ly_KS.All_User_Control
             }
 
             string mobile = fMobile.Text.Trim();
-            if (string.IsNullOrEmpty(mobile) || !System.Text.RegularExpressions.Regex.IsMatch(mobile, @"^\d{9,11}$"))
+            if (!System.Text.RegularExpressions.Regex.IsMatch(mobile, @"^\d{9,11}$"))
             {
                 MessageBox.Show("SĐT không hợp lệ (9-11 chữ số).", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -472,26 +602,50 @@ namespace Quan_ly_KS.All_User_Control
             string addr   = fAddress.Text.Trim().Replace("'", "''");
             string cin    = fCheckin.Value.ToString("yyyy-MM-dd");
 
-            string sql;
-            if (_editingId == -1)
+            if (_editingBid == -1)
             {
-                sql = "INSERT INTO customer (cname,mobile,nationality,gender,dob,idproof,address,checkin,roomid) " +
-                      "VALUES (N'" + name + "','" + mobile + "',N'" + nation + "','" + gender + "','" +
-                      dob + "','" + idp + "',N'" + addr + "','" + cin + "'," + _selectedRoomId + "); " +
-                      "UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId;
-                fn.SetData(sql, "Thêm khách hàng thành công!");
+                // ── New booking ──────────────────────────────────────
+                int gid;
+                if (_selectedGuestId > 0)
+                {
+                    // Existing guest — update personal info in case it changed
+                    gid = _selectedGuestId;
+                    fn.ExecNonQuery(
+                        "UPDATE guests SET cname=N'" + name + "',mobile='" + mobile +
+                        "',nationality=N'" + nation + "',gender='" + gender + "',dob='" + dob +
+                        "',idproof='" + idp + "',address=N'" + addr + "' WHERE gid=" + gid);
+                }
+                else
+                {
+                    // New guest
+                    fn.ExecNonQuery(
+                        "INSERT INTO guests (cname,mobile,nationality,gender,dob,idproof,address) " +
+                        "VALUES (N'" + name + "','" + mobile + "',N'" + nation + "','" + gender +
+                        "','" + dob + "','" + idp + "',N'" + addr + "')");
+                    var dsGid = fn.GetData("SELECT MAX(gid) AS g FROM guests");
+                    gid = Convert.ToInt32(dsGid.Tables[0].Rows[0]["g"]);
+                }
+                fn.SetData(
+                    "INSERT INTO bookings (gid,roomid,checkin,chekout) VALUES (" +
+                    gid + "," + _selectedRoomId + ",'" + cin + "','NO'); " +
+                    "UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId,
+                    "Đặt phòng thành công!");
             }
             else
             {
+                // ── Edit booking ─────────────────────────────────────
+                fn.ExecNonQuery(
+                    "UPDATE guests SET cname=N'" + name + "',mobile='" + mobile +
+                    "',nationality=N'" + nation + "',gender='" + gender + "',dob='" + dob +
+                    "',idproof='" + idp + "',address=N'" + addr + "' WHERE gid=" + _editingGuestId);
+
                 bool roomChanged = (_selectedRoomId != _editingRoomId);
-                sql = "UPDATE customer SET cname=N'" + name + "',mobile='" + mobile + "'" +
-                      ",nationality=N'" + nation + "',gender='" + gender + "',dob='" + dob + "'" +
-                      ",idproof='" + idp + "',address=N'" + addr + "',checkin='" + cin + "'" +
-                      ",roomid=" + _selectedRoomId + " WHERE cid=" + _editingId;
+                string sqlBooking = "UPDATE bookings SET roomid=" + _selectedRoomId +
+                                    ",checkin='" + cin + "' WHERE bid=" + _editingBid;
                 if (roomChanged)
-                    sql += "; UPDATE rooms SET booked='NO' WHERE roomid=" + _editingRoomId +
-                           "; UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId;
-                fn.SetData(sql, "Cập nhật thành công!");
+                    sqlBooking += "; UPDATE rooms SET booked='NO' WHERE roomid=" + _editingRoomId +
+                                  "; UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId;
+                fn.SetData(sqlBooking, "Cập nhật thành công!");
             }
 
             pnlForm.Visible = false;
@@ -500,21 +654,24 @@ namespace Quan_ly_KS.All_User_Control
 
         // ── Delete ────────────────────────────────────────────────────
 
-        private void DeleteCustomer(int cid, int rowIndex)
+        private void DeleteBooking(int bid, int rowIndex)
         {
             string roomNo = dgvCustomers.Rows[rowIndex].Cells["colRoom"].Value?.ToString()   ?? "";
             string status = dgvCustomers.Rows[rowIndex].Cells["colStatus"].Value?.ToString() ?? "";
 
             var confirm = MessageBox.Show(
-                "Xóa khách hàng ở phòng " + roomNo + "?",
+                "Xóa lượt đặt phòng " + roomNo + "? Thông tin cá nhân khách vẫn được giữ lại.",
                 "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes) return;
 
-            var ds = fn.GetData("SELECT roomid FROM customer WHERE cid=" + cid);
+            var ds = fn.GetData("SELECT roomid FROM bookings WHERE bid=" + bid);
             if (ds.Tables[0].Rows.Count == 0) return;
             int roomid = Convert.ToInt32(ds.Tables[0].Rows[0]["roomid"]);
 
-            string sql = "DELETE FROM customer WHERE cid=" + cid;
+            fn.ExecNonQuery("DELETE FROM customer_services WHERE bid=" + bid);
+            fn.ExecNonQuery("DELETE FROM invoices WHERE bid=" + bid);
+
+            string sql = "DELETE FROM bookings WHERE bid=" + bid;
             if (status != "Đã trả phòng")
                 sql += "; UPDATE rooms SET booked='NO' WHERE roomid=" + roomid;
             fn.SetData(sql, "Xóa thành công!");
