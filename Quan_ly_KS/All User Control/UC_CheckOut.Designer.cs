@@ -55,7 +55,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(182, 37);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Thanh Toan";
+            this.label1.Text = "Thanh Toán";
             // 
             // label2
             // 

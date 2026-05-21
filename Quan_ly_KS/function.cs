@@ -14,7 +14,7 @@ namespace Quan_ly_KS
         protected SqlConnection GetConnection()
         {
                         SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Tho Code\\Learning\\Quan_ly_KS\\Data\\dbMyHotel.mdf;Initial Catalog=dbMyHotel;Integrated Security=True;Connect Timeout=30";
+            conn.ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\DoAnLinh\\Quan_ly_KS\\Data\\dbMyHotel.mdf;Initial Catalog=dbMyHotel;Integrated Security=True;Connect Timeout=30";
             return conn;
         }
 
