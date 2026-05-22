@@ -16,6 +16,7 @@ namespace Quan_ly_KS.All_User_Control
         // Panels
         private Panel pnlList;
         private Panel pnlDetail;
+        private Panel pnlLeft;
 
         // List view
         private DataGridView dgvCustomers;
@@ -201,138 +202,114 @@ namespace Quan_ly_KS.All_User_Control
         {
             pnlDetail = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Visible = false };
 
-            // ── Top bar (Dock Top) ────────────────────────────────────────────
-            var pnlTopBar = new Panel { Dock = DockStyle.Top, Height = 62, BackColor = Color.White };
-
-            var btnBack = new Button
-            {
+            // ── Top bar ────────────────────────────────────────────────────────
+            var pnlTopBar = new Panel { Dock = DockStyle.Top, Height = 54, BackColor = Color.White };
+            var btnBack = new Button {
                 Text = " Quay lại",
-                Location = new Point(PAD, 11), Size = new Size(148, 44),
+                Location = new Point(PAD, 9), Size = new Size(126, 34),
                 BackColor = Color.FromArgb(234, 232, 255), ForeColor = C_PURPLE,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand,
-                Image = CreateBackArrowIcon(20, C_PURPLE),
+                Image = CreateBackArrowIcon(16, C_PURPLE),
                 ImageAlign = ContentAlignment.MiddleLeft,
                 TextImageRelation = TextImageRelation.ImageBeforeText,
-                Padding = new Padding(8, 0, 10, 0)
+                Padding = new Padding(6, 0, 8, 0)
             };
             btnBack.FlatAppearance.BorderColor        = C_PURPLE;
             btnBack.FlatAppearance.BorderSize         = 1;
             btnBack.FlatAppearance.MouseOverBackColor = Color.FromArgb(210, 207, 255);
             btnBack.FlatAppearance.MouseDownBackColor = Color.FromArgb(190, 185, 255);
             btnBack.Click += (s, e) => ShowListView();
-
-            var lblDetTitle = new Label
-            {
-                Text = "Thanh Toán", Location = new Point(180, 14), Size = new Size(300, 38),
-                Font = new Font("Century Gothic", 16F, FontStyle.Bold), ForeColor = C_DARK
+            var lblDetTitle = new Label {
+                Text = "Thanh Toán", Location = new Point(162, 9), Size = new Size(300, 34),
+                Font = new Font("Century Gothic", 14F, FontStyle.Bold), ForeColor = C_DARK
             };
             pnlTopBar.Controls.AddRange(new Control[] { btnBack, lblDetTitle });
 
-            // ── Content area (Dock Fill) ──────────────────────────────────────
-            var pnlContent = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(PAD, 8, PAD, PAD) };
+            // ── Content ────────────────────────────────────────────────────────
+            var pnlContent = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(PAD, 6, PAD, PAD) };
 
-            // ── Right panel (Dock Right, fixed width) ─────────────────────────
-            const int R_W = 330;
-            int iw = R_W - 32;   // 298
+            // ── Right panel (compact summary, 306px) ───────────────────────────
+            const int R_W = 306;
+            int iw = R_W - 28;   // 278 usable
 
             var pnlRight = new Panel { Dock = DockStyle.Right, Width = R_W, BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle };
 
-            var pnlHdr = new Panel { Location = new Point(0, 0), Size = new Size(R_W, 58), BackColor = C_PURPLE };
-
+            var pnlHdr = new Panel { Location = new Point(0, 0), Size = new Size(R_W, 40), BackColor = C_PURPLE };
             pnlHdr.Controls.Add(new Label {
                 Text = "Tóm Tắt Thanh Toán", Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = Color.White, TextAlign = ContentAlignment.MiddleCenter
             });
 
-            lblInfoCust = SumInfoLabel("Khách hàng: —", 70,  iw);
-            lblInfoRoom = SumInfoLabel("Số phòng: —",   106, iw);
+            lblInfoCust = new Label { Text = "Khách hàng: —", Location = new Point(14, 47), Size = new Size(iw, 20), Font = new Font("Segoe UI", 9.5F), ForeColor = C_DARK };
+            lblInfoRoom = new Label { Text = "Số phòng: —",   Location = new Point(14, 69), Size = new Size(iw, 20), Font = new Font("Segoe UI", 9.5F), ForeColor = C_DARK };
 
-            var lblDateLbl = new Label {
-                Text = "Ngày Thanh Toán",
-                Location = new Point(16, 148), Size = new Size(iw, 22),
-                Font = new Font("Segoe UI", 9.5F), ForeColor = Color.FromArgb(120, 110, 160)
-            };
-            dtpCheckOut = new DateTimePicker {
-                Location = new Point(16, 172), Size = new Size(iw, 36),
-                Font = new Font("Segoe UI", 10.5F), Format = DateTimePickerFormat.Short,
-                Value = DateTime.Today
-            };
+            var lblDateLbl = new Label { Text = "Ngày Thanh Toán", Location = new Point(14, 97), Size = new Size(iw, 17), Font = new Font("Segoe UI", 8.5F), ForeColor = Color.FromArgb(120, 110, 160) };
+            dtpCheckOut = new DateTimePicker { Location = new Point(14, 116), Size = new Size(iw, 26), Font = new Font("Segoe UI", 9.5F), Format = DateTimePickerFormat.Short, Value = DateTime.Today };
             dtpCheckOut.ValueChanged += (s, e) => { if (cId > 0) RecalcBill(); };
 
-            var sep1 = new Panel { Location = new Point(16, 220), Size = new Size(iw, 1), BackColor = C_GRID };
+            var sep1 = new Panel { Location = new Point(14, 150), Size = new Size(iw, 1), BackColor = C_GRID };
 
-            int ry = 232;
-            var l1 = SumRowLabel("Tổng tiền phòng:",   ry);
-            lblRoomTotalValue = SumRowValue("—", ry, iw); ry += 46;
-            var l2 = SumRowLabel("Tổng tiền dịch vụ:", ry);
-            lblSvcTotalValue  = SumRowValue("—", ry, iw); ry += 46;
-            var l3 = SumRowLabel("Thuế GTGT (10%):",   ry);
-            lblVATValue       = SumRowValue("—", ry, iw); ry += 52;
+            int ry = 158;
+            int lw = 152, vx = 154, vw = iw - 154;
 
-            var sep2 = new Panel { Location = new Point(16, ry), Size = new Size(iw, 1), BackColor = C_GRID };
-            ry += 14;
+            var l1 = MakeMoneyLabel("Tổng tiền phòng:",   ry, lw);
+            lblRoomTotalValue = MakeMoneyValue("—", ry, vx, vw); ry += 32;
+            var l2 = MakeMoneyLabel("Tổng tiền dịch vụ:", ry, lw);
+            lblSvcTotalValue  = MakeMoneyValue("—", ry, vx, vw); ry += 32;
+            var l3 = MakeMoneyLabel("Thuế GTGT (10%):",   ry, lw);
+            lblVATValue       = MakeMoneyValue("—", ry, vx, vw); ry += 36;
+
+            var sep2 = new Panel { Location = new Point(14, ry), Size = new Size(iw, 1), BackColor = C_GRID };
+            ry += 9;
 
             var lblGrandLbl = new Label {
                 Text = "TỔNG CỘNG THANH TOÁN",
-                Location = new Point(16, ry), Size = new Size(iw, 28),
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Location = new Point(14, ry), Size = new Size(iw, 20),
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
                 ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleCenter
             };
-            ry += 36;
+            ry += 24;
 
             lblGrandAmount = new Label {
                 Text = "—",
-                Location = new Point(16, ry), Size = new Size(iw, 58),
-                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
+                Location = new Point(14, ry), Size = new Size(iw, 42),
+                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
                 ForeColor = C_PURPLE, TextAlign = ContentAlignment.MiddleCenter
             };
-            ry += 66;
+            ry += 46;
 
             var btnConfirm = new Button {
                 Text = "XÁC NHẬN THANH TOÁN",
-                Location = new Point(16, ry), Size = new Size(iw, 58),
+                Location = new Point(14, ry), Size = new Size(iw, 38),
                 BackColor = Color.FromArgb(34, 168, 95), ForeColor = Color.White,
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
                 FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand
             };
             btnConfirm.FlatAppearance.BorderSize = 0;
             btnConfirm.Click += BtnConfirm_Click;
 
             pnlRight.Controls.AddRange(new Control[] {
-                pnlHdr, lblInfoCust, lblInfoRoom,
-                lblDateLbl, dtpCheckOut, sep1,
+                pnlHdr, lblInfoCust, lblInfoRoom, lblDateLbl, dtpCheckOut, sep1,
                 l1, lblRoomTotalValue, l2, lblSvcTotalValue, l3, lblVATValue,
                 sep2, lblGrandLbl, lblGrandAmount, btnConfirm
             });
 
-            // ── Left panel (Dock Fill) ────────────────────────────────────────
-            var pnlLeft = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle };
+            // ── Left panel (service detail list) ───────────────────────────────
+            pnlLeft = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle };
 
-            var accentL = new Panel { Dock = DockStyle.Top, Height = 5, BackColor = C_PURPLE };
-
-            var pnlBillHead = new Panel { Dock = DockStyle.Top, Height = 52, BackColor = Color.White };
+            var accentL    = new Panel { Dock = DockStyle.Top, Height = 4, BackColor = C_PURPLE };
+            var pnlBillHead = new Panel { Dock = DockStyle.Top, Height = 40, BackColor = Color.White };
             pnlBillHead.Controls.Add(new Label {
                 Text = "Chi Tiết Dịch Vụ Đã Sử Dụng",
-                Location = new Point(14, 10), AutoSize = false, Size = new Size(600, 34),
-                Font = new Font("Segoe UI", 13F, FontStyle.Bold), ForeColor = C_DARK
+                Location = new Point(14, 6), AutoSize = false, Size = new Size(600, 28),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold), ForeColor = C_DARK
             });
 
-            var pnlFooterLeft = new Panel { Dock = DockStyle.Bottom, Height = 72, BackColor = Color.White };
-            lblPhongTotal = new Label {
-                Dock = DockStyle.Bottom, Height = 32,
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-                ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight,
-                Padding = new Padding(0, 0, 14, 0)
-            };
-            lblDVTotal = new Label {
-                Dock = DockStyle.Bottom, Height = 32,
-                Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
-                ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight,
-                Padding = new Padding(0, 0, 14, 0)
-            };
-            // Thứ tự Bottom: lblPhongTotal vào trước → đáy cùng; lblDVTotal vào sau → trên nó
+            var pnlFooterLeft = new Panel { Dock = DockStyle.Bottom, Height = 52, BackColor = Color.White };
+            lblPhongTotal = new Label { Dock = DockStyle.Bottom, Height = 24, Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight, Padding = new Padding(0, 0, 12, 0) };
+            lblDVTotal    = new Label { Dock = DockStyle.Bottom, Height = 24, Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight, Padding = new Padding(0, 0, 12, 0) };
             pnlFooterLeft.Controls.AddRange(new Control[] { lblPhongTotal, lblDVTotal });
 
             dgvBillDetail = new DataGridView {
@@ -340,39 +317,45 @@ namespace Quan_ly_KS.All_User_Control
                 ReadOnly = true, AllowUserToAddRows = false, AllowUserToDeleteRows = false,
                 RowHeadersVisible = false, SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 BackgroundColor = Color.White, BorderStyle = BorderStyle.None,
-                Font = new Font("Segoe UI", 9.5F), MultiSelect = false,
-                ScrollBars = ScrollBars.Both, AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                Font = new Font("Segoe UI", 9F), MultiSelect = false,
+                ScrollBars = ScrollBars.Vertical,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None
             };
             ApplyGridStyle(dgvBillDetail);
+            dgvBillDetail.RowTemplate.Height = 30;
 
-            var bSTT = new DataGridViewTextBoxColumn { Name = "STT",       HeaderText = "STT",         FillWeight = 8,   MinimumWidth = 40  };
+            var bSTT = new DataGridViewTextBoxColumn { Name = "STT",       HeaderText = "STT"         };
             bSTT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            var bTen = new DataGridViewTextBoxColumn { Name = "TenDV",     HeaderText = "Tên Dịch Vụ", FillWeight = 40,  MinimumWidth = 130 };
-            var bDG  = new DataGridViewTextBoxColumn { Name = "DonGia",    HeaderText = "Đơn Giá",     FillWeight = 18,  MinimumWidth = 85  };
+            var bTen = new DataGridViewTextBoxColumn { Name = "TenDV",     HeaderText = "Tên Dịch Vụ" };
+            var bDG  = new DataGridViewTextBoxColumn { Name = "DonGia",    HeaderText = "Đơn Giá"     };
             bDG.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            var bSL  = new DataGridViewTextBoxColumn { Name = "SoLuong",   HeaderText = "Số Lượng",    FillWeight = 12,  MinimumWidth = 65  };
+            var bSL  = new DataGridViewTextBoxColumn { Name = "SoLuong",   HeaderText = "Số Lượng"    };
             bSL.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            var bDVT = new DataGridViewTextBoxColumn { Name = "DVTinh",    HeaderText = "ĐVT",         FillWeight = 12,  MinimumWidth = 60  };
+            var bDVT = new DataGridViewTextBoxColumn { Name = "DVTinh",    HeaderText = "ĐVT"         };
             bDVT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            var bTT  = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "Thành Tiền",  FillWeight = 20,  MinimumWidth = 95  };
+            var bTT  = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "Thành Tiền"  };
             bTT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvBillDetail.Columns.AddRange(new DataGridViewColumn[] { bSTT, bTen, bDG, bSL, bDVT, bTT });
+            // Explicit fixed widths — đủ rộng cho tất cả 6 cột trên màn hình 1366px
+            dgvBillDetail.Columns[0].Width = 60;   // STT
+            dgvBillDetail.Columns[1].Width = 290;  // Tên Dịch Vụ
+            dgvBillDetail.Columns[2].Width = 210;  // Đơn Giá
+            dgvBillDetail.Columns[3].Width = 115;  // Số Lượng
+            dgvBillDetail.Columns[4].Width = 95;   // ĐVT
+            dgvBillDetail.Columns[5].Width = 200;  // Thành Tiền
 
-            // Thứ tự: Fill trước → Bottom → Top từ trong ra ngoài (accentL cuối = đỉnh)
-            pnlLeft.Controls.Add(dgvBillDetail);    // Fill
-            pnlLeft.Controls.Add(pnlFooterLeft);    // Bottom
-            pnlLeft.Controls.Add(pnlBillHead);      // Top
-            pnlLeft.Controls.Add(accentL);          // Top – cuối = rất trên cùng
+            pnlLeft.Controls.Add(dgvBillDetail);
+            pnlLeft.Controls.Add(pnlFooterLeft);
+            pnlLeft.Controls.Add(pnlBillHead);
+            pnlLeft.Controls.Add(accentL);
 
-            // Thứ tự pnlContent: Right panels trước, Fill sau
             var pnlGap = new Panel { Dock = DockStyle.Right, Width = 10, BackColor = Color.White };
-            pnlContent.Controls.Add(pnlRight);  // Right
-            pnlContent.Controls.Add(pnlGap);    // Right (spacer)
-            pnlContent.Controls.Add(pnlLeft);   // Fill
+            pnlContent.Controls.Add(pnlRight);
+            pnlContent.Controls.Add(pnlGap);
+            pnlContent.Controls.Add(pnlLeft);
 
-            // Thứ tự pnlDetail: Fill trước, Top sau (pnlTopBar cuối = đỉnh)
-            pnlDetail.Controls.Add(pnlContent); // Fill
-            pnlDetail.Controls.Add(pnlTopBar);  // Top
+            pnlDetail.Controls.Add(pnlContent);
+            pnlDetail.Controls.Add(pnlTopBar);
             Controls.Add(pnlDetail);
         }
 
@@ -410,6 +393,17 @@ namespace Quan_ly_KS.All_User_Control
         {
             Text = text, Location = new Point(160, y), Size = new Size(iw - 160 - 16, 28),
             Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
+            ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight
+        };
+
+        private static Label MakeMoneyLabel(string text, int y, int w) => new Label {
+            Text = text, Location = new Point(14, y), Size = new Size(w, 22),
+            Font = new Font("Segoe UI", 9.5F), ForeColor = Color.FromArgb(80, 80, 110)
+        };
+
+        private static Label MakeMoneyValue(string text, int y, int x, int w) => new Label {
+            Text = text, Location = new Point(x, y), Size = new Size(w, 22),
+            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
             ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight
         };
 
