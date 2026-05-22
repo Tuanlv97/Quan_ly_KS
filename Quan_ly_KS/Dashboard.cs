@@ -1,4 +1,4 @@
-﻿using Guna.UI2.WinForms;
+using Guna.UI2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,10 +19,75 @@ namespace Quan_ly_KS
             InitializeComponent();
         }
 
-        private void guna2Panel1_Paint(object sender, PaintEventArgs e)
-        {
+        private const float DESIGN_UC_W = 1882f;
 
+        private void LayoutDashboard()
+        {
+            int w = ClientSize.Width;
+            int h = ClientSize.Height;
+
+            // === Navbar (guna2Panel1) ===
+            const int NAV_LEFT = 94, NAV_TOP = 17, NAV_H = 110;
+            int navW = w - NAV_LEFT - 6;
+            guna2Panel1.Location = new Point(NAV_LEFT, NAV_TOP);
+            guna2Panel1.Size = new Size(navW, NAV_H);
+
+            // Chia đều 8 nút, chừa 290px bên phải cho user profile
+            const int PROFILE_W = 290;
+            int availForBtns = navW - PROFILE_W - 20;
+            var navBtns = new Guna2Button[] {
+                btnTongQuan, btnAddRoom, btnCustomerRes, btnCheckOut,
+                btnCustomerDetail, btnEmployee, btnDichVu, btnDichVuKhach
+            };
+            int spacing = availForBtns / navBtns.Length;
+            int btnW = spacing - 6;
+            float fs = Math.Max(7f, Math.Min(10f, btnW * 10f / 179f));
+            var navFont = new Font("Segoe UI", fs, FontStyle.Bold);
+
+            for (int i = 0; i < navBtns.Length; i++)
+            {
+                navBtns[i].Location = new Point(10 + i * spacing, 10);
+                navBtns[i].Size = new Size(btnW, 88);
+                navBtns[i].Font = navFont;
+            }
+
+            pnlUserProfile.Location = new Point(navW - PROFILE_W, 0);
+
+            // Gạch indicator ngắn, nhỏ, căn giữa button
+            int pmW = Math.Max(36, Math.Min(52, btnW / 2));
+            PanelMoving.Size = new Size(pmW, 4);
+            PanelMoving.Top = NAV_TOP + NAV_H + 2;
+
+            // === Content panel lấp đầy phần còn lại ===
+            const int CONTENT_LEFT = 37, CONTENT_TOP = 148;
+            int contentW = w - CONTENT_LEFT - 6;
+            int contentH = h - CONTENT_TOP - 6;
+            guna2Panel2.Location = new Point(CONTENT_LEFT, CONTENT_TOP);
+            guna2Panel2.Size = new Size(contentW, contentH);
+
+            // Tất cả UC fill đầy content panel (giống cách Nhân Viên đang hoạt động)
+            foreach (Control uc in guna2Panel2.Controls)
+            {
+                uc.Dock = DockStyle.Fill;
+                uc.Location = new Point(0, 0);
+            }
         }
+
+        // Ẩn tất cả UC trước khi hiện tab mới — tránh UC cũ lộ ra phía sau
+        private void HideAllUCs()
+        {
+            uC_Dashboard1.Visible = false;
+            uC_AddRoom1.Visible = false;
+            uC_AddRoom2.Visible = false;
+            uC_CustomerRes1.Visible = false;
+            uC_CheckOut1.Visible = false;
+            uC_CustomerDetails1.Visible = false;
+            uC_Emloyee1.Visible = false;
+            uC_DichVu1.Visible = false;
+            uC_DichVuKhach1.Visible = false;
+        }
+
+        private void guna2Panel1_Paint(object sender, PaintEventArgs e) { }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
@@ -31,25 +96,16 @@ namespace Quan_ly_KS
 
         private void Dashboard_Load(object sender, EventArgs e)
         {
-            uC_Dashboard1.Visible = false;
-            uC_AddRoom1.Visible = false;
-            uC_CustomerRes1.Visible = false;
-            uC_CheckOut1.Visible = false;
-            uC_CustomerDetails1.Visible = false;
-            uC_Emloyee1.Visible = false;
-            uC_DichVu1.Visible = false;
-            uC_DichVuKhach1.Visible = false;
+            HideAllUCs();
+            LayoutDashboard();
             btnTongQuan.PerformClick();
 
-            // Hiển thị thông tin user đăng nhập
             string name = Session.EmployeeName;
             string role = Session.RoleName;
-
             lblUserName.Text = name;
             lblUserRole.Text = role;
 
-            // Tạo chữ viết tắt từ tên (lấy chữ cái đầu của 2 từ cuối, tối đa 2 ký tự)
-            string[] parts = name.Trim().Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = name.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             string initials = parts.Length >= 2
                 ? ("" + parts[parts.Length - 2][0] + parts[parts.Length - 1][0]).ToUpper()
                 : (name.Length > 0 ? name.Substring(0, Math.Min(2, name.Length)).ToUpper() : "?");
@@ -65,11 +121,9 @@ namespace Quan_ly_KS
             var g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // Vẽ hình tròn nền
             using (var brush = new SolidBrush(Color.FromArgb(90, 70, 200)))
                 g.FillEllipse(brush, 1, 1, panel.Width - 2, panel.Height - 2);
 
-            // Vẽ chữ viết tắt căn giữa
             using (var font = new Font("Segoe UI", 14f, FontStyle.Bold))
             using (var brush = new SolidBrush(Color.White))
             {
@@ -101,7 +155,8 @@ namespace Quan_ly_KS
 
         private void btnTongQuan_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnTongQuan.Left + 50;
+            PanelMoving.Left = guna2Panel1.Left + btnTongQuan.Left + (btnTongQuan.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_Dashboard1.Visible = true;
             uC_Dashboard1.BringToFront();
         }
@@ -111,16 +166,16 @@ namespace Quan_ly_KS
 
         private void btnAddRoom_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnAddRoom.Left + 50;
+            PanelMoving.Left = guna2Panel1.Left + btnAddRoom.Left + (btnAddRoom.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_AddRoom1.Visible = true;
             uC_AddRoom1.BringToFront();
         }
 
-        
-
         private void btnCustomerRes_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnCustomerRes.Left + 60;
+            PanelMoving.Left = guna2Panel1.Left + btnCustomerRes.Left + (btnCustomerRes.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_CustomerRes1.Visible = true;
             uC_CustomerRes1.BringToFront();
             uC_CustomerRes1.Reload();
@@ -128,39 +183,42 @@ namespace Quan_ly_KS
 
         private void btnCheckOut_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnCheckOut.Left + 50;
-            
+            PanelMoving.Left = guna2Panel1.Left + btnCheckOut.Left + (btnCheckOut.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_CheckOut1.Visible = true;
             uC_CheckOut1.BringToFront();
             uC_CheckOut1.ReloadData();
-
         }
 
         private void btnCustomerDetail_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnCustomerDetail.Left + 50;
+            PanelMoving.Left = guna2Panel1.Left + btnCustomerDetail.Left + (btnCustomerDetail.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_CustomerDetails1.Visible = true;
             uC_CustomerDetails1.BringToFront();
-            uC_CustomerDetails1.Reload(); // luôn reload data mới nhất
+            uC_CustomerDetails1.Reload();
         }
 
         private void btnEmployee_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnEmployee.Left + 60;
+            PanelMoving.Left = guna2Panel1.Left + btnEmployee.Left + (btnEmployee.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_Emloyee1.Visible = true;
             uC_Emloyee1.BringToFront();
         }
 
         private void btnDichVu_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnDichVu.Left + 60;
+            PanelMoving.Left = guna2Panel1.Left + btnDichVu.Left + (btnDichVu.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_DichVu1.Visible = true;
             uC_DichVu1.BringToFront();
         }
 
         private void btnDichVuKhach_Click(object sender, EventArgs e)
         {
-            PanelMoving.Left = btnDichVuKhach.Left + 60;
+            PanelMoving.Left = guna2Panel1.Left + btnDichVuKhach.Left + (btnDichVuKhach.Width - PanelMoving.Width) / 2;
+            HideAllUCs();
             uC_DichVuKhach1.Visible = true;
             uC_DichVuKhach1.BringToFront();
             uC_DichVuKhach1.Reload();

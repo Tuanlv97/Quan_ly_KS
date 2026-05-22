@@ -37,56 +37,33 @@ namespace Quan_ly_KS.All_User_Control
             var pnlTopBar = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 70,
+                Height = 54,
                 BackColor = Color.White,
                 Padding = new Padding(16, 0, 16, 0)
             };
 
             var lblTitle = new Label
             {
-                Text = "Dashboad Tổng Quan Thống Kê",
-                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                Text = "Dashboard Tổng Quan Thống Kê",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(50, 50, 90),
                 AutoSize = false,
-                Location = new Point(16, 10),
-                Size = new Size(420, 50),
+                Location = new Point(16, 8),
+                Size = new Size(500, 38),
                 TextAlign = ContentAlignment.MiddleLeft
             };
 
-            var txtSearch = new Guna2TextBox
-            {
-                PlaceholderText = "Tìm kiếm nhân viên...",
-                Location = new Point(450, 18),
-                Size = new Size(260, 36),
-                BorderRadius = 8,
-                Font = new Font("Segoe UI", 10F)
-            };
-
-            var btnAddEmployee = new Guna2Button
-            {
-                Text = "+  Thêm Nhân Viên",
-                Location = new Point(730, 16),
-                Size = new Size(170, 38),
-                BorderRadius = 10,
-                FillColor = Color.FromArgb(132, 112, 255),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
-            };
-            btnAddEmployee.Click += (s, e) => (FindForm() as Dashboard)?.ShowEmployeeTab();
-
             pnlTopBar.Controls.Add(lblTitle);
-            pnlTopBar.Controls.Add(txtSearch);
-            pnlTopBar.Controls.Add(btnAddEmployee);
 
             // Stats row
             var flpStats = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
-                Height = 115,
+                Height = 96,
                 BackColor = Color.FromArgb(245, 245, 250),
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Padding = new Padding(12, 10, 12, 5)
+                Padding = new Padding(12, 8, 12, 4)
             };
 
             lblCheckIn = new Label();
@@ -134,7 +111,7 @@ namespace Quan_ly_KS.All_User_Control
             var card = new Panel
             {
                 BackColor = Color.White,
-                Height = 90,
+                Height = 78,
                 Width = 400,
                 Margin = new Padding(0, 0, 10, 0)
             };
@@ -142,25 +119,25 @@ namespace Quan_ly_KS.All_User_Control
             var accent = new Panel
             {
                 Dock = DockStyle.Left,
-                Width = 5,
+                Width = 4,
                 BackColor = accentColor
             };
 
             var lblTitle = new Label
             {
                 Text = title,
-                Font = new Font("Segoe UI", 9F),
+                Font = new Font("Segoe UI", 8.5F),
                 ForeColor = Color.Gray,
                 AutoSize = false,
-                Location = new Point(14, 14),
-                Size = new Size(320, 22)
+                Location = new Point(12, 10),
+                Size = new Size(320, 20)
             };
 
-            valueLbl.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
+            valueLbl.Font = new Font("Segoe UI", 17F, FontStyle.Bold);
             valueLbl.ForeColor = accentColor;
             valueLbl.AutoSize = false;
-            valueLbl.Location = new Point(14, 38);
-            valueLbl.Size = new Size(320, 40);
+            valueLbl.Location = new Point(12, 30);
+            valueLbl.Size = new Size(320, 36);
             valueLbl.Text = "—";
 
             card.Controls.Add(accent);
