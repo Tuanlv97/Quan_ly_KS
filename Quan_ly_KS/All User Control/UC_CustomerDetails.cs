@@ -1,6 +1,8 @@
 using System;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Printing;
 using System.Windows.Forms;
 
 namespace Quan_ly_KS.All_User_Control
@@ -335,16 +337,20 @@ namespace Quan_ly_KS.All_User_Control
 
             var btnPrint = new Button
             {
-                Text = "In thông tin",
-                Font = new Font("Segoe UI", 10),
+                Text = "Xuất PDF / In",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 ForeColor = Color.FromArgb(100, 88, 255),
                 BackColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(140, 36),
+                Size = new Size(160, 38),
                 Cursor = Cursors.Hand,
-                Top = 20
+                Top = 18
             };
-            btnPrint.FlatAppearance.BorderColor = Color.FromArgb(100, 88, 255);
+            btnPrint.FlatAppearance.BorderSize = 0;
+            btnPrint.FlatAppearance.MouseOverBackColor = Color.FromArgb(243, 241, 255);
+            btnPrint.FlatAppearance.MouseDownBackColor = Color.FromArgb(226, 220, 255);
+            ApplyRoundedStyle(btnPrint, Color.FromArgb(100, 88, 255), 10);
+            btnPrint.Click += BtnPrint_Click;
             pnlHeader.Controls.Add(btnPrint);
             Action repoBtn = () => btnPrint.Left = pnlHeader.ClientSize.Width - btnPrint.Width - 20;
             pnlHeader.Resize += (s, e) => repoBtn();
@@ -955,6 +961,241 @@ namespace Quan_ly_KS.All_User_Control
             {
                 MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        // ── Rounded button styling ────────────────────────────────────────────
+
+        private void ApplyRoundedStyle(Button btn, Color accentColor, int radius)
+        {
+            Action updateRegion = () =>
+            {
+                if (btn.Width <= 0 || btn.Height <= 0) return;
+                using (var p = GetRoundedPath(new Rectangle(0, 0, btn.Width, btn.Height), radius))
+                    btn.Region = new Region(p);
+            };
+
+            btn.Paint += (s, pe) =>
+            {
+                pe.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                var rect = new Rectangle(1, 1, btn.Width - 3, btn.Height - 3);
+                using (var p = GetRoundedPath(rect, Math.Max(1, radius - 1)))
+                using (var pen = new Pen(accentColor, 2f))
+                    pe.Graphics.DrawPath(pen, p);
+            };
+
+            btn.Resize += (s, e) => updateRegion();
+            if (btn.IsHandleCreated)
+                updateRegion();
+            else
+                btn.HandleCreated += (s, e) => updateRegion();
+        }
+
+        private GraphicsPath GetRoundedPath(Rectangle rect, int radius)
+        {
+            var path = new GraphicsPath();
+            int d = Math.Max(1, radius * 2);
+            path.AddArc(rect.X, rect.Y, d, d, 180, 90);
+            path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90);
+            path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+
+        // ── Print / PDF ───────────────────────────────────────────────────────
+
+        private void BtnPrint_Click(object sender, EventArgs e)
+        {
+            if (selectedCid < 0) return;
+
+            var doc = new PrintDocument();
+            doc.DefaultPageSettings.Margins = new Margins(60, 60, 50, 50);
+            doc.PrintPage += PrintInvoicePage;
+
+            using (var dlg = new PrintDialog { Document = doc })
+            {
+                if (dlg.ShowDialog(this.FindForm()) == DialogResult.OK)
+                    doc.Print();
+            }
+            doc.Dispose();
+        }
+
+        private void PrintInvoicePage(object sender, PrintPageEventArgs e)
+        {
+            var g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            float x = e.MarginBounds.Left;
+            float y = e.MarginBounds.Top;
+            float W = e.MarginBounds.Width;
+
+            var purple   = Color.FromArgb(100, 88, 255);
+            var darkText = Color.FromArgb(30,  30,  60);
+            var grayText = Color.Gray;
+
+            var fTitle   = new Font("Segoe UI", 20, FontStyle.Bold);
+            var fSub     = new Font("Segoe UI",  9);
+            var fBanner  = new Font("Segoe UI", 13, FontStyle.Bold);
+            var fSection = new Font("Segoe UI",  9, FontStyle.Bold | FontStyle.Underline);
+            var fKey     = new Font("Segoe UI",  9, FontStyle.Bold);
+            var fVal     = new Font("Segoe UI",  9);
+            var fSmall   = new Font("Segoe UI",  8);
+            var fTotal   = new Font("Segoe UI", 12, FontStyle.Bold);
+            var fGrand   = new Font("Segoe UI", 14, FontStyle.Bold);
+
+            var sfC = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            var sfR = new StringFormat { Alignment = StringAlignment.Far,    LineAlignment = StringAlignment.Center };
+
+            float rh = 20f;
+
+            // ── Accent bar ────────────────────────────────────────────────────
+            g.FillRectangle(new SolidBrush(purple), x, y, W, 4);
+            y += 12;
+
+            // ── Hotel header ──────────────────────────────────────────────────
+            g.DrawString("KHÁCH SẠN QUẢN LÝ", fTitle, new SolidBrush(purple),
+                new RectangleF(x, y, W, 34), sfC);
+            y += 36;
+            g.DrawString("123 Đường ABC, TP.HCM  |  Tel: 028 1234 5678  |  Email: hotel@ks.com",
+                fSub, new SolidBrush(grayText), new RectangleF(x, y, W, 16), sfC);
+            y += 24;
+
+            // ── Title banner ──────────────────────────────────────────────────
+            g.FillRectangle(new SolidBrush(purple), x, y, W, 28);
+            g.DrawString("HÓA ĐƠN DỊCH VỤ KHÁCH SẠN", fBanner, Brushes.White,
+                new RectangleF(x, y, W, 28), sfC);
+            y += 36;
+            g.DrawString("Ngày in: " + DateTime.Now.ToString("HH:mm  dd/MM/yyyy"),
+                fSmall, new SolidBrush(grayText), new RectangleF(x, y, W, 14), sfR);
+            y += 20;
+
+            // ── Thông tin khách hàng ──────────────────────────────────────────
+            y = PrintSectionTitle(g, "THÔNG TIN KHÁCH HÀNG", x, y, W, purple, fSection);
+            float c1 = x, c2 = x + 110, c3 = x + W * 0.5f + 5, c4 = x + W * 0.5f + 120;
+            y = PrintInfoRow(g, "Họ và tên:",     lblCNameVal.Text,     "Quốc tịch:",      lblNationalityVal.Text, c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y = PrintInfoRow(g, "Giới tính:",     lblGenderVal.Text,    "Loại định danh:", lblIdTypeVal.Text,      c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y = PrintInfoRow(g, "Ngày sinh:",     lblDobVal.Text,       "Số định danh:",   lblIdNoVal.Text,        c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y = PrintInfoRow(g, "Số điện thoại:", lblMobileVal.Text,    "Địa chỉ:",        lblAddressVal.Text,     c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y += 5;
+
+            // ── Thông tin thuê phòng ──────────────────────────────────────────
+            y = PrintSectionTitle(g, "THÔNG TIN THUÊ PHÒNG", x, y, W, purple, fSection);
+            c2 = x + 120; c4 = x + W * 0.5f + 145;
+            y = PrintInfoRow(g, "Số phòng:",      lblRoomNoVal.Text,   "Ngày check-out:", lblCheckoutVal.Text,         c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y = PrintInfoRow(g, "Loại phòng:",    lblRoomTypeVal.Text, "Số đêm:",         lblNightsVal.Text,           c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y = PrintInfoRow(g, "Giá phòng/đêm:", lblPriceVal.Text,    "Nhân viên:",      lblStaffVal.Text,            c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y = PrintInfoRow(g, "Ngày check-in:", lblCheckinVal.Text,  "Tình trạng:",     lblStatusVal.Text.Trim(),    c1, c2, c3, c4, y, rh, fKey, fVal, darkText, grayText);
+            y += 5;
+
+            // ── Dịch vụ sử dụng ──────────────────────────────────────────────
+            if (dgvServices.Rows.Count > 0)
+            {
+                y = PrintSectionTitle(g, "DỊCH VỤ SỬ DỤNG", x, y, W, purple, fSection);
+
+                float[] cw = { 35, W * 0.28f, 110, 60, 110, 100 };
+                string[] heads = { "STT", "Tên dịch vụ", "Đơn giá", "SL", "Thành tiền", "Ngày sử dụng" };
+
+                g.FillRectangle(new SolidBrush(Color.FromArgb(235, 232, 255)), x, y, W, 22);
+                float cx = x;
+                for (int i = 0; i < heads.Length; i++)
+                {
+                    g.DrawString(heads[i], fKey, new SolidBrush(purple),
+                        new RectangleF(cx + 2, y, cw[i] - 4, 22), sfC);
+                    cx += cw[i];
+                }
+                y += 22;
+
+                for (int row = 0; row < dgvServices.Rows.Count; row++)
+                {
+                    if (row % 2 == 1)
+                        g.FillRectangle(new SolidBrush(Color.FromArgb(250, 249, 255)), x, y, W, 18);
+                    cx = x;
+                    for (int col = 0; col < Math.Min(dgvServices.Columns.Count, cw.Length); col++)
+                    {
+                        string v = dgvServices.Rows[row].Cells[col].Value?.ToString() ?? "";
+                        g.DrawString(v, fSmall, new SolidBrush(darkText),
+                            new RectangleF(cx + 2, y, cw[col] - 4, 18), sfC);
+                        cx += cw[col];
+                    }
+                    y += 18;
+                }
+
+                g.DrawLine(new Pen(Color.FromArgb(200, 195, 255), 1f), x, y, x + W, y);
+                y += 4;
+                g.DrawString(lblServiceTotal.Text, fKey, new SolidBrush(purple),
+                    new RectangleF(x, y, W, 18), sfR);
+                y += 22;
+            }
+
+            // ── Tổng kết ──────────────────────────────────────────────────────
+            y = PrintSectionTitle(g, "TỔNG KẾT", x, y, W, purple, fSection);
+
+            if (int.TryParse(lblNightsVal.Text.Split(' ')[0].Trim(), out int nights) &&
+                long.TryParse(lblPriceVal.Text.Replace(" VND", "").Replace(",", "").Trim(), out long pricePerNight))
+            {
+                long roomCost = pricePerNight * nights;
+                g.DrawString("Tiền phòng (" + nights + " đêm × " + lblPriceVal.Text + "):",
+                    fKey, new SolidBrush(grayText), x + 5, y);
+                g.DrawString(string.Format("{0:N0} VND", roomCost), fVal,
+                    new SolidBrush(darkText), new RectangleF(x, y, W, rh), sfR);
+                y += rh;
+            }
+
+            string svcTotal = lblServiceTotal.Text.Replace("Tổng cộng dịch vụ:  ", "").Trim();
+            g.DrawString("Tiền dịch vụ:", fKey, new SolidBrush(grayText), x + 5, y);
+            g.DrawString(svcTotal, fVal, new SolidBrush(darkText),
+                new RectangleF(x, y, W, rh), sfR);
+            y += rh;
+
+            g.DrawLine(new Pen(Color.FromArgb(200, 195, 255), 1f), x, y, x + W, y);
+            y += 4;
+
+            g.FillRectangle(new SolidBrush(Color.FromArgb(235, 232, 255)), x, y, W, 30);
+            g.DrawString("TỔNG CỘNG:", fTotal, new SolidBrush(purple), x + 8, y + 4);
+            string grandTotal = lblInvoiceTotal.Text.Replace("Tổng cộng:  ", "").Trim();
+            g.DrawString(grandTotal, fGrand, new SolidBrush(purple),
+                new RectangleF(x, y, W - 5, 30), sfR);
+            y += 40;
+
+            // ── Footer ────────────────────────────────────────────────────────
+            g.DrawLine(new Pen(Color.FromArgb(200, 195, 255), 1f), x, y + 8, x + W, y + 8);
+            y += 18;
+            g.DrawString("Cảm ơn quý khách đã sử dụng dịch vụ tại khách sạn!", fSub,
+                new SolidBrush(grayText), new RectangleF(x, y, W, 16), sfC);
+            y += 30;
+
+            float sig = W / 3f;
+            g.DrawString("Khách hàng ký tên", fSmall, new SolidBrush(grayText),
+                new RectangleF(x, y, sig, 14), sfC);
+            g.DrawString("Nhân viên lập hóa đơn", fSmall, new SolidBrush(grayText),
+                new RectangleF(x + W * 2f / 3f, y, sig, 14), sfC);
+
+            foreach (var f in new Font[] { fTitle, fSub, fBanner, fSection, fKey, fVal, fSmall, fTotal, fGrand })
+                f.Dispose();
+
+            e.HasMorePages = false;
+        }
+
+        private float PrintSectionTitle(Graphics g, string title, float x, float y, float W,
+            Color color, Font font)
+        {
+            g.FillRectangle(new SolidBrush(Color.FromArgb(248, 246, 255)), x, y, W, 20);
+            g.DrawLine(new Pen(color, 2f), x, y + 20, x + W, y + 20);
+            g.DrawString(title, font, new SolidBrush(color), x + 4, y + 2);
+            return y + 26;
+        }
+
+        private float PrintInfoRow(Graphics g,
+            string k1, string v1, string k2, string v2,
+            float c1, float c2, float c3, float c4,
+            float y, float h, Font fKey, Font fVal,
+            Color textColor, Color keyColor)
+        {
+            g.DrawString(k1, fKey, new SolidBrush(keyColor),  c1, y);
+            g.DrawString(v1, fVal, new SolidBrush(textColor), c2, y);
+            g.DrawString(k2, fKey, new SolidBrush(keyColor),  c3, y);
+            g.DrawString(v2, fVal, new SolidBrush(textColor), c4, y);
+            return y + h;
         }
     }
 }
