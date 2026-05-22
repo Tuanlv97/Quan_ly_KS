@@ -19,11 +19,15 @@ namespace Quan_ly_KS.All_User_Control
         private Guna2TextBox  txtSearch;
         private Label         lblCount;
         private Guna2Panel    pnlForm;
-        private Panel         _overlay;
+        private int           _formHFull;
+        private readonly System.Collections.Generic.List<Control> _bodyControls = new System.Collections.Generic.List<Control>();
         private Label         lblFormTitle;
 
         private Guna2ComboBox       fGuestSearch;
         private Label               lblGuestTag;
+        private Guna2Button         btnClearGuest;
+        private Panel               sepGuest;
+        private Label               lblGuestHint;
         private Guna2TextBox        fName, fMobile, fNationality, fIdProof, fAddress, fPrice;
         private Guna2ComboBox       fGender, fBed, fRoomType, fRoomNo;
         private Guna2DateTimePicker fDob, fCheckin;
@@ -93,12 +97,18 @@ namespace Quan_ly_KS.All_User_Control
                 Font = new Font("Segoe UI", 10F), GridColor = Color.FromArgb(230, 230, 230),
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
             };
-            dgvCustomers.ColumnHeadersDefaultCellStyle.Font      = new Font("Segoe UI", 10F, FontStyle.Bold);
-            dgvCustomers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
-            dgvCustomers.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(50, 50, 50);
-            dgvCustomers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvCustomers.ColumnHeadersHeight = 42;
-            dgvCustomers.RowTemplate.Height  = 40;
+            dgvCustomers.ColumnHeadersDefaultCellStyle.Font      = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvCustomers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(132, 112, 255);
+            dgvCustomers.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvCustomers.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvCustomers.ColumnHeadersHeightSizeMode             = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvCustomers.ColumnHeadersHeight                     = 42;
+            dgvCustomers.EnableHeadersVisualStyles               = false;
+            dgvCustomers.RowTemplate.Height                      = 45;
+            dgvCustomers.DefaultCellStyle.Font                   = new Font("Segoe UI", 10);
+            dgvCustomers.DefaultCellStyle.SelectionBackColor     = Color.FromArgb(200, 191, 255);
+            dgvCustomers.DefaultCellStyle.SelectionForeColor     = Color.Black;
+            dgvCustomers.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 244, 255);
 
             dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colBid",     HeaderText = "Mã ĐP",         FillWeight = 55  });
             dgvCustomers.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStt",     HeaderText = "STT",           FillWeight = 40  });
@@ -117,24 +127,16 @@ namespace Quan_ly_KS.All_User_Control
             // ── Overlay form ──────────────────────────────────────────
             BuildFormPanel();
 
-            // ── Dim overlay (shown behind modal) ──────────────────────
-            _overlay = new Panel {
-                BackColor = Color.FromArgb(210, 208, 220),
-                Visible   = false
-            };
-            _overlay.Click += (s, e) => { _overlay.Visible = false; pnlForm.Visible = false; };
-
             // ── Wire root events ──────────────────────────────────────
             btnAdd.Click          += (s, e) => ShowForm(-1);
             txtSearch.TextChanged += (s, e) => LoadData();
             this.SizeChanged      += (s, e) => CenterFormPanel();
             this.HandleCreated    += (s, e) => { LoadData(); CenterFormPanel(); };
 
-            // Fill first → DockTop inner→outer → overlay → modal last
+            // Fill first → DockTop inner→outer → modal last
             this.Controls.Add(pnlGrid);
             this.Controls.Add(sep);
             this.Controls.Add(pnlHeader);
-            this.Controls.Add(_overlay);
             this.Controls.Add(pnlForm);
         }
 
@@ -142,31 +144,46 @@ namespace Quan_ly_KS.All_User_Control
         {
             const int formW = 680, lx = 18, col2x = 354, colW = 308, inputH = 30;
             const int startY = 118, l2i = 17, fGap = 56, btnGap = 14;
-            int lastBot = startY + l2i + 5 * fGap + inputH;
-            int btnY    = lastBot + btnGap;
-            int formH   = btnY + 34 + 12;
+            int lastBot  = startY + l2i + 5 * fGap + inputH; // 445
+            int btnY     = lastBot + btnGap;                  // 459
+            _formHFull   = btnY + 34 + 12;                   // 505
 
             pnlForm = new Guna2Panel {
-                Width = formW, Height = formH, FillColor = Color.White,
-                Visible = false, BorderRadius = 14,
-                CustomBorderColor = Color.FromArgb(180, 170, 220),
-                CustomBorderThickness = new System.Windows.Forms.Padding(1)
+                Width = formW, Height = _formHFull, FillColor = Color.White,
+                Visible = false, BorderRadius = 12,
+                BorderColor = Color.FromArgb(132, 112, 255),
+                BorderThickness = 2
             };
             pnlForm.ShadowDecoration.Enabled = true;
-            pnlForm.ShadowDecoration.Mode    = Guna.UI2.WinForms.Enums.ShadowMode.Custom;
-            pnlForm.ShadowDecoration.Color   = Color.FromArgb(90, 30, 20, 80);
-            pnlForm.ShadowDecoration.Depth   = 22;
-            pnlForm.ShadowDecoration.Shadow  = new System.Windows.Forms.Padding(4, 4, 14, 14);
+            pnlForm.ShadowDecoration.Color   = Color.FromArgb(100, 100, 80, 220);
+            pnlForm.ShadowDecoration.Depth   = 20;
+
+            var btnX = new Label {
+                Text = "X", Size = new Size(28, 28),
+                Top = 8, Left = formW - 28 - 8,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.FromArgb(80, 80, 90),
+                BackColor = Color.FromArgb(225, 225, 232),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnX.Click += (s, ev) => pnlForm.Visible = false;
+            pnlForm.Controls.Add(btnX);
 
             lblFormTitle = new Label {
                 Text = "Đặt Phòng Mới",
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 14
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 16
             };
             pnlForm.Controls.Add(lblFormTitle);
 
             // ── Guest search section (only for new bookings) ─────────
-            AddLbl(pnlForm, lx, 40, "Tìm khách đã có (để điền tự động):");
+            lblGuestHint = new Label {
+                Text = "Tìm khách đã có (để điền tự động):",
+                AutoSize = true, Left = lx, Top = 40,
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80)
+            };
             fGuestSearch = new Guna2ComboBox {
                 BorderRadius = 6, FillColor = Color.WhiteSmoke,
                 Font = new Font("Segoe UI", 9F),
@@ -178,7 +195,7 @@ namespace Quan_ly_KS.All_User_Control
             };
 
             // ✕ clear button — right of search box
-            var btnClearGuest = new Guna2Button {
+            btnClearGuest = new Guna2Button {
                 Text = "✕", Left = 596, Top = 56, Width = 66, Height = inputH,
                 BorderRadius = 6, FillColor = Color.FromArgb(190, 190, 195), ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold), Cursor = Cursors.Hand
@@ -194,67 +211,71 @@ namespace Quan_ly_KS.All_User_Control
                 Visible = false
             };
 
-            var sepGuest = new Panel {
+            sepGuest = new Panel {
                 Left = lx, Top = 112, Width = formW - 40, Height = 1,
                 BackColor = Color.FromArgb(220, 220, 220)
             };
 
-            pnlForm.Controls.AddRange(new Control[] { fGuestSearch, lblGuestTag, btnClearGuest, sepGuest });
+            pnlForm.Controls.AddRange(new Control[] { lblGuestHint, fGuestSearch, lblGuestTag, btnClearGuest, sepGuest });
 
             fGuestSearch.TextChanged          += GuestSearch_TextChanged;
             fGuestSearch.SelectedIndexChanged += GuestSearch_Selected;
             fGuestSearch.Click                += (s, e) => LoadGuestList(_selectedGuestId > 0 ? "" : fGuestSearch.Text.Trim());
 
-            // ── Left column ───────────────────────────────────────────
-            AddLbl(pnlForm, lx, startY + 0 * fGap, "Họ Tên");
-            fName = G2Txt(lx, startY + 0 * fGap + l2i, colW, inputH, "Nhập họ tên...");
+            // ── Body controls — added directly to pnlForm ─────────────
+            // Left column
+            AddBodyLbl(lx, startY + 0 * fGap, "Họ Tên");
+            fName = G2Txt(lx, startY + 0 * fGap + l2i, colW, inputH, "Nhập họ tên...");       AddBody(fName);
 
-            AddLbl(pnlForm, lx, startY + 1 * fGap, "SĐT");
-            fMobile = G2Txt(lx, startY + 1 * fGap + l2i, colW, inputH, "Nhập số điện thoại...");
+            AddBodyLbl(lx, startY + 1 * fGap, "SĐT");
+            fMobile = G2Txt(lx, startY + 1 * fGap + l2i, colW, inputH, "Nhập số điện thoại..."); AddBody(fMobile);
 
-            AddLbl(pnlForm, lx, startY + 2 * fGap, "Quốc Tịch");
-            fNationality = G2Txt(lx, startY + 2 * fGap + l2i, colW, inputH, "Nhập quốc tịch...");
+            AddBodyLbl(lx, startY + 2 * fGap, "Quốc Tịch");
+            fNationality = G2Txt(lx, startY + 2 * fGap + l2i, colW, inputH, "Nhập quốc tịch..."); AddBody(fNationality);
 
-            AddLbl(pnlForm, lx, startY + 3 * fGap, "Giới Tính");
-            fGender = G2Combo(lx, startY + 3 * fGap + l2i, colW, inputH, new[] { "Nam", "Nữ", "Khác" });
+            AddBodyLbl(lx, startY + 3 * fGap, "Giới Tính");
+            fGender = G2Combo(lx, startY + 3 * fGap + l2i, colW, inputH, new[] { "Nam", "Nữ", "Khác" }); AddBody(fGender);
 
-            AddLbl(pnlForm, lx, startY + 4 * fGap, "Ngày Sinh");
+            AddBodyLbl(lx, startY + 4 * fGap, "Ngày Sinh");
             fDob = new Guna2DateTimePicker {
                 FillColor = Color.WhiteSmoke, Font = new Font("Segoe UI", 9F),
                 Format = DateTimePickerFormat.Short, Left = lx,
                 Top = startY + 4 * fGap + l2i, Width = colW, Height = inputH,
                 Value = DateTime.Now.AddYears(-20)
             };
+            AddBody(fDob);
 
-            AddLbl(pnlForm, lx, startY + 5 * fGap, "CMND / CCCD");
-            fIdProof = G2Txt(lx, startY + 5 * fGap + l2i, colW, inputH, "Nhập số CMND/CCCD...");
+            AddBodyLbl(lx, startY + 5 * fGap, "CMND / CCCD");
+            fIdProof = G2Txt(lx, startY + 5 * fGap + l2i, colW, inputH, "Nhập số CMND/CCCD..."); AddBody(fIdProof);
 
-            // ── Right column ──────────────────────────────────────────
-            AddLbl(pnlForm, col2x, startY + 0 * fGap, "Địa Chỉ");
-            fAddress = G2Txt(col2x, startY + 0 * fGap + l2i, colW, inputH, "Nhập địa chỉ...");
+            // Right column
+            AddBodyLbl(col2x, startY + 0 * fGap, "Địa Chỉ");
+            fAddress = G2Txt(col2x, startY + 0 * fGap + l2i, colW, inputH, "Nhập địa chỉ..."); AddBody(fAddress);
 
-            AddLbl(pnlForm, col2x, startY + 1 * fGap, "Ngày Check-in");
+            AddBodyLbl(col2x, startY + 1 * fGap, "Ngày Check-in");
             fCheckin = new Guna2DateTimePicker {
                 FillColor = Color.WhiteSmoke, Font = new Font("Segoe UI", 9F),
                 Format = DateTimePickerFormat.Short, Left = col2x,
                 Top = startY + 1 * fGap + l2i, Width = colW, Height = inputH,
                 Value = DateTime.Now
             };
+            AddBody(fCheckin);
 
-            AddLbl(pnlForm, col2x, startY + 2 * fGap, "Loại Giường");
-            fBed = G2Combo(col2x, startY + 2 * fGap + l2i, colW, inputH, new[] { "Single", "Double", "Triple" });
+            AddBodyLbl(col2x, startY + 2 * fGap, "Loại Giường");
+            fBed = G2Combo(col2x, startY + 2 * fGap + l2i, colW, inputH, new[] { "Single", "Double", "Triple" }); AddBody(fBed);
 
-            AddLbl(pnlForm, col2x, startY + 3 * fGap, "Loại Phòng");
-            fRoomType = G2Combo(col2x, startY + 3 * fGap + l2i, colW, inputH, new[] { "Ac", "Non-Ac" });
+            AddBodyLbl(col2x, startY + 3 * fGap, "Loại Phòng");
+            fRoomType = G2Combo(col2x, startY + 3 * fGap + l2i, colW, inputH, new[] { "Ac", "Non-Ac" }); AddBody(fRoomType);
 
-            AddLbl(pnlForm, col2x, startY + 4 * fGap, "Số Phòng");
-            fRoomNo = G2Combo(col2x, startY + 4 * fGap + l2i, colW, inputH, new string[0]);
+            AddBodyLbl(col2x, startY + 4 * fGap, "Số Phòng");
+            fRoomNo = G2Combo(col2x, startY + 4 * fGap + l2i, colW, inputH, new string[0]); AddBody(fRoomNo);
 
-            AddLbl(pnlForm, col2x, startY + 5 * fGap, "Giá Tiền (VND)");
+            AddBodyLbl(col2x, startY + 5 * fGap, "Giá Tiền (VND)");
             fPrice = G2Txt(col2x, startY + 5 * fGap + l2i, colW, inputH, "");
             fPrice.ReadOnly = true;
+            AddBody(fPrice);
 
-            // ── Buttons ───────────────────────────────────────────────
+            // Buttons
             var btnSave = new Guna2Button {
                 Text = "Lưu", Left = lx, Top = btnY, Width = 140, Height = 34,
                 BorderRadius = 8, FillColor = Color.SlateBlue, ForeColor = Color.White,
@@ -265,19 +286,14 @@ namespace Quan_ly_KS.All_User_Control
                 BorderRadius = 8, FillColor = Color.FromArgb(180, 180, 180), ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), Cursor = Cursors.Hand
             };
-
             btnSave.Click   += BtnSave_Click;
-            btnCancel.Click += (s, e) => { pnlForm.Visible = false; if (_overlay != null) _overlay.Visible = false; };
+            btnCancel.Click += (s, e) => pnlForm.Visible = false;
+            AddBody(btnSave);
+            AddBody(btnCancel);
 
             fBed.SelectedIndexChanged      += FBed_SelectedIndexChanged;
             fRoomType.SelectedIndexChanged += FRoomType_SelectedIndexChanged;
             fRoomNo.SelectedIndexChanged   += FRoomNo_SelectedIndexChanged;
-
-            pnlForm.Controls.AddRange(new Control[] {
-                fName, fMobile, fNationality, fGender, fDob, fIdProof,
-                fAddress, fCheckin, fBed, fRoomType, fRoomNo, fPrice,
-                btnSave, btnCancel
-            });
         }
 
         // ── Guest search ──────────────────────────────────────────────
@@ -362,13 +378,39 @@ namespace Quan_ly_KS.All_User_Control
 
         // ── Helpers ───────────────────────────────────────────────────
 
-        private static void AddLbl(Panel parent, int x, int y, string text)
+        private static void AddLbl(Control parent, int x, int y, string text)
         {
             parent.Controls.Add(new Label {
                 Text = text, AutoSize = true, Left = x, Top = y,
                 Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(80, 80, 80)
             });
+        }
+
+        private void AddBodyLbl(int x, int y, string text)
+        {
+            var lbl = new Label {
+                Text = text, AutoSize = true, Left = x, Top = y,
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(80, 80, 80)
+            };
+            lbl.Tag = y;
+            pnlForm.Controls.Add(lbl);
+            _bodyControls.Add(lbl);
+        }
+
+        private void AddBody(Control c)
+        {
+            c.Tag = c.Top;
+            pnlForm.Controls.Add(c);
+            _bodyControls.Add(c);
+        }
+
+        private void SetBodyOffset(int offset)
+        {
+            foreach (var c in _bodyControls)
+                c.Top = (int)c.Tag + offset;
+            pnlForm.Height = _formHFull + offset;
         }
 
         private static Guna2TextBox G2Txt(int x, int y, int w, int h, string ph) =>
@@ -411,12 +453,8 @@ namespace Quan_ly_KS.All_User_Control
         private void CenterFormPanel()
         {
             if (pnlForm == null) return;
-            const int headerH = 74;
-            int availH = Height - headerH;
-            pnlForm.Left = Math.Max(10, (Width - pnlForm.Width) / 2);
-            pnlForm.Top  = headerH + Math.Max(8, (availH - pnlForm.Height) / 2);
-            if (_overlay != null)
-                _overlay.SetBounds(0, headerH, Width, availH);
+            pnlForm.Left = (Width  - pnlForm.Width)  / 2;
+            pnlForm.Top  = (Height - pnlForm.Height) / 2;
         }
 
         public void Reload() => LoadData();
@@ -492,11 +530,12 @@ namespace Quan_ly_KS.All_User_Control
 
             // Show/hide guest search section (only for new bookings)
             bool isNew = (bid == -1);
+            lblGuestHint.Visible  = isNew;
             fGuestSearch.Visible  = isNew;
-            lblGuestTag.Visible   = false;
-            foreach (Control c in pnlForm.Controls)
-                if (c.Top == 40 && c is Label l && l.Text.Contains("Tìm khách"))
-                    l.Visible = isNew;
+            btnClearGuest.Visible = isNew;
+            sepGuest.Visible      = isNew;
+            lblGuestTag.Visible = false;
+            SetBodyOffset(isNew ? 0 : -78);
 
             if (isNew)
             {
@@ -540,7 +579,6 @@ namespace Quan_ly_KS.All_User_Control
             }
 
             CenterFormPanel();
-            if (_overlay != null) { _overlay.BringToFront(); _overlay.Visible = true; }
             pnlForm.Visible = true;
             pnlForm.BringToFront();
         }
@@ -679,7 +717,6 @@ namespace Quan_ly_KS.All_User_Control
             }
 
             pnlForm.Visible = false;
-            if (_overlay != null) _overlay.Visible = false;
             LoadData();
         }
 

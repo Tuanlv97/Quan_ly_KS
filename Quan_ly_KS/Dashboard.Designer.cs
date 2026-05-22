@@ -255,7 +255,7 @@
             this.btnCustomerDetail.Name = "btnCustomerDetail";
             this.btnCustomerDetail.Size = new System.Drawing.Size(139, 94);
             this.btnCustomerDetail.TabIndex = 1;
-            this.btnCustomerDetail.Text = "Chi Tiết Khách ";
+            this.btnCustomerDetail.Text = "Lịch sử đặt phòng";
             this.btnCustomerDetail.Click += new System.EventHandler(this.btnCustomerDetail_Click);
             // 
             // btnCheckOut
@@ -293,7 +293,7 @@
             this.btnCustomerRes.Name = "btnCustomerRes";
             this.btnCustomerRes.Size = new System.Drawing.Size(139, 94);
             this.btnCustomerRes.TabIndex = 1;
-            this.btnCustomerRes.Text = "Đăng ký Khách";
+            this.btnCustomerRes.Text = "Danh Sách Đặt Phòng";
             this.btnCustomerRes.Click += new System.EventHandler(this.btnCustomerRes_Click);
             // 
             // btnAddRoom
@@ -312,7 +312,7 @@
             this.btnAddRoom.Name = "btnAddRoom";
             this.btnAddRoom.Size = new System.Drawing.Size(139, 94);
             this.btnAddRoom.TabIndex = 0;
-            this.btnAddRoom.Text = "Thêm Phòng";
+            this.btnAddRoom.Text = "Quản Lý Phòng";
             this.btnAddRoom.Click += new System.EventHandler(this.btnAddRoom_Click);
             // 
             // btnTongQuan
@@ -513,7 +513,7 @@
         private All_User_Control.UC_CustomerDetails uC_CustomerDetails1;
         private Guna.UI2.WinForms.Guna2Elipse guna2Elipse5;
         private All_User_Control.UC_Emloyee uC_Emloyee1;
-        private Guna.UI2.WinForms.Guna2Button btnDichVu;
+            private Guna.UI2.WinForms.Guna2Button btnDichVu;
         private All_User_Control.UC_DichVu uC_DichVu1;
         private Guna.UI2.WinForms.Guna2Button btnDichVuKhach;
         private All_User_Control.UC_DichVuKhach uC_DichVuKhach1;
