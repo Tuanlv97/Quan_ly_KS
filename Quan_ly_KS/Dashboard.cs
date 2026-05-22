@@ -39,6 +39,63 @@ namespace Quan_ly_KS
             uC_DichVu1.Visible = false;
             uC_DichVuKhach1.Visible = false;
             btnAddRoom.PerformClick();
+
+            // Hiển thị thông tin user đăng nhập
+            string name = Session.EmployeeName;
+            string role = Session.RoleName;
+
+            lblUserName.Text = name;
+            lblUserRole.Text = role;
+
+            // Tạo chữ viết tắt từ tên (lấy chữ cái đầu của 2 từ cuối, tối đa 2 ký tự)
+            string[] parts = name.Trim().Split(new char[]{' '}, StringSplitOptions.RemoveEmptyEntries);
+            string initials = parts.Length >= 2
+                ? ("" + parts[parts.Length - 2][0] + parts[parts.Length - 1][0]).ToUpper()
+                : (name.Length > 0 ? name.Substring(0, Math.Min(2, name.Length)).ToUpper() : "?");
+
+            btnAvatarCircle.Tag = initials;
+            btnAvatarCircle.Paint += AvatarCircle_Paint;
+        }
+
+        private void AvatarCircle_Paint(object sender, PaintEventArgs e)
+        {
+            var panel = (Panel)sender;
+            string text = panel.Tag?.ToString() ?? "";
+            var g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            // Vẽ hình tròn nền
+            using (var brush = new SolidBrush(Color.FromArgb(90, 70, 200)))
+                g.FillEllipse(brush, 1, 1, panel.Width - 2, panel.Height - 2);
+
+            // Vẽ chữ viết tắt căn giữa
+            using (var font = new Font("Segoe UI", 14f, FontStyle.Bold))
+            using (var brush = new SolidBrush(Color.White))
+            {
+                SizeF sz = g.MeasureString(text, font);
+                g.DrawString(text, font, brush,
+                    (panel.Width - sz.Width) / 2f,
+                    (panel.Height - sz.Height) / 2f);
+            }
+        }
+
+        private void btnDangXuat_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "Bạn có chắc chắn muốn đăng xuất không?",
+                "Xác nhận đăng xuất",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes) return;
+
+            Session.EmployeeId = 0;
+            Session.EmployeeName = "";
+            Session.RoleName = "";
+
+            Form1 loginForm = new Form1();
+            loginForm.Show();
+            this.Close();
         }
 
         private void btnAddRoom_Click(object sender, EventArgs e)
