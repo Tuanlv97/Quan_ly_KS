@@ -31,6 +31,7 @@ namespace Quan_ly_KS
 
         private void Dashboard_Load(object sender, EventArgs e)
         {
+            uC_Dashboard1.Visible = false;
             uC_AddRoom1.Visible = false;
             uC_CustomerRes1.Visible = false;
             uC_CheckOut1.Visible = false;
@@ -38,7 +39,7 @@ namespace Quan_ly_KS
             uC_Emloyee1.Visible = false;
             uC_DichVu1.Visible = false;
             uC_DichVuKhach1.Visible = false;
-            btnAddRoom.PerformClick();
+            btnTongQuan.PerformClick();
 
             // Hiển thị thông tin user đăng nhập
             string name = Session.EmployeeName;
@@ -97,6 +98,16 @@ namespace Quan_ly_KS
             loginForm.Show();
             this.Close();
         }
+
+        private void btnTongQuan_Click(object sender, EventArgs e)
+        {
+            PanelMoving.Left = btnTongQuan.Left + 50;
+            uC_Dashboard1.Visible = true;
+            uC_Dashboard1.BringToFront();
+        }
+
+        public void ShowBookingTab() { btnCustomerRes.PerformClick(); }
+        public void ShowEmployeeTab() { btnEmployee.PerformClick(); }
 
         private void btnAddRoom_Click(object sender, EventArgs e)
         {
