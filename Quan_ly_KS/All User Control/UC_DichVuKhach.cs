@@ -22,7 +22,7 @@ namespace Quan_ly_KS.All_User_Control
         private DataGridView        dgv;
         private Guna2TextBox        txtSearch;
         private Label               lblCount;
-        private Panel               pnlForm;
+        private Guna2Panel          pnlForm;
         private Label               lblFormTitle;
 
         private Guna2ComboBox       fCustomer, fService;
@@ -135,21 +135,40 @@ namespace Quan_ly_KS.All_User_Control
 
         private void BuildFormPanel()
         {
-            const int formW = 600, lx = 20, fw = 555, inputH = 40;
-            const int startY = 78, l2i = 25, fGap = 65, btnGap = 33;
-            int lastBot = startY + l2i + 5 * fGap + inputH; // 468
-            int btnY    = lastBot + btnGap;                  // 501
-            int formH   = btnY + 45 + 25;                   // 571
+            const int formW = 500, lx = 18, fw = 464, inputH = 35;
+            const int startY = 48, l2i = 17, fGap = 56, btnGap = 14;
+            int lastInputBot = startY + 5 * fGap + l2i + inputH; // 380
+            int btnY  = lastInputBot + btnGap;                   // 394
+            int formH = btnY + 40 + 16;                          // 450
 
-            pnlForm = new Panel {
-                Width = formW, Height = formH, BackColor = Color.White,
-                Visible = false, BorderStyle = BorderStyle.FixedSingle
+            pnlForm = new Guna2Panel {
+                Width = formW, Height = formH,
+                FillColor = Color.White,
+                BorderRadius = 12,
+                BorderColor = Color.FromArgb(100, 132, 112, 255),
+                BorderThickness = 2,
+                Visible = false
             };
+            pnlForm.ShadowDecoration.Enabled = true;
+            pnlForm.ShadowDecoration.Color   = Color.FromArgb(55, 132, 112, 255);
+            pnlForm.ShadowDecoration.Depth   = 14;
+
+            var btnX = new Label {
+                Text = "X", Size = new Size(28, 28),
+                Top = 8, Left = formW - 28 - 8,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.FromArgb(80, 80, 90),
+                BackColor = Color.FromArgb(225, 225, 232),
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
+            btnX.Click += (s, ev) => pnlForm.Visible = false;
+            pnlForm.Controls.Add(btnX);
 
             lblFormTitle = new Label {
                 Text = "Thêm Dịch Vụ Sử Dụng",
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 20
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
+                ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 16
             };
             pnlForm.Controls.Add(lblFormTitle);
 
@@ -194,12 +213,12 @@ namespace Quan_ly_KS.All_User_Control
             };
 
             var btnSave = new Guna2Button {
-                Text = "Lưu", Left = lx, Top = btnY, Width = 160, Height = 45,
+                Text = "Lưu", Left = lx, Top = btnY, Width = 150, Height = 40,
                 BorderRadius = 8, FillColor = Color.SlateBlue, ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold), Cursor = Cursors.Hand
             };
             var btnCancel = new Guna2Button {
-                Text = "Hủy", Left = lx + 180, Top = btnY, Width = 160, Height = 45,
+                Text = "Hủy", Left = lx + 160, Top = btnY, Width = 150, Height = 40,
                 BorderRadius = 8, FillColor = Color.FromArgb(180, 180, 180), ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold), Cursor = Cursors.Hand
             };
@@ -218,7 +237,7 @@ namespace Quan_ly_KS.All_User_Control
 
         // ── Helpers ───────────────────────────────────────────────────
 
-        private static void AddLbl(Panel parent, int x, int y, string text)
+        private static void AddLbl(Control parent, int x, int y, string text)
         {
             parent.Controls.Add(new Label {
                 Text = text, AutoSize = true, Left = x, Top = y,
