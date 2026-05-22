@@ -221,6 +221,11 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='invoices')
             RunStep(@"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='rooms' AND COLUMN_NAME='status')
     ALTER TABLE [rooms] ADD [status] NVARCHAR(50) NOT NULL CONSTRAINT DF_rooms_status DEFAULT N'Trống'");
+
+            // Step 10: sync status from old booked column for existing data
+            RunStep(@"
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='rooms' AND COLUMN_NAME='booked')
+    UPDATE [rooms] SET [status] = N'Có khách' WHERE [booked] = 'YES' AND [status] = N'Trống'");
         }
 
         private void RunStep(string sql)

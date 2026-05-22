@@ -822,7 +822,8 @@ namespace Quan_ly_KS.All_User_Control
             string sql =
                 "SELECT b.bid, g.cname, g.gender, g.dob, g.mobile, g.nationality," +
                 " g.idproof, g.address, b.checkin, b.checkout, b.chekout," +
-                " r.roomNo, r.roomType, r.price" +
+                " r.roomNo, r.roomType, r.price," +
+                " (SELECT TOP 1 e.ename FROM invoices inv INNER JOIN employee e ON e.eid = inv.eid WHERE inv.bid = b.bid) AS staffName" +
                 " FROM bookings b INNER JOIN guests g ON b.gid=g.gid INNER JOIN rooms r ON b.roomid=r.roomid" +
                 " WHERE b.bid = " + cid;
             try
@@ -844,7 +845,7 @@ namespace Quan_ly_KS.All_User_Control
                 lblRoomTypeVal.Text    = r["roomType"].ToString();
                 lblPriceVal.Text       = string.Format("{0:N0} VND", r["price"]);
                 lblCheckinVal.Text     = r["checkin"] != DBNull.Value ? Convert.ToDateTime(r["checkin"]).ToString("dd/MM/yyyy") : "—";
-                lblStaffVal.Text       = "—";
+                lblStaffVal.Text       = r["staffName"] != DBNull.Value ? r["staffName"].ToString() : "—";
 
                 bool co = r["chekout"] != DBNull.Value && r["chekout"].ToString() == "YES";
                 if (r["checkout"] != DBNull.Value)
@@ -945,7 +946,7 @@ namespace Quan_ly_KS.All_User_Control
                     fn.ExecNonQuery("DELETE FROM invoices WHERE bid = " + selectedCid);
                     fn.SetData(
                         "DELETE FROM bookings WHERE bid = " + selectedCid +
-                        "; UPDATE rooms SET booked='NO' WHERE roomid = " + roomId,
+                        "; UPDATE rooms SET status=N'Trống' WHERE roomid = " + roomId,
                         "Đã xóa lượt đặt phòng thành công!");
                 }
                 ShowListPanel();

@@ -576,7 +576,7 @@ namespace Quan_ly_KS.All_User_Control
 
             string cdate = dtpCheckOut.Value.ToString("MM/dd/yyyy");
             string q = "UPDATE bookings SET chekout='YES', checkout='" + cdate + "' WHERE bid=" + cId +
-                       "; UPDATE rooms SET booked='NO' WHERE roomNo='" + currentRoomNo.Replace("'", "''") + "'";
+                       "; UPDATE rooms SET status=N'Bẩn' WHERE roomNo='" + currentRoomNo.Replace("'", "''") + "'";
             fn.SetData(q, "Check Out Thành Công.");
 
             // Lưu hoá đơn

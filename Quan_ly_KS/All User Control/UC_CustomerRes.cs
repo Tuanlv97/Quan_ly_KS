@@ -530,9 +530,9 @@ namespace Quan_ly_KS.All_User_Control
 
             string sql = editingRoomId > 0
                 ? "SELECT roomNo FROM rooms WHERE bed='" + bed + "' AND roomType='" + roomType +
-                  "' AND (booked='NO' OR roomid=" + editingRoomId + ")"
+                  "' AND (status=N'Trống' OR roomid=" + editingRoomId + ")"
                 : "SELECT roomNo FROM rooms WHERE bed='" + bed + "' AND roomType='" + roomType +
-                  "' AND booked='NO'";
+                  "' AND status=N'Trống'";
             try
             {
                 var ds = fn.GetData(sql);
@@ -632,7 +632,7 @@ namespace Quan_ly_KS.All_User_Control
                 fn.SetData(
                     "INSERT INTO bookings (gid,roomid,checkin,chekout) VALUES (" +
                     gid + "," + _selectedRoomId + ",'" + cin + "','NO'); " +
-                    "UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId,
+                    "UPDATE rooms SET status=N'Có khách' WHERE roomid=" + _selectedRoomId,
                     "Đặt phòng thành công!");
             }
             else
@@ -647,8 +647,8 @@ namespace Quan_ly_KS.All_User_Control
                 string sqlBooking = "UPDATE bookings SET roomid=" + _selectedRoomId +
                                     ",checkin='" + cin + "' WHERE bid=" + _editingBid;
                 if (roomChanged)
-                    sqlBooking += "; UPDATE rooms SET booked='NO' WHERE roomid=" + _editingRoomId +
-                                  "; UPDATE rooms SET booked='YES' WHERE roomid=" + _selectedRoomId;
+                    sqlBooking += "; UPDATE rooms SET status=N'Trống' WHERE roomid=" + _editingRoomId +
+                                  "; UPDATE rooms SET status=N'Có khách' WHERE roomid=" + _selectedRoomId;
                 fn.SetData(sqlBooking, "Cập nhật thành công!");
             }
 
@@ -677,7 +677,7 @@ namespace Quan_ly_KS.All_User_Control
 
             string sql = "DELETE FROM bookings WHERE bid=" + bid;
             if (status != "Đã trả phòng")
-                sql += "; UPDATE rooms SET booked='NO' WHERE roomid=" + roomid;
+                sql += "; UPDATE rooms SET status=N'Trống' WHERE roomid=" + roomid;
             fn.SetData(sql, "Xóa thành công!");
             LoadData();
         }
