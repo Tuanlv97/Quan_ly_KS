@@ -27,35 +27,44 @@ namespace Quan_ly_KS.All_User_Control
             cmbFormStatus.Items.AddRange(new string[] { "Đang cung cấp", "Ngừng cung cấp" });
             cmbFormStatus.SelectedIndex = 0;
 
+            this.Resize += (s, ev) => CenterFormPanel();
+
             LoadData();
+            CenterFormPanel();
+        }
+
+        private void CenterFormPanel()
+        {
+            if (pnlForm == null) return;
+            pnlForm.Left = (Width  - pnlForm.Width)  / 2;
+            pnlForm.Top  = (Height - pnlForm.Height) / 2;
         }
 
         private void SetupDataGridView()
         {
             dgvServices.Columns.Clear();
-            dgvServices.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgvServices.EditMode            = DataGridViewEditMode.EditProgrammatically;
+            dgvServices.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colSTT", HeaderText = "STT", Width = 60 });
-            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colId", HeaderText = "Mã dịch vụ", Width = 120 });
-            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colName", HeaderText = "Tên dịch vụ", MinimumWidth = 200 });
-            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPrice", HeaderText = "Giá dịch vụ", Width = 180 });
-            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStatus", HeaderText = "Trạng thái", Width = 180 });
+            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colSTT",    HeaderText = "STT",         FillWeight = 45  });
+            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colId",     HeaderText = "Mã dịch vụ", FillWeight = 80  });
+            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colName",   HeaderText = "Tên dịch vụ", FillWeight = 200 });
+            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPrice",  HeaderText = "Giá dịch vụ", FillWeight = 130 });
+            dgvServices.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStatus", HeaderText = "Trạng thái",  FillWeight = 130 });
+            dgvServices.Columns.Add(new DataGridViewButtonColumn  { Name = "colView",   HeaderText = "", Text = "👁", UseColumnTextForButtonValue = true, FillWeight = 45 });
+            dgvServices.Columns.Add(new DataGridViewButtonColumn  { Name = "colEdit",   HeaderText = "", Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 45 });
+            dgvServices.Columns.Add(new DataGridViewButtonColumn  { Name = "colDelete", HeaderText = "", Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 45 });
 
-            dgvServices.Columns.Add(new DataGridViewButtonColumn { Name = "colView", HeaderText = "Xem", Text = "👁", UseColumnTextForButtonValue = true, Width = 70 });
-            dgvServices.Columns.Add(new DataGridViewButtonColumn { Name = "colEdit", HeaderText = "Sửa", Text = "✏", UseColumnTextForButtonValue = true, Width = 70 });
-            dgvServices.Columns.Add(new DataGridViewButtonColumn { Name = "colDelete", HeaderText = "Xóa", Text = "🗑", UseColumnTextForButtonValue = true, Width = 70 });
-
-            dgvServices.Columns["colName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            dgvServices.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            dgvServices.ColumnHeadersDefaultCellStyle.Font      = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvServices.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(132, 112, 255);
             dgvServices.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvServices.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvServices.EnableHeadersVisualStyles = false;
-            dgvServices.RowTemplate.Height = 45;
-            dgvServices.DefaultCellStyle.Font = new Font("Segoe UI", 10);
-            dgvServices.DefaultCellStyle.SelectionBackColor = Color.FromArgb(200, 191, 255);
-            dgvServices.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvServices.ColumnHeadersHeight                     = 42;
+            dgvServices.EnableHeadersVisualStyles               = false;
+            dgvServices.RowTemplate.Height                      = 45;
+            dgvServices.DefaultCellStyle.Font                   = new Font("Segoe UI", 10);
+            dgvServices.DefaultCellStyle.SelectionBackColor     = Color.FromArgb(200, 191, 255);
+            dgvServices.DefaultCellStyle.SelectionForeColor     = Color.Black;
             dgvServices.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 244, 255);
         }
 
@@ -101,7 +110,7 @@ namespace Quan_ly_KS.All_User_Control
                 }
             }
 
-            lblCount.Text = string.Format("Hiển thị {0} dịch vụ", dgvServices.Rows.Count);
+            lblBreadcrumb.Text = string.Format("Quản lý dịch vụ  /  Danh sách dịch vụ   –   {0} dịch vụ", dgvServices.Rows.Count);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -111,6 +120,7 @@ namespace Quan_ly_KS.All_User_Control
             txtPrice.Clear();
             cmbFormStatus.SelectedIndex = 0;
             lblFormTitle.Text = "Thêm Dịch Vụ";
+            CenterFormPanel();
             pnlForm.Visible = true;
             pnlForm.BringToFront();
         }
@@ -182,6 +192,7 @@ namespace Quan_ly_KS.All_User_Control
                     txtPrice.Text = row["price"].ToString();
                     cmbFormStatus.SelectedItem = row["status"].ToString();
                     lblFormTitle.Text = "Cập Nhật Dịch Vụ";
+                    CenterFormPanel();
                     pnlForm.Visible = true;
                     pnlForm.BringToFront();
                 }

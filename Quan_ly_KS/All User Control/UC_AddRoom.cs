@@ -35,30 +35,40 @@ namespace Quan_ly_KS.All_User_Control
             cmbFormBed.Items.AddRange(new string[] { "Single", "Double", "Triple" });
             cmbFormBed.SelectedIndex = 0;
 
+            this.Resize += (s, ev) => CenterFormPanel();
+
             LoadData();
+            CenterFormPanel();
+        }
+
+        private void CenterFormPanel()
+        {
+            if (pnlForm == null) return;
+            pnlForm.Left = (Width  - pnlForm.Width)  / 2;
+            pnlForm.Top  = (Height - pnlForm.Height) / 2;
         }
 
         private void SetupGrid()
         {
             dgvRooms.Columns.Clear();
-            dgvRooms.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgvRooms.EditMode             = DataGridViewEditMode.EditProgrammatically;
+            dgvRooms.AutoSizeColumnsMode  = DataGridViewAutoSizeColumnsMode.Fill;
 
             dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRawId",    HeaderText = "",                Visible = false });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colSTT",      HeaderText = "STT",             Width = 60 });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRoomNo",   HeaderText = "Số Phòng",        MinimumWidth = 150 });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRoomType", HeaderText = "Loại Phòng",      Width = 160 });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colBed",      HeaderText = "Loại Giường",     Width = 160 });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPrice",    HeaderText = "Giá Phòng (VNĐ)", Width = 220 });
-            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStatus",   HeaderText = "Trạng Thái",      Width = 160 });
-            dgvRooms.Columns.Add(new DataGridViewButtonColumn  { Name = "colEdit",     HeaderText = "Sửa",   Text = "✏", UseColumnTextForButtonValue = true, Width = 70 });
-            dgvRooms.Columns.Add(new DataGridViewButtonColumn  { Name = "colDelete",   HeaderText = "Xóa",   Text = "🗑", UseColumnTextForButtonValue = true, Width = 70 });
-
-            dgvRooms.Columns["colRoomNo"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colSTT",      HeaderText = "STT",             FillWeight = 45  });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRoomNo",   HeaderText = "Số Phòng",        FillWeight = 110 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colRoomType", HeaderText = "Loại Phòng",      FillWeight = 110 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colBed",      HeaderText = "Loại Giường",     FillWeight = 110 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colPrice",    HeaderText = "Giá Phòng (VNĐ)", FillWeight = 150 });
+            dgvRooms.Columns.Add(new DataGridViewTextBoxColumn { Name = "colStatus",   HeaderText = "Trạng Thái",      FillWeight = 110 });
+            dgvRooms.Columns.Add(new DataGridViewButtonColumn  { Name = "colEdit",     HeaderText = "",   Text = "✏", UseColumnTextForButtonValue = true, FillWeight = 45 });
+            dgvRooms.Columns.Add(new DataGridViewButtonColumn  { Name = "colDelete",   HeaderText = "",   Text = "🗑", UseColumnTextForButtonValue = true, FillWeight = 45 });
 
             dgvRooms.ColumnHeadersDefaultCellStyle.Font      = new Font("Segoe UI", 10, FontStyle.Bold);
             dgvRooms.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(132, 112, 255);
             dgvRooms.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dgvRooms.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvRooms.ColumnHeadersHeight                     = 42;
             dgvRooms.EnableHeadersVisualStyles               = false;
             dgvRooms.RowTemplate.Height                      = 45;
             dgvRooms.DefaultCellStyle.Font                   = new Font("Segoe UI", 10);
@@ -126,7 +136,7 @@ namespace Quan_ly_KS.All_User_Control
                     }
                 }
 
-                lblCount.Text = string.Format("Hiển thị {0} phòng", dgvRooms.Rows.Count);
+                lblBreadcrumb.Text = string.Format("Quản lý phòng  /  Danh sách phòng   –   {0} phòng", dgvRooms.Rows.Count);
             }
             catch (Exception ex)
             {
