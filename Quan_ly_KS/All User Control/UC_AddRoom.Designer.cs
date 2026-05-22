@@ -21,7 +21,7 @@ namespace Quan_ly_KS.All_User_Control
             this.txtSearch        = new Guna.UI2.WinForms.Guna2TextBox();
             this.cmbFilterStatus  = new Guna.UI2.WinForms.Guna2ComboBox();
             this.dgvRooms         = new Guna.UI2.WinForms.Guna2DataGridView();
-            this.pnlForm          = new System.Windows.Forms.Panel();
+            this.pnlForm          = new Guna.UI2.WinForms.Guna2Panel();
             this.lblFormTitle     = new System.Windows.Forms.Label();
             this.lblRoomNo        = new System.Windows.Forms.Label();
             this.txtFormRoomNo    = new Guna.UI2.WinForms.Guna2TextBox();
@@ -68,42 +68,37 @@ namespace Quan_ly_KS.All_User_Control
             this.lblBreadcrumb.Text      = "Quản lý phòng  /  Danh sách phòng";
             this.lblBreadcrumb.Anchor    = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Top;
 
-            // btnAdd (Anchor Right|Top, inside pnlHeader)
-            this.btnAdd.Anchor                        = System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top;
-            this.btnAdd.BorderRadius                  = 8;
-            this.btnAdd.DisabledState.BorderColor     = System.Drawing.Color.DarkGray;
-            this.btnAdd.DisabledState.FillColor       = System.Drawing.Color.FromArgb(169, 169, 169);
-            this.btnAdd.DisabledState.ForeColor       = System.Drawing.Color.FromArgb(141, 141, 141);
-            this.btnAdd.FillColor                     = System.Drawing.Color.SlateBlue;
-            this.btnAdd.Font                          = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAdd.ForeColor                     = System.Drawing.Color.White;
-            // Right-anchored: distance from right = 24px
-            this.btnAdd.Location                      = new System.Drawing.Point(1658, 22);
-            this.btnAdd.Name                          = "btnAdd";
-            this.btnAdd.Size                          = new System.Drawing.Size(200, 45);
-            this.btnAdd.Text                          = "+ Thêm Phòng";
+            // btnAdd
+            this.btnAdd.BorderRadius              = 8;
+            this.btnAdd.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnAdd.DisabledState.FillColor   = System.Drawing.Color.FromArgb(169, 169, 169);
+            this.btnAdd.DisabledState.ForeColor   = System.Drawing.Color.FromArgb(141, 141, 141);
+            this.btnAdd.FillColor                 = System.Drawing.Color.SlateBlue;
+            this.btnAdd.Font                      = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnAdd.ForeColor                 = System.Drawing.Color.White;
+            this.btnAdd.Location                  = new System.Drawing.Point(20, 22);
+            this.btnAdd.Name                      = "btnAdd";
+            this.btnAdd.Size                      = new System.Drawing.Size(200, 45);
+            this.btnAdd.Top                       = 22;
+            this.btnAdd.Text                      = "+ Thêm Phòng";
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
 
-            // cmbFilterStatus (Anchor Right|Top, inside pnlHeader)
-            this.cmbFilterStatus.Anchor                  = System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top;
+            // cmbFilterStatus
             this.cmbFilterStatus.BorderRadius            = 8;
             this.cmbFilterStatus.DisabledState.FillColor = System.Drawing.Color.FromArgb(226, 226, 226);
             this.cmbFilterStatus.FillColor               = System.Drawing.Color.WhiteSmoke;
             this.cmbFilterStatus.Font                    = new System.Drawing.Font("Segoe UI", 10F);
-            // Right-anchored: btnAdd.Left(1658) - 12 gap - 210 width = 1436
-            this.cmbFilterStatus.Location                = new System.Drawing.Point(1436, 26);
+            this.cmbFilterStatus.Location                = new System.Drawing.Point(20, 26);
             this.cmbFilterStatus.Name                    = "cmbFilterStatus";
             this.cmbFilterStatus.Size                    = new System.Drawing.Size(210, 40);
             this.cmbFilterStatus.SelectedIndexChanged += new System.EventHandler(this.cmbFilterStatus_SelectedIndexChanged);
 
-            // txtSearch (Anchor Right|Top, inside pnlHeader)
-            this.txtSearch.Anchor                  = System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Top;
+            // txtSearch
             this.txtSearch.BorderRadius            = 8;
             this.txtSearch.DisabledState.FillColor = System.Drawing.Color.FromArgb(226, 226, 226);
             this.txtSearch.FillColor               = System.Drawing.Color.WhiteSmoke;
             this.txtSearch.Font                    = new System.Drawing.Font("Segoe UI", 10F);
-            // Right-anchored: cmbFilter.Left(1436) - 12 gap - 220 width = 1204
-            this.txtSearch.Location                = new System.Drawing.Point(1204, 26);
+            this.txtSearch.Location                = new System.Drawing.Point(20, 26);
             this.txtSearch.Name                    = "txtSearch";
             this.txtSearch.PlaceholderText         = "Tìm kiếm số phòng...";
             this.txtSearch.Size                    = new System.Drawing.Size(220, 40);
@@ -130,11 +125,13 @@ namespace Quan_ly_KS.All_User_Control
             this.dgvRooms.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRooms_CellContentClick);
 
             // ── pnlForm (overlay, centered via CenterFormPanel) ───────
-            this.pnlForm.BackColor   = System.Drawing.Color.White;
-            this.pnlForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlForm.Name        = "pnlForm";
-            this.pnlForm.Size        = new System.Drawing.Size(600, 555);
-            this.pnlForm.Visible     = false;
+            this.pnlForm.FillColor       = System.Drawing.Color.White;
+            this.pnlForm.BorderRadius    = 12;
+            this.pnlForm.BorderColor     = System.Drawing.Color.FromArgb(100, 132, 112, 255);
+            this.pnlForm.BorderThickness = 2;
+            this.pnlForm.Name            = "pnlForm";
+            this.pnlForm.Size            = new System.Drawing.Size(500, 394);
+            this.pnlForm.Visible         = false;
             this.pnlForm.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.lblFormTitle, this.lblRoomNo, this.txtFormRoomNo,
                 this.lblRoomType, this.cmbFormRoomType,
@@ -143,111 +140,113 @@ namespace Quan_ly_KS.All_User_Control
                 this.lblFormStatus, this.cmbFormStatus,
                 this.btnSave, this.btnCancel
             });
+            this.pnlForm.ShadowDecoration.Enabled = true;
+            this.pnlForm.ShadowDecoration.Color   = System.Drawing.Color.FromArgb(55, 132, 112, 255);
+            this.pnlForm.ShadowDecoration.Depth   = 14;
 
             // lblFormTitle
             this.lblFormTitle.AutoSize  = true;
-            this.lblFormTitle.Font      = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblFormTitle.Font      = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
             this.lblFormTitle.ForeColor = System.Drawing.Color.SlateBlue;
-            this.lblFormTitle.Location  = new System.Drawing.Point(20, 20);
+            this.lblFormTitle.Location  = new System.Drawing.Point(18, 16);
             this.lblFormTitle.Name      = "lblFormTitle";
             this.lblFormTitle.Text      = "Thêm Phòng";
 
-            // Số Phòng
+            // Số Phòng  (field 0: label top=48, input top=65)
             this.lblRoomNo.AutoSize  = true;
             this.lblRoomNo.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblRoomNo.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblRoomNo.Location  = new System.Drawing.Point(20, 78);
+            this.lblRoomNo.Location  = new System.Drawing.Point(18, 48);
             this.lblRoomNo.Name      = "lblRoomNo";
             this.lblRoomNo.Text      = "Số Phòng";
 
-            this.txtFormRoomNo.BorderRadius  = 8;
-            this.txtFormRoomNo.FillColor     = System.Drawing.Color.WhiteSmoke;
-            this.txtFormRoomNo.Font          = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtFormRoomNo.Location      = new System.Drawing.Point(20, 103);
-            this.txtFormRoomNo.Name          = "txtFormRoomNo";
+            this.txtFormRoomNo.BorderRadius    = 8;
+            this.txtFormRoomNo.FillColor       = System.Drawing.Color.WhiteSmoke;
+            this.txtFormRoomNo.Font            = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtFormRoomNo.Location        = new System.Drawing.Point(18, 65);
+            this.txtFormRoomNo.Name            = "txtFormRoomNo";
             this.txtFormRoomNo.PlaceholderText = "Nhập số phòng (VD: 101)";
-            this.txtFormRoomNo.Size          = new System.Drawing.Size(555, 40);
+            this.txtFormRoomNo.Size            = new System.Drawing.Size(464, 35);
 
-            // Loại Phòng
+            // Loại Phòng  (field 1: label top=104, input top=121)
             this.lblRoomType.AutoSize  = true;
             this.lblRoomType.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblRoomType.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblRoomType.Location  = new System.Drawing.Point(20, 160);
+            this.lblRoomType.Location  = new System.Drawing.Point(18, 104);
             this.lblRoomType.Name      = "lblRoomType";
             this.lblRoomType.Text      = "Loại Phòng";
 
             this.cmbFormRoomType.BorderRadius = 8;
             this.cmbFormRoomType.FillColor    = System.Drawing.Color.WhiteSmoke;
             this.cmbFormRoomType.Font         = new System.Drawing.Font("Segoe UI", 10F);
-            this.cmbFormRoomType.Location     = new System.Drawing.Point(20, 185);
+            this.cmbFormRoomType.Location     = new System.Drawing.Point(18, 121);
             this.cmbFormRoomType.Name         = "cmbFormRoomType";
-            this.cmbFormRoomType.Size         = new System.Drawing.Size(555, 40);
+            this.cmbFormRoomType.Size         = new System.Drawing.Size(464, 35);
 
-            // Loại Giường
+            // Loại Giường  (field 2: label top=160, input top=177)
             this.lblBed.AutoSize  = true;
             this.lblBed.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblBed.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblBed.Location  = new System.Drawing.Point(20, 242);
+            this.lblBed.Location  = new System.Drawing.Point(18, 160);
             this.lblBed.Name      = "lblBed";
             this.lblBed.Text      = "Loại Giường";
 
             this.cmbFormBed.BorderRadius = 8;
             this.cmbFormBed.FillColor    = System.Drawing.Color.WhiteSmoke;
             this.cmbFormBed.Font         = new System.Drawing.Font("Segoe UI", 10F);
-            this.cmbFormBed.Location     = new System.Drawing.Point(20, 267);
+            this.cmbFormBed.Location     = new System.Drawing.Point(18, 177);
             this.cmbFormBed.Name         = "cmbFormBed";
-            this.cmbFormBed.Size         = new System.Drawing.Size(555, 40);
+            this.cmbFormBed.Size         = new System.Drawing.Size(464, 35);
 
-            // Giá Phòng
+            // Giá Phòng  (field 3: label top=216, input top=233)
             this.lblPrice.AutoSize  = true;
             this.lblPrice.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblPrice.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblPrice.Location  = new System.Drawing.Point(20, 324);
+            this.lblPrice.Location  = new System.Drawing.Point(18, 216);
             this.lblPrice.Name      = "lblPrice";
             this.lblPrice.Text      = "Giá Phòng (VNĐ)";
 
             this.txtFormPrice.BorderRadius    = 8;
             this.txtFormPrice.FillColor       = System.Drawing.Color.WhiteSmoke;
             this.txtFormPrice.Font            = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtFormPrice.Location        = new System.Drawing.Point(20, 349);
+            this.txtFormPrice.Location        = new System.Drawing.Point(18, 233);
             this.txtFormPrice.Name            = "txtFormPrice";
             this.txtFormPrice.PlaceholderText = "Nhập giá (VD: 500000)";
-            this.txtFormPrice.Size            = new System.Drawing.Size(555, 40);
+            this.txtFormPrice.Size            = new System.Drawing.Size(464, 35);
 
-            // Trạng Thái
+            // Trạng Thái  (field 4: label top=272, input top=289)
             this.lblFormStatus.AutoSize  = true;
             this.lblFormStatus.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblFormStatus.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblFormStatus.Location  = new System.Drawing.Point(20, 406);
+            this.lblFormStatus.Location  = new System.Drawing.Point(18, 272);
             this.lblFormStatus.Name      = "lblFormStatus";
             this.lblFormStatus.Text      = "Trạng Thái";
 
             this.cmbFormStatus.BorderRadius = 8;
             this.cmbFormStatus.FillColor    = System.Drawing.Color.WhiteSmoke;
             this.cmbFormStatus.Font         = new System.Drawing.Font("Segoe UI", 10F);
-            this.cmbFormStatus.Location     = new System.Drawing.Point(20, 431);
+            this.cmbFormStatus.Location     = new System.Drawing.Point(18, 289);
             this.cmbFormStatus.Name         = "cmbFormStatus";
-            this.cmbFormStatus.Size         = new System.Drawing.Size(555, 40);
+            this.cmbFormStatus.Size         = new System.Drawing.Size(464, 35);
 
-            // btnSave
+            // btnSave / btnCancel  (btnY = 289+35+14 = 338)
             this.btnSave.BorderRadius = 8;
             this.btnSave.FillColor    = System.Drawing.Color.SlateBlue;
             this.btnSave.Font         = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSave.ForeColor    = System.Drawing.Color.White;
-            this.btnSave.Location     = new System.Drawing.Point(20, 490);
+            this.btnSave.Location     = new System.Drawing.Point(18, 338);
             this.btnSave.Name         = "btnSave";
-            this.btnSave.Size         = new System.Drawing.Size(160, 45);
+            this.btnSave.Size         = new System.Drawing.Size(150, 40);
             this.btnSave.Text         = "Lưu";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 
-            // btnCancel
             this.btnCancel.BorderRadius = 8;
             this.btnCancel.FillColor    = System.Drawing.Color.FromArgb(220, 220, 220);
             this.btnCancel.Font         = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancel.ForeColor    = System.Drawing.Color.FromArgb(80, 80, 80);
-            this.btnCancel.Location     = new System.Drawing.Point(200, 490);
+            this.btnCancel.Location     = new System.Drawing.Point(178, 338);
             this.btnCancel.Name         = "btnCancel";
-            this.btnCancel.Size         = new System.Drawing.Size(160, 45);
+            this.btnCancel.Size         = new System.Drawing.Size(150, 40);
             this.btnCancel.Text         = "Hủy";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 
@@ -282,7 +281,7 @@ namespace Quan_ly_KS.All_User_Control
         private Guna.UI2.WinForms.Guna2TextBox           txtSearch;
         private Guna.UI2.WinForms.Guna2ComboBox          cmbFilterStatus;
         private Guna.UI2.WinForms.Guna2DataGridView      dgvRooms;
-        private System.Windows.Forms.Panel               pnlForm;
+        private Guna.UI2.WinForms.Guna2Panel              pnlForm;
         private System.Windows.Forms.Label               lblFormTitle;
         private System.Windows.Forms.Label               lblRoomNo;
         private Guna.UI2.WinForms.Guna2TextBox           txtFormRoomNo;

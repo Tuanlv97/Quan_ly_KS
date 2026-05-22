@@ -2,6 +2,7 @@ using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace Quan_ly_KS.All_User_Control
 {
@@ -35,10 +36,21 @@ namespace Quan_ly_KS.All_User_Control
             cmbFormBed.Items.AddRange(new string[] { "Single", "Double", "Triple" });
             cmbFormBed.SelectedIndex = 0;
 
+            // Dynamic header layout — same pattern as UC_Emloyee
+            Action layoutHeader = () => {
+                if (pnlHeader.Width < 300) return;
+                btnAdd.Left          = pnlHeader.Width - btnAdd.Width - 24;
+                cmbFilterStatus.Left = btnAdd.Left - cmbFilterStatus.Width - 12;
+                txtSearch.Left       = cmbFilterStatus.Left - txtSearch.Width - 12;
+            };
+            pnlHeader.Resize        += (s, ev) => layoutHeader();
+            pnlHeader.HandleCreated += (s, ev) => layoutHeader();
+
             this.Resize += (s, ev) => CenterFormPanel();
 
             LoadData();
             CenterFormPanel();
+            layoutHeader();
         }
 
         private void CenterFormPanel()
