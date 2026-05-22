@@ -32,13 +32,13 @@ namespace Quan_ly_KS
             guna2Panel1.Location = new Point(NAV_LEFT, NAV_TOP);
             guna2Panel1.Size = new Size(navW, NAV_H);
 
-            // Chia đều 8 nút, chừa 290px bên phải cho user profile
+            // Chia đều các nút visible, chừa 290px bên phải cho user profile
             const int PROFILE_W = 290;
             int availForBtns = navW - PROFILE_W - 20;
             var navBtns = new Guna2Button[] {
                 btnTongQuan, btnAddRoom, btnCustomerRes, btnCheckOut,
                 btnCustomerDetail, btnEmployee, btnDichVu, btnDichVuKhach
-            };
+            }.Where(b => b.Visible).ToArray();
             int spacing = availForBtns / navBtns.Length;
             int btnW = spacing - 6;
             float fs = Math.Max(7f, Math.Min(10f, btnW * 10f / 179f));
@@ -94,11 +94,23 @@ namespace Quan_ly_KS
             Application.Exit();
         }
 
+        private bool IsAdmin =>
+            string.Equals(Session.RoleName, "Admin", StringComparison.OrdinalIgnoreCase);
+
         private void Dashboard_Load(object sender, EventArgs e)
         {
+            bool isAdmin = IsAdmin;
+            btnTongQuan.Visible = isAdmin;
+            btnAddRoom.Visible = isAdmin;
+            btnEmployee.Visible = isAdmin;
+
             HideAllUCs();
             LayoutDashboard();
-            btnTongQuan.PerformClick();
+
+            if (isAdmin)
+                btnTongQuan.PerformClick();
+            else
+                btnCustomerRes.PerformClick();
 
             string name = Session.EmployeeName;
             string role = Session.RoleName;
@@ -162,7 +174,7 @@ namespace Quan_ly_KS
         }
 
         public void ShowBookingTab() { btnCustomerRes.PerformClick(); }
-        public void ShowEmployeeTab() { btnEmployee.PerformClick(); }
+        public void ShowEmployeeTab() { if (IsAdmin) btnEmployee.PerformClick(); }
 
         private void btnAddRoom_Click(object sender, EventArgs e)
         {
