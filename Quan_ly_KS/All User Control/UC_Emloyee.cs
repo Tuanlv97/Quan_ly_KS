@@ -18,7 +18,7 @@ namespace Quan_ly_KS.All_User_Control
         private Label lblCount;
 
         // Form overlay controls (Guna2 to match UC_DichVu)
-        private Panel pnlForm;
+        private Guna2Panel pnlForm;
         private Label lblFormTitle;
         private Guna2TextBox fEname, fMobile, fEmail, fUser, fPass;
         private Guna2ComboBox fGender;
@@ -153,41 +153,44 @@ namespace Quan_ly_KS.All_User_Control
             dgvEmployees.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 244, 255);
         }
 
-        // ─── FORM OVERLAY — matching UC_DichVu exact measurements ─────────────────
-        // UC_DichVu: pnlForm 600×410, lx=20, fw=555, inputH=40
-        // Label→input gap: 25px; fieldGap: 82px; startY: 78; btn gap: 33px
+        // ─── FORM OVERLAY ─────────────────────────────────────────────────────────
 
         private void BuildFormPanel()
         {
-            const int formW  = 600;
-            const int lx     = 20;
-            const int fw     = 555;
-            const int inputH = 40;
-            const int startY = 78;  // first label top (same as UC_DichVu)
-            const int l2i    = 25;  // label-to-input vertical offset
-            const int fGap   = 82;  // between consecutive label tops
-            const int btnGap = 33;  // gap between last input bottom and button top
+            const int formW  = 500;
+            const int lx     = 18;
+            const int fw     = 464;  // formW - 2*lx
+            const int inputH = 35;
+            const int startY = 48;
+            const int l2i    = 17;   // label-to-input vertical offset
+            const int fGap   = 56;   // between consecutive label tops
+            const int btnGap = 14;
 
             // 7 fields → last input bottom, then button row
-            int lastInputBot = startY + l2i + 6 * fGap + inputH;  // 78+25+492+40 = 635
-            int btnY         = lastInputBot + btnGap;               // 635+33 = 668
-            int formH        = btnY + 45 + 25;                      // 668+45+25 = 738
+            int lastInputBot = startY + l2i + 6 * fGap + inputH;
+            int btnY         = lastInputBot + btnGap;
+            int formH        = btnY + 40 + 16;
 
-            pnlForm = new Panel {
+            pnlForm = new Guna2Panel {
                 Width = formW, Height = formH,
-                BackColor = Color.White,
-                Visible = false,
-                BorderStyle = BorderStyle.FixedSingle
+                FillColor = Color.White,
+                BorderRadius = 12,
+                BorderColor = Color.FromArgb(100, 132, 112, 255),
+                BorderThickness = 2,
+                Visible = false
             };
+            pnlForm.ShadowDecoration.Enabled = true;
+            pnlForm.ShadowDecoration.Color   = Color.FromArgb(55, 132, 112, 255);
+            pnlForm.ShadowDecoration.Depth   = 14;
             this.SizeChanged    += (s, e) => CenterFormPanel();
             this.HandleCreated  += (s, e) => CenterFormPanel();
 
-            // Title — SlateBlue like UC_DichVu lblFormTitle
+            // Title
             lblFormTitle = new Label {
                 Text = "Thêm Nhân Viên",
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 ForeColor = Color.SlateBlue,
-                AutoSize = true, Left = lx, Top = 20
+                AutoSize = true, Left = lx, Top = 16
             };
             pnlForm.Controls.Add(lblFormTitle);
 
@@ -235,26 +238,24 @@ namespace Quan_ly_KS.All_User_Control
 
             pnlForm.Controls.AddRange(new Control[] { fEname, fGender, fMobile, fEmail, fUser, fPass, fRole });
 
-            // Guna2Button Lưu — matching UC_DichVu btnSave (SlateBlue, BorderRadius=8, 160×45)
             var btnSave = new Guna2Button {
                 BorderRadius = 8,
                 FillColor = Color.SlateBlue,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Text = "Lưu",
-                Left = lx, Top = btnY, Width = 160, Height = 45,
+                Left = lx, Top = btnY, Width = 150, Height = 40,
                 Cursor = Cursors.Hand
             };
             btnSave.Click += BtnSave_Click;
 
-            // Guna2Button Hủy — matching UC_DichVu btnCancel (grey, BorderRadius=8, 160×45)
             var btnCancel = new Guna2Button {
                 BorderRadius = 8,
                 FillColor = Color.FromArgb(220, 220, 220),
                 ForeColor = Color.FromArgb(80, 80, 80),
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 Text = "Hủy",
-                Left = 200, Top = btnY, Width = 160, Height = 45,
+                Left = lx + 160, Top = btnY, Width = 150, Height = 40,
                 Cursor = Cursors.Hand
             };
             btnCancel.Click += (s, e) => pnlForm.Visible = false;

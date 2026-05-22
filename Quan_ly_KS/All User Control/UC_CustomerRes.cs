@@ -18,7 +18,8 @@ namespace Quan_ly_KS.All_User_Control
         private DataGridView  dgvCustomers;
         private Guna2TextBox  txtSearch;
         private Label         lblCount;
-        private Panel         pnlForm;
+        private Guna2Panel    pnlForm;
+        private Panel         _overlay;
         private Label         lblFormTitle;
 
         private Guna2ComboBox       fGuestSearch;
@@ -116,65 +117,85 @@ namespace Quan_ly_KS.All_User_Control
             // ── Overlay form ──────────────────────────────────────────
             BuildFormPanel();
 
+            // ── Dim overlay (shown behind modal) ──────────────────────
+            _overlay = new Panel {
+                BackColor = Color.FromArgb(210, 208, 220),
+                Visible   = false
+            };
+            _overlay.Click += (s, e) => { _overlay.Visible = false; pnlForm.Visible = false; };
+
             // ── Wire root events ──────────────────────────────────────
             btnAdd.Click          += (s, e) => ShowForm(-1);
             txtSearch.TextChanged += (s, e) => LoadData();
             this.SizeChanged      += (s, e) => CenterFormPanel();
             this.HandleCreated    += (s, e) => { LoadData(); CenterFormPanel(); };
 
-            // Fill first → DockTop inner→outer → overlay last
+            // Fill first → DockTop inner→outer → overlay → modal last
             this.Controls.Add(pnlGrid);
             this.Controls.Add(sep);
             this.Controls.Add(pnlHeader);
+            this.Controls.Add(_overlay);
             this.Controls.Add(pnlForm);
         }
 
         private void BuildFormPanel()
         {
-            const int formW = 860, lx = 20, col2x = 460, colW = 380, inputH = 40;
-            const int startY = 130, l2i = 25, fGap = 82, btnGap = 33;
-            int lastBot = startY + l2i + 5 * fGap + inputH; // 605
-            int btnY    = lastBot + btnGap;                  // 638
-            int formH   = btnY + 45 + 25;                   // 708
+            const int formW = 680, lx = 18, col2x = 354, colW = 308, inputH = 30;
+            const int startY = 118, l2i = 17, fGap = 56, btnGap = 14;
+            int lastBot = startY + l2i + 5 * fGap + inputH;
+            int btnY    = lastBot + btnGap;
+            int formH   = btnY + 34 + 12;
 
-            pnlForm = new Panel {
-                Width = formW, Height = formH, BackColor = Color.White,
-                Visible = false, BorderStyle = BorderStyle.FixedSingle
+            pnlForm = new Guna2Panel {
+                Width = formW, Height = formH, FillColor = Color.White,
+                Visible = false, BorderRadius = 14,
+                CustomBorderColor = Color.FromArgb(180, 170, 220),
+                CustomBorderThickness = new System.Windows.Forms.Padding(1)
             };
+            pnlForm.ShadowDecoration.Enabled = true;
+            pnlForm.ShadowDecoration.Mode    = Guna.UI2.WinForms.Enums.ShadowMode.Custom;
+            pnlForm.ShadowDecoration.Color   = Color.FromArgb(90, 30, 20, 80);
+            pnlForm.ShadowDecoration.Depth   = 22;
+            pnlForm.ShadowDecoration.Shadow  = new System.Windows.Forms.Padding(4, 4, 14, 14);
 
             lblFormTitle = new Label {
                 Text = "Đặt Phòng Mới",
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 20
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                ForeColor = Color.SlateBlue, AutoSize = true, Left = lx, Top = 14
             };
             pnlForm.Controls.Add(lblFormTitle);
 
             // ── Guest search section (only for new bookings) ─────────
-            AddLbl(pnlForm, lx, 54, "Tìm khách đã có (để điền tự động):");
+            AddLbl(pnlForm, lx, 40, "Tìm khách đã có (để điền tự động):");
             fGuestSearch = new Guna2ComboBox {
-                BorderRadius = 8, FillColor = Color.WhiteSmoke,
-                Font = new Font("Segoe UI", 10F),
-                DropDownStyle = ComboBoxStyle.DropDown,
-                Left = lx, Top = 73, Width = 550, Height = inputH
+                BorderRadius = 6, FillColor = Color.WhiteSmoke,
+                Font = new Font("Segoe UI", 9F),
+                DropDownStyle    = ComboBoxStyle.DropDown,
+                MaxDropDownItems = 8,
+                DropDownHeight   = 220,
+                IntegralHeight   = false,
+                Left = lx, Top = 56, Width = 570, Height = inputH
             };
 
-            lblGuestTag = new Label {
-                Text = "", AutoSize = true,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.White, BackColor = Color.MediumSeaGreen,
-                Left = 580, Top = 84, Padding = new Padding(6, 3, 6, 3),
-                Visible = false
-            };
-
+            // ✕ clear button — right of search box
             var btnClearGuest = new Guna2Button {
-                Text = "Xóa chọn", Left = 580, Top = 73, Width = 90, Height = inputH,
-                BorderRadius = 8, FillColor = Color.FromArgb(200, 200, 200), ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9F), Cursor = Cursors.Hand
+                Text = "✕", Left = 596, Top = 56, Width = 66, Height = inputH,
+                BorderRadius = 6, FillColor = Color.FromArgb(190, 190, 195), ForeColor = Color.White,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold), Cursor = Cursors.Hand
             };
             btnClearGuest.Click += (s, e) => ClearGuestSelection();
 
+            // Badge shown below combo when a returning guest is selected
+            lblGuestTag = new Label {
+                Text = "", AutoSize = true,
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                ForeColor = Color.White, BackColor = Color.MediumSeaGreen,
+                Left = lx, Top = 90, Padding = new Padding(6, 2, 6, 2),
+                Visible = false
+            };
+
             var sepGuest = new Panel {
-                Left = lx, Top = 122, Width = formW - 40, Height = 1,
+                Left = lx, Top = 112, Width = formW - 40, Height = 1,
                 BackColor = Color.FromArgb(220, 220, 220)
             };
 
@@ -199,7 +220,7 @@ namespace Quan_ly_KS.All_User_Control
 
             AddLbl(pnlForm, lx, startY + 4 * fGap, "Ngày Sinh");
             fDob = new Guna2DateTimePicker {
-                FillColor = Color.WhiteSmoke, Font = new Font("Segoe UI", 10F),
+                FillColor = Color.WhiteSmoke, Font = new Font("Segoe UI", 9F),
                 Format = DateTimePickerFormat.Short, Left = lx,
                 Top = startY + 4 * fGap + l2i, Width = colW, Height = inputH,
                 Value = DateTime.Now.AddYears(-20)
@@ -214,7 +235,7 @@ namespace Quan_ly_KS.All_User_Control
 
             AddLbl(pnlForm, col2x, startY + 1 * fGap, "Ngày Check-in");
             fCheckin = new Guna2DateTimePicker {
-                FillColor = Color.WhiteSmoke, Font = new Font("Segoe UI", 10F),
+                FillColor = Color.WhiteSmoke, Font = new Font("Segoe UI", 9F),
                 Format = DateTimePickerFormat.Short, Left = col2x,
                 Top = startY + 1 * fGap + l2i, Width = colW, Height = inputH,
                 Value = DateTime.Now
@@ -235,18 +256,18 @@ namespace Quan_ly_KS.All_User_Control
 
             // ── Buttons ───────────────────────────────────────────────
             var btnSave = new Guna2Button {
-                Text = "Lưu", Left = lx, Top = btnY, Width = 160, Height = 45,
+                Text = "Lưu", Left = lx, Top = btnY, Width = 140, Height = 34,
                 BorderRadius = 8, FillColor = Color.SlateBlue, ForeColor = Color.White,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold), Cursor = Cursors.Hand
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), Cursor = Cursors.Hand
             };
             var btnCancel = new Guna2Button {
-                Text = "Hủy", Left = lx + 180, Top = btnY, Width = 160, Height = 45,
+                Text = "Hủy", Left = lx + 158, Top = btnY, Width = 140, Height = 34,
                 BorderRadius = 8, FillColor = Color.FromArgb(180, 180, 180), ForeColor = Color.White,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold), Cursor = Cursors.Hand
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold), Cursor = Cursors.Hand
             };
 
             btnSave.Click   += BtnSave_Click;
-            btnCancel.Click += (s, e) => pnlForm.Visible = false;
+            btnCancel.Click += (s, e) => { pnlForm.Visible = false; if (_overlay != null) _overlay.Visible = false; };
 
             fBed.SelectedIndexChanged      += FBed_SelectedIndexChanged;
             fRoomType.SelectedIndexChanged += FRoomType_SelectedIndexChanged;
@@ -285,11 +306,11 @@ namespace Quan_ly_KS.All_User_Control
 
         private void GuestSearch_TextChanged(object sender, EventArgs e)
         {
-            // Skip if text changed because user selected an item (not because they typed)
             if (fGuestSearch.SelectedItem != null && fGuestSearch.SelectedItem.ToString() == fGuestSearch.Text)
                 return;
             _selectedGuestId = -1;
-            LoadGuestList(fGuestSearch.Text.Trim(), openDropDown: false);
+            string kw = fGuestSearch.Text.Trim();
+            LoadGuestList(kw, openDropDown: kw.Length > 0);
         }
 
         private void GuestSearch_Selected(object sender, EventArgs e)
@@ -345,23 +366,23 @@ namespace Quan_ly_KS.All_User_Control
         {
             parent.Controls.Add(new Label {
                 Text = text, AutoSize = true, Left = x, Top = y,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(80, 80, 80)
             });
         }
 
         private static Guna2TextBox G2Txt(int x, int y, int w, int h, string ph) =>
             new Guna2TextBox {
-                BorderRadius = 8, FillColor = Color.WhiteSmoke,
-                Font = new Font("Segoe UI", 10F),
+                BorderRadius = 6, FillColor = Color.WhiteSmoke,
+                Font = new Font("Segoe UI", 9F),
                 PlaceholderText = ph, Left = x, Top = y, Width = w, Height = h
             };
 
         private static Guna2ComboBox G2Combo(int x, int y, int w, int h, string[] items)
         {
             var cb = new Guna2ComboBox {
-                BorderRadius = 8, FillColor = Color.WhiteSmoke,
-                Font = new Font("Segoe UI", 10F),
+                BorderRadius = 6, FillColor = Color.WhiteSmoke,
+                Font = new Font("Segoe UI", 9F),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Left = x, Top = y, Width = w, Height = h
             };
@@ -390,8 +411,12 @@ namespace Quan_ly_KS.All_User_Control
         private void CenterFormPanel()
         {
             if (pnlForm == null) return;
-            pnlForm.Left = (Width  - pnlForm.Width)  / 2;
-            pnlForm.Top  = (Height - pnlForm.Height) / 2;
+            const int headerH = 74;
+            int availH = Height - headerH;
+            pnlForm.Left = Math.Max(10, (Width - pnlForm.Width) / 2);
+            pnlForm.Top  = headerH + Math.Max(8, (availH - pnlForm.Height) / 2);
+            if (_overlay != null)
+                _overlay.SetBounds(0, headerH, Width, availH);
         }
 
         public void Reload() => LoadData();
@@ -470,7 +495,7 @@ namespace Quan_ly_KS.All_User_Control
             fGuestSearch.Visible  = isNew;
             lblGuestTag.Visible   = false;
             foreach (Control c in pnlForm.Controls)
-                if (c.Top == 54 && c is Label l && l.Text.Contains("Tìm khách"))
+                if (c.Top == 40 && c is Label l && l.Text.Contains("Tìm khách"))
                     l.Visible = isNew;
 
             if (isNew)
@@ -515,6 +540,7 @@ namespace Quan_ly_KS.All_User_Control
             }
 
             CenterFormPanel();
+            if (_overlay != null) { _overlay.BringToFront(); _overlay.Visible = true; }
             pnlForm.Visible = true;
             pnlForm.BringToFront();
         }
@@ -653,6 +679,7 @@ namespace Quan_ly_KS.All_User_Control
             }
 
             pnlForm.Visible = false;
+            if (_overlay != null) _overlay.Visible = false;
             LoadData();
         }
 
