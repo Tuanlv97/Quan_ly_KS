@@ -233,12 +233,13 @@ namespace Quan_ly_KS.All_User_Control
             var pnlContent = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Padding = new Padding(PAD, 8, PAD, PAD) };
 
             // ── Right panel (Dock Right, fixed width) ─────────────────────────
-            const int R_W = 400;
-            int iw = R_W - 32;   // 368
+            const int R_W = 330;
+            int iw = R_W - 32;   // 298
 
             var pnlRight = new Panel { Dock = DockStyle.Right, Width = R_W, BackColor = Color.White, BorderStyle = BorderStyle.FixedSingle };
 
             var pnlHdr = new Panel { Location = new Point(0, 0), Size = new Size(R_W, 58), BackColor = C_PURPLE };
+
             pnlHdr.Controls.Add(new Label {
                 Text = "Tóm Tắt Thanh Toán", Dock = DockStyle.Fill,
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold),
@@ -344,16 +345,16 @@ namespace Quan_ly_KS.All_User_Control
             };
             ApplyGridStyle(dgvBillDetail);
 
-            var bSTT = new DataGridViewTextBoxColumn { Name = "STT",       HeaderText = "STT",         FillWeight = 25,  MinimumWidth = 50  };
+            var bSTT = new DataGridViewTextBoxColumn { Name = "STT",       HeaderText = "STT",         FillWeight = 8,   MinimumWidth = 40  };
             bSTT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            var bTen = new DataGridViewTextBoxColumn { Name = "TenDV",     HeaderText = "Tên Dịch Vụ", FillWeight = 90,  MinimumWidth = 150 };
-            var bDG  = new DataGridViewTextBoxColumn { Name = "DonGia",    HeaderText = "Đơn Giá",     FillWeight = 110, MinimumWidth = 120 };
+            var bTen = new DataGridViewTextBoxColumn { Name = "TenDV",     HeaderText = "Tên Dịch Vụ", FillWeight = 40,  MinimumWidth = 130 };
+            var bDG  = new DataGridViewTextBoxColumn { Name = "DonGia",    HeaderText = "Đơn Giá",     FillWeight = 18,  MinimumWidth = 85  };
             bDG.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            var bSL  = new DataGridViewTextBoxColumn { Name = "SoLuong",   HeaderText = "Số Lượng",    FillWeight = 80,  MinimumWidth = 90  };
+            var bSL  = new DataGridViewTextBoxColumn { Name = "SoLuong",   HeaderText = "Số Lượng",    FillWeight = 12,  MinimumWidth = 65  };
             bSL.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            var bDVT = new DataGridViewTextBoxColumn { Name = "DVTinh",    HeaderText = "ĐVT",         FillWeight = 90,  MinimumWidth = 90  };
+            var bDVT = new DataGridViewTextBoxColumn { Name = "DVTinh",    HeaderText = "ĐVT",         FillWeight = 12,  MinimumWidth = 60  };
             bDVT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            var bTT  = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "Thành Tiền",  FillWeight = 120, MinimumWidth = 120 };
+            var bTT  = new DataGridViewTextBoxColumn { Name = "ThanhTien", HeaderText = "Thành Tiền",  FillWeight = 20,  MinimumWidth = 95  };
             bTT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvBillDetail.Columns.AddRange(new DataGridViewColumn[] { bSTT, bTen, bDG, bSL, bDVT, bTT });
 
@@ -401,13 +402,13 @@ namespace Quan_ly_KS.All_User_Control
 
         private static Label SumRowLabel(string text, int y) => new Label
         {
-            Text = text, Location = new Point(16, y), Size = new Size(260, 28),
+            Text = text, Location = new Point(16, y), Size = new Size(150, 28),
             Font = new Font("Segoe UI", 10.5F), ForeColor = Color.FromArgb(80, 80, 110)
         };
 
         private static Label SumRowValue(string text, int y, int iw) => new Label
         {
-            Text = text, Location = new Point(280, y), Size = new Size(iw - 264, 28),
+            Text = text, Location = new Point(160, y), Size = new Size(iw - 160 - 16, 28),
             Font = new Font("Segoe UI", 10.5F, FontStyle.Bold),
             ForeColor = C_DARK, TextAlign = ContentAlignment.MiddleRight
         };
