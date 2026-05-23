@@ -300,7 +300,7 @@ namespace Quan_ly_KS.All_User_Control
             tbl.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tbl.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
-            chartWeekly = BuildBarChart("Doanh thu theo tuần", Color.FromArgb(132, 112, 255));
+            chartWeekly = BuildWeeklyRevenueChart();
             chartWeekly.Dock = DockStyle.Fill;
             var pnlW = WrapChart(chartWeekly);
 
@@ -320,6 +320,54 @@ namespace Quan_ly_KS.All_User_Control
             chart.Dock = DockStyle.Fill;
             pnl.Controls.Add(chart);
             return pnl;
+        }
+
+        private Chart BuildWeeklyRevenueChart()
+        {
+            var chart = new Chart { BackColor = Color.White };
+
+            var ca = new ChartArea("main");
+            ca.BackColor = Color.White;
+
+            ca.AxisX.LabelStyle.Font = new Font("Segoe UI", 7.5F);
+            ca.AxisX.LabelStyle.ForeColor = Color.FromArgb(100, 100, 130);
+            ca.AxisX.MajorGrid.Enabled = false;
+            ca.AxisX.LineColor = Color.FromArgb(210, 210, 225);
+            ca.AxisX.MajorTickMark.LineColor = Color.FromArgb(210, 210, 225);
+
+            ca.AxisY.LabelStyle.Font = new Font("Segoe UI", 7.5F);
+            ca.AxisY.LabelStyle.ForeColor = Color.FromArgb(100, 100, 130);
+            ca.AxisY.LabelStyle.Format = "{0:N0}";
+            ca.AxisY.MajorGrid.LineColor = Color.FromArgb(235, 232, 252);
+            ca.AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dash;
+            ca.AxisY.LineColor = Color.Transparent;
+            ca.AxisY.MajorTickMark.Enabled = false;
+            ca.BorderDashStyle = ChartDashStyle.NotSet;
+
+            chart.ChartAreas.Add(ca);
+
+            var t = new Title("Doanh thu theo tuần");
+            t.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            t.ForeColor = Color.FromArgb(50, 50, 90);
+            chart.Titles.Add(t);
+
+            var purple = Color.FromArgb(132, 112, 255);
+            var s = new Series
+            {
+                ChartType = SeriesChartType.SplineArea,
+                Color = Color.FromArgb(70, 132, 112, 255),
+                BorderColor = purple,
+                BorderWidth = 2,
+                MarkerStyle = MarkerStyle.Circle,
+                MarkerSize = 7,
+                MarkerColor = purple,
+                MarkerBorderColor = Color.White,
+                MarkerBorderWidth = 2,
+                IsValueShownAsLabel = false,
+                ToolTip = "#VALX\n#VAL{N0} đ"
+            };
+            chart.Series.Add(s);
+            return chart;
         }
 
         private Chart BuildBarChart(string title, Color barColor)
@@ -556,10 +604,37 @@ namespace Quan_ly_KS.All_User_Control
             }
             catch { }
 
+            long maxVal = 0;
+            foreach (var kv in dict)
+                if (kv.Value > maxVal) maxVal = kv.Value;
+
+            var purple = Color.FromArgb(132, 112, 255);
             foreach (var kv in dict)
             {
                 int idx = chartWeekly.Series[0].Points.AddY(kv.Value);
-                chartWeekly.Series[0].Points[idx].AxisLabel = kv.Key.ToString("dd/MM");
+                var pt = chartWeekly.Series[0].Points[idx];
+                pt.AxisLabel = kv.Key.ToString("dd/MM");
+                pt.ToolTip = kv.Key.ToString("dd/MM/yyyy") + "\n" + string.Format("{0:N0} đ", kv.Value);
+
+                bool isToday = kv.Key == DateTime.Today;
+                bool isPeak = kv.Value == maxVal && maxVal > 0;
+
+                if (isPeak || isToday)
+                {
+                    pt.MarkerSize = 10;
+                    pt.MarkerColor = isToday ? Color.FromArgb(255, 152, 0) : purple;
+                    pt.MarkerBorderColor = Color.White;
+                    pt.MarkerBorderWidth = 2;
+                }
+
+                if (isPeak && maxVal > 0)
+                {
+                    pt.Label = maxVal >= 1_000_000
+                        ? string.Format("{0:0.#}tr", maxVal / 1_000_000.0)
+                        : string.Format("{0:N0}", maxVal);
+                    pt.LabelForeColor = purple;
+                    pt.Font = new Font("Segoe UI", 7.5F, FontStyle.Bold);
+                }
             }
         }
 
