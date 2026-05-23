@@ -198,7 +198,7 @@
             this.btnDichVuKhach.Name = "btnDichVuKhach";
             this.btnDichVuKhach.Size = new System.Drawing.Size(139, 94);
             this.btnDichVuKhach.TabIndex = 1;
-            this.btnDichVuKhach.Text = "DV Khách";
+            this.btnDichVuKhach.Text = "Thuê dịch vụ";
             this.btnDichVuKhach.Click += new System.EventHandler(this.btnDichVuKhach_Click);
             // 
             // btnDichVu
@@ -217,7 +217,7 @@
             this.btnDichVu.Name = "btnDichVu";
             this.btnDichVu.Size = new System.Drawing.Size(139, 94);
             this.btnDichVu.TabIndex = 1;
-            this.btnDichVu.Text = "Dịch Vụ";
+            this.btnDichVu.Text = "Quản lý dịch Vụ";
             this.btnDichVu.Click += new System.EventHandler(this.btnDichVu_Click);
             // 
             // btnEmployee
@@ -293,7 +293,7 @@
             this.btnCustomerRes.Name = "btnCustomerRes";
             this.btnCustomerRes.Size = new System.Drawing.Size(139, 94);
             this.btnCustomerRes.TabIndex = 1;
-            this.btnCustomerRes.Text = "Danh Sách Đặt Phòng";
+            this.btnCustomerRes.Text = "    Đặt Phòng";
             this.btnCustomerRes.Click += new System.EventHandler(this.btnCustomerRes_Click);
             // 
             // btnAddRoom

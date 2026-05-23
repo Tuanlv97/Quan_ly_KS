@@ -23,6 +23,10 @@ namespace Quan_ly_KS.All_User_Control
         private Chart chartWeekly;
         private Chart chartMonthly;
 
+        private Panel _revenueCardPanel;
+        private FlowLayoutPanel _flpStats;
+        private TableLayoutPanel _tblMain;
+
         public UC_Dashboard()
         {
             InitializeComponent();
@@ -56,7 +60,7 @@ namespace Quan_ly_KS.All_User_Control
             pnlTopBar.Controls.Add(lblTitle);
 
             // Stats row
-            var flpStats = new FlowLayoutPanel
+            _flpStats = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
                 Height = 96,
@@ -71,38 +75,43 @@ namespace Quan_ly_KS.All_User_Control
             lblEmptyRooms = new Label();
             lblRevenue = new Label();
 
-            flpStats.Controls.Add(MakeStatCard("Hôm nay: Check-in", Color.FromArgb(33, 150, 243), lblCheckIn));
-            flpStats.Controls.Add(MakeStatCard("Hôm nay: Check-out", Color.FromArgb(76, 175, 80), lblCheckOut));
-            flpStats.Controls.Add(MakeStatCard("Phòng trống", Color.FromArgb(255, 152, 0), lblEmptyRooms));
-            flpStats.Controls.Add(MakeStatCard("Doanh thu hôm nay", Color.FromArgb(132, 112, 255), lblRevenue));
+            _flpStats.Controls.Add(MakeStatCard("Hôm nay: Check-in", Color.FromArgb(33, 150, 243), lblCheckIn));
+            _flpStats.Controls.Add(MakeStatCard("Hôm nay: Check-out", Color.FromArgb(76, 175, 80), lblCheckOut));
+            _flpStats.Controls.Add(MakeStatCard("Phòng trống", Color.FromArgb(255, 152, 0), lblEmptyRooms));
+            _revenueCardPanel = MakeStatCard("Doanh thu hôm nay", Color.FromArgb(132, 112, 255), lblRevenue);
+            _flpStats.Controls.Add(_revenueCardPanel);
 
-            flpStats.Resize += (s, e) =>
+            _flpStats.Resize += (s, e) =>
             {
-                int cardW = (flpStats.ClientSize.Width - 24 - 30) / 4;
-                foreach (Control c in flpStats.Controls)
+                int visibleCount = 0;
+                foreach (Control c in _flpStats.Controls)
+                    if (c.Visible) visibleCount++;
+                if (visibleCount == 0) return;
+                int cardW = (_flpStats.ClientSize.Width - 24 - 30) / visibleCount;
+                foreach (Control c in _flpStats.Controls)
                     c.Width = cardW;
             };
 
             // Main 3-column layout
-            var tblMain = new TableLayoutPanel
+            _tblMain = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 3,
                 RowCount = 1,
                 Padding = new Padding(12, 8, 12, 12)
             };
-            tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 37F));
-            tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38F));
-            tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            _tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 37F));
+            _tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38F));
+            _tblMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            _tblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
 
-            tblMain.Controls.Add(BuildLeftPanel(), 0, 0);
-            tblMain.Controls.Add(BuildMidPanel(), 1, 0);
-            tblMain.Controls.Add(BuildRightPanel(), 2, 0);
+            _tblMain.Controls.Add(BuildLeftPanel(), 0, 0);
+            _tblMain.Controls.Add(BuildMidPanel(), 1, 0);
+            _tblMain.Controls.Add(BuildRightPanel(), 2, 0);
 
             // Add in reverse Dock order
-            this.Controls.Add(tblMain);
-            this.Controls.Add(flpStats);
+            this.Controls.Add(_tblMain);
+            this.Controls.Add(_flpStats);
             this.Controls.Add(pnlTopBar);
         }
 
@@ -372,10 +381,39 @@ namespace Quan_ly_KS.All_User_Control
             return dgv;
         }
 
+        private bool CanSeeRevenue()
+        {
+            return string.Equals(Session.RoleName, "Admin", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(Session.RoleName, "Quản lý", StringComparison.OrdinalIgnoreCase);
+        }
+
+        public void ApplyRoleVisibility(bool showRevenueAndCharts)
+        {
+            if (_revenueCardPanel != null)
+                _revenueCardPanel.Visible = showRevenueAndCharts;
+
+            if (_tblMain != null)
+            {
+                var rightCtrl = _tblMain.GetControlFromPosition(2, 0);
+                if (rightCtrl != null)
+                    rightCtrl.Visible = showRevenueAndCharts;
+
+                _tblMain.ColumnStyles[0] = new ColumnStyle(SizeType.Percent, showRevenueAndCharts ? 37F : 47F);
+                _tblMain.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, showRevenueAndCharts ? 38F : 53F);
+                _tblMain.ColumnStyles[2] = new ColumnStyle(SizeType.Percent, showRevenueAndCharts ? 25F : 0F);
+            }
+
+            _flpStats?.PerformLayout();
+        }
+
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-            if (Visible) LoadAllData();
+            if (Visible)
+            {
+                ApplyRoleVisibility(CanSeeRevenue());
+                LoadAllData();
+            }
         }
 
         public void LoadAllData()

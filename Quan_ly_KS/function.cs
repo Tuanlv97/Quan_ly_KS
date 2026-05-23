@@ -69,21 +69,6 @@ namespace Quan_ly_KS
         {
             RunStep(@"
 IF (SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_NAME='customer' AND COLUMN_NAME='cname') = 'varchar'
-BEGIN
-    ALTER TABLE [customer] ALTER COLUMN [cname]       NVARCHAR(250) NOT NULL;
-    ALTER TABLE [customer] ALTER COLUMN [nationality] NVARCHAR(250) NOT NULL;
-    ALTER TABLE [customer] ALTER COLUMN [gender]      NVARCHAR(50)  NOT NULL;
-    ALTER TABLE [customer] ALTER COLUMN [dob]         NVARCHAR(50)  NOT NULL;
-    ALTER TABLE [customer] ALTER COLUMN [idproof]     NVARCHAR(250) NOT NULL;
-    ALTER TABLE [customer] ALTER COLUMN [address]     NVARCHAR(350) NOT NULL;
-    ALTER TABLE [customer] ALTER COLUMN [checkin]     NVARCHAR(250) NULL;
-    ALTER TABLE [customer] ALTER COLUMN [checkout]    NVARCHAR(250) NULL;
-    ALTER TABLE [customer] ALTER COLUMN [chekout]     NVARCHAR(250) NULL;
-END");
-
-            RunStep(@"
-IF (SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_NAME='employee' AND COLUMN_NAME='ename') = 'varchar'
 BEGIN
     ALTER TABLE [employee] ALTER COLUMN [ename]    NVARCHAR(250) NOT NULL;
@@ -95,24 +80,15 @@ END");
 
             RunStep(@"
 IF (SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_NAME='customer' AND COLUMN_NAME='mobile') <> 'nvarchar'
-BEGIN
-    ALTER TABLE [customer] ALTER COLUMN [mobile] NVARCHAR(20) NULL;
-    UPDATE [customer] SET [mobile] = '0' + [mobile] WHERE LEN([mobile]) = 9;
-END");
-
-            RunStep(@"
-IF (SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_NAME='employee' AND COLUMN_NAME='mobile') <> 'nvarchar'
 BEGIN
     ALTER TABLE [employee] ALTER COLUMN [mobile] NVARCHAR(20) NULL;
     UPDATE [employee] SET [mobile] = '0' + CAST([mobile] AS NVARCHAR(20)) WHERE LEN(CAST([mobile] AS NVARCHAR(20))) = 9;
 END");
 
-            // Step 1: create guests table and migrate person data from customer
+            // Step 1: create guests table
             RunStep(@"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='guests')
-BEGIN
     CREATE TABLE [guests] (
         [gid]         INT           IDENTITY(1,1) PRIMARY KEY,
         [cname]       NVARCHAR(250) NOT NULL DEFAULT '',
@@ -122,16 +98,11 @@ BEGIN
         [dob]         NVARCHAR(50)  NOT NULL DEFAULT '',
         [idproof]     NVARCHAR(250) NOT NULL DEFAULT '',
         [address]     NVARCHAR(350) NOT NULL DEFAULT ''
-    )
-    INSERT INTO [guests] ([cname],[mobile],[nationality],[gender],[dob],[idproof],[address])
-    SELECT [cname],[mobile],[nationality],[gender],[dob],[idproof],[address]
-    FROM [customer] ORDER BY [cid]
-END");
+    )");
 
-            // Step 2: create bookings table — runs after guests exists so CROSS APPLY compiles fine
+            // Step 2: create bookings table
             RunStep(@"
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='bookings')
-BEGIN
     CREATE TABLE [bookings] (
         [bid]      INT           IDENTITY(1,1) PRIMARY KEY,
         [gid]      INT           NOT NULL,
@@ -141,16 +112,7 @@ BEGIN
         [chekout]  NVARCHAR(250) NOT NULL DEFAULT 'NO',
         FOREIGN KEY ([gid])    REFERENCES [guests]([gid]),
         FOREIGN KEY ([roomid]) REFERENCES [rooms]([roomid])
-    )
-    INSERT INTO [bookings] ([gid],[roomid],[checkin],[checkout],[chekout])
-    SELECT g.[gid], c.[roomid], c.[checkin], c.[checkout], c.[chekout]
-    FROM [customer] c
-    CROSS APPLY (
-        SELECT TOP 1 [gid] FROM [guests]
-        WHERE [cname]=c.[cname] AND [mobile]=c.[mobile]
-        ORDER BY [gid]
-    ) g
-END");
+    )");
 
             // Step 3: replace customer_services(cid) with customer_services(bid)
             RunStep(@"

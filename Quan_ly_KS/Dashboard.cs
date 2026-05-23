@@ -100,17 +100,14 @@ namespace Quan_ly_KS
         private void Dashboard_Load(object sender, EventArgs e)
         {
             bool isAdmin = IsAdmin;
-            btnTongQuan.Visible = isAdmin;
+            btnTongQuan.Visible = true;
             btnAddRoom.Visible = isAdmin;
             btnEmployee.Visible = isAdmin;
 
             HideAllUCs();
             LayoutDashboard();
 
-            if (isAdmin)
-                btnTongQuan.PerformClick();
-            else
-                btnCustomerRes.PerformClick();
+            btnTongQuan.PerformClick();
 
             string name = Session.EmployeeName;
             string role = Session.RoleName;
