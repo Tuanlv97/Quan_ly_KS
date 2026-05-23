@@ -123,7 +123,7 @@ namespace Quan_ly_KS.All_User_Control
             this.pnlForm.BorderColor     = System.Drawing.Color.FromArgb(100, 132, 112, 255);
             this.pnlForm.BorderThickness = 2;
             this.pnlForm.Name            = "pnlForm";
-            this.pnlForm.Size            = new System.Drawing.Size(500, 282);
+            this.pnlForm.Size            = new System.Drawing.Size(500, 325);
             this.pnlForm.Visible         = false;
             this.pnlForm.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.lblFormTitle, this.lblName, this.txtServiceName,
@@ -157,45 +157,45 @@ namespace Quan_ly_KS.All_User_Control
             this.txtServiceName.Location        = new System.Drawing.Point(18, 65);
             this.txtServiceName.Name            = "txtServiceName";
             this.txtServiceName.PlaceholderText = "Nhập tên dịch vụ";
-            this.txtServiceName.Size            = new System.Drawing.Size(464, 35);
+            this.txtServiceName.Size            = new System.Drawing.Size(464, 38);
 
-            // Giá dịch vụ  (field 1: label top=104, input top=121)
+            // Giá dịch vụ  (field 1: label top=121, input top=138)
             this.lblPrice.AutoSize  = true;
             this.lblPrice.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblPrice.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblPrice.Location  = new System.Drawing.Point(18, 104);
+            this.lblPrice.Location  = new System.Drawing.Point(18, 121);
             this.lblPrice.Name      = "lblPrice";
             this.lblPrice.Text      = "Giá dịch vụ (VNĐ)";
 
             this.txtPrice.BorderRadius    = 8;
             this.txtPrice.FillColor       = System.Drawing.Color.WhiteSmoke;
             this.txtPrice.Font            = new System.Drawing.Font("Segoe UI", 10F);
-            this.txtPrice.Location        = new System.Drawing.Point(18, 121);
+            this.txtPrice.Location        = new System.Drawing.Point(18, 138);
             this.txtPrice.Name            = "txtPrice";
             this.txtPrice.PlaceholderText = "Nhập giá (VD: 50000)";
-            this.txtPrice.Size            = new System.Drawing.Size(464, 35);
+            this.txtPrice.Size            = new System.Drawing.Size(464, 38);
 
-            // Trạng thái  (field 2: label top=160, input top=177)
+            // Trạng thái  (field 2: label top=194, input top=211)
             this.lblStatus.AutoSize  = true;
             this.lblStatus.Font      = new System.Drawing.Font("Segoe UI", 10F);
             this.lblStatus.ForeColor = System.Drawing.Color.FromArgb(60, 60, 60);
-            this.lblStatus.Location  = new System.Drawing.Point(18, 160);
+            this.lblStatus.Location  = new System.Drawing.Point(18, 194);
             this.lblStatus.Name      = "lblStatus";
             this.lblStatus.Text      = "Trạng thái";
 
             this.cmbFormStatus.BorderRadius = 8;
             this.cmbFormStatus.FillColor    = System.Drawing.Color.WhiteSmoke;
             this.cmbFormStatus.Font         = new System.Drawing.Font("Segoe UI", 10F);
-            this.cmbFormStatus.Location     = new System.Drawing.Point(18, 177);
+            this.cmbFormStatus.Location     = new System.Drawing.Point(18, 211);
             this.cmbFormStatus.Name         = "cmbFormStatus";
-            this.cmbFormStatus.Size         = new System.Drawing.Size(464, 35);
+            this.cmbFormStatus.Size         = new System.Drawing.Size(464, 38);
 
-            // Buttons  (btnY = 177+35+14 = 226)
+            // Buttons  (btnY = 211+38+18 = 267)
             this.btnSave.BorderRadius = 8;
             this.btnSave.FillColor    = System.Drawing.Color.SlateBlue;
             this.btnSave.Font         = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnSave.ForeColor    = System.Drawing.Color.White;
-            this.btnSave.Location     = new System.Drawing.Point(18, 226);
+            this.btnSave.Location     = new System.Drawing.Point(18, 267);
             this.btnSave.Name         = "btnSave";
             this.btnSave.Size         = new System.Drawing.Size(150, 40);
             this.btnSave.Text         = "Lưu";
@@ -205,7 +205,7 @@ namespace Quan_ly_KS.All_User_Control
             this.btnCancel.FillColor    = System.Drawing.Color.FromArgb(220, 220, 220);
             this.btnCancel.Font         = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnCancel.ForeColor    = System.Drawing.Color.FromArgb(80, 80, 80);
-            this.btnCancel.Location     = new System.Drawing.Point(178, 226);
+            this.btnCancel.Location     = new System.Drawing.Point(178, 267);
             this.btnCancel.Name         = "btnCancel";
             this.btnCancel.Size         = new System.Drawing.Size(150, 40);
             this.btnCancel.Text         = "Hủy";
